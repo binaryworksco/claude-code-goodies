@@ -85,12 +85,19 @@ send_telegram() {
 if [[ "$NEEDS_APPROVAL" == "true" ]]; then
     # Extract tool name from message if possible
     TOOL_NAME=""
-    if [[ "$MESSAGE" =~ "permission to use "([A-Za-z]+) ]]; then
+    echo "[$(date)] Extracting tool name from: '$MESSAGE'" >> "$LOG_FILE"
+    
+    if [[ "$MESSAGE" =~ permission\ to\ use\ ([A-Za-z]+) ]]; then
         TOOL_NAME="${BASH_REMATCH[1]}"
-    elif [[ "$MESSAGE" =~ "approve "([A-Za-z]+) ]]; then
+        echo "[$(date)] Tool name extracted: '$TOOL_NAME'" >> "$LOG_FILE"
+    elif [[ "$MESSAGE" =~ approve\ ([A-Za-z]+) ]]; then
         TOOL_NAME="${BASH_REMATCH[1]}"
-    elif [[ "$MESSAGE" =~ "Tool: "([A-Za-z]+) ]]; then
+        echo "[$(date)] Tool name extracted: '$TOOL_NAME'" >> "$LOG_FILE"
+    elif [[ "$MESSAGE" =~ Tool:\ ([A-Za-z]+) ]]; then
         TOOL_NAME="${BASH_REMATCH[1]}"
+        echo "[$(date)] Tool name extracted: '$TOOL_NAME'" >> "$LOG_FILE"
+    else
+        echo "[$(date)] Could not extract tool name from message" >> "$LOG_FILE"
     fi
     
     # Build notification message
@@ -127,14 +134,24 @@ if [[ "$NEEDS_APPROVAL" == "true" ]]; then
                 ;;
         esac
         
+        # Get project directory and name
+        PROJECT_DIR=$(pwd)
+        PROJECT_NAME=$(basename "$PROJECT_DIR")
+        
         TELEGRAM_MESSAGE="⏳ *Claude Code Action Required*
+📂 Project: \`$PROJECT_NAME\`
 
 Claude needs approval to use the *${TOOL_NAME}* tool to ${TOOL_DESC}
 
 📍 Please return to Claude Code to review and respond."
     else
         # Fallback to original message if tool name can't be extracted
+        # Get project directory and name
+        PROJECT_DIR=$(pwd)
+        PROJECT_NAME=$(basename "$PROJECT_DIR")
+        
         TELEGRAM_MESSAGE="⏳ *Claude Code Action Required*
+📂 Project: \`$PROJECT_NAME\`
 
 *Message:* $MESSAGE
 

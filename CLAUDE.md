@@ -13,13 +13,16 @@ This is a shell script-based enhancement system for Claude Code that provides au
 # Create necessary directories
 mkdir -p ~/.claude/hooks ~/.claude/logs
 
-# Run the installation script (recommended)
+# Run the installation scripts (recommended)
 ./scripts/install-hooks.sh
+./scripts/install-commands.sh
 
 # Or manually:
 cp hooks/*.sh ~/.claude/hooks/
 cp hooks/allowed-tasks.txt ~/.claude/hooks/
 chmod +x ~/.claude/hooks/*.sh
+mkdir -p ~/.claude/commands
+cp commands/*.md ~/.claude/commands/
 cp .env.example ~/.claude/.env
 
 # Configure Claude Code
@@ -48,6 +51,14 @@ The system uses Claude Code's hook infrastructure to intercept tool operations:
 2. **Notification Hook** (`notification.sh`): Sends Telegram alerts when Claude Code needs user input for blocked operations.
 
 3. **Stop Hook** (`telegram-completion.sh`): Sends a completion notification when a Claude Code session ends.
+
+## Custom Commands
+
+The repository includes pre-built commands in the `commands/` directory that provide workflow automation:
+
+- **`/cpr`**: Commit, Push, and create Pull Request - Analyzes git status and intelligently handles the full workflow
+
+Commands are markdown files containing prompts that Claude Code executes. They're installed to `~/.claude/commands/` and can be invoked by typing `/<command_name>`.
 
 ## Telegram Configuration
 

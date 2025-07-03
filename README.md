@@ -18,6 +18,7 @@ This repository contains a collection of hooks and tools that enhance your Claud
 - **📊 Separated logging** - Track approved vs blocked operations easily
 - **🔒 Security-first approach** - Whitelist-based approval system with dangerous command blocking
 - **⚡ Zero-config for common tools** - Pre-configured patterns for npm, dotnet, git, and more
+- **⌨️ Custom commands** - Pre-built workflow commands for common development tasks
 
 ## 🎯 Why use these hooks?
 
@@ -56,14 +57,15 @@ Claude Code is powerful, but constantly approving routine operations interrupts 
    cd claude-code-goodies
    ```
 
-2. **Run the installation script**
+2. **Run the installation scripts**
    ```bash
    ./scripts/install-hooks.sh
+   ./scripts/install-commands.sh
    ```
 
    This will:
    - Create necessary directories
-   - Copy all hook files
+   - Copy all hook files and commands
    - Create a `.env` configuration file
    - Preserve any existing configuration
 
@@ -80,12 +82,16 @@ Claude Code is powerful, but constantly approving routine operations interrupts 
    mkdir -p ~/.claude/hooks ~/.claude/logs
    ```
 
-3. **Copy the hook files**
+3. **Copy the hook files and commands**
    ```bash
    cp hooks/*.sh ~/.claude/hooks/
    cp hooks/allowed-tasks.txt ~/.claude/hooks/
    cp hooks/dangerous-tasks.txt ~/.claude/hooks/
    chmod +x ~/.claude/hooks/*.sh
+   
+   # Copy commands
+   mkdir -p ~/.claude/commands
+   cp commands/*.md ~/.claude/commands/
    
    # Copy the .env template
    cp .env.example ~/.claude/.env
@@ -195,6 +201,36 @@ Message: Tool usage requires approval
 ```
 
 **Note**: The approval notification only sends when Claude is actually waiting for your input mid-task. Completion notifications won't trigger duplicate alerts.
+
+## ⌨️ Custom Commands
+
+The repository includes pre-built commands that automate common development workflows:
+
+### Available Commands
+
+- **`/cpr`** - Commit, Push, and create Pull Request
+  - Analyzes git status and intelligently handles staging, committing, pushing, and PR creation
+  - Makes smart decisions about commit messages and PR descriptions
+
+### Using Commands
+
+Commands are installed to `~/.claude/commands/` and can be used by typing `/<command_name>` in Claude Code:
+
+```bash
+# Example: Use the commit/push/PR command
+/cpr
+
+# Claude will analyze your git status and help you ship your changes
+```
+
+### Creating Custom Commands
+
+Commands are markdown files with prompts that Claude Code executes. To create your own:
+
+1. Create a `.md` file in the `commands/` directory
+2. Write your prompt with any special instructions
+3. Use `$ARGUMENTS` to accept parameters
+4. Run `./scripts/install-commands.sh` to install
 
 ## 📊 Monitoring
 
