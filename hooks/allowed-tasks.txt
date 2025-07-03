@@ -117,6 +117,12 @@
 ^Read$
 ^WebFetch$
 ^TodoWrite$
+^TodoRead$
+^Update$
+^Write$
+^Edit$
+^MultiEdit$
+
 
 # Docker commands (read-only)
 ^docker ps

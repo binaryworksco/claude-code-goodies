@@ -1,4 +1,4 @@
-# claude-code
+# Claude Code Goodies
 
 Community hooks and tools to make Claude Code safer, smarter, and more notifiable
 
@@ -180,6 +180,20 @@ echo "Dangerous: $(grep -c "DANGEROUS" ~/.claude/logs/dangerous-commands.log)"
 ```
 
 ## 🛠️ Customization
+
+### Enable verbose logging
+
+For debugging or detailed logging, edit `~/.claude/hooks/auto-approve.sh`:
+
+```bash
+# Change from:
+VERBOSE_LOGGING=false
+
+# To:
+VERBOSE_LOGGING=true
+```
+
+This provides detailed pattern matching information helpful for troubleshooting.
 
 ### Modify auto-approval patterns
 Edit `~/.claude/hooks/allowed-tasks.txt` - changes take effect immediately!

@@ -79,6 +79,22 @@ The system includes a safety feature that checks for dangerous commands before a
 
 Even if a command matches an allowed pattern, it will be blocked if it also matches a dangerous pattern, providing an extra layer of safety.
 
+## Logging Configuration
+
+The auto-approve hook supports configurable verbosity levels:
+
+- **Normal Mode (default)**: `VERBOSE_LOGGING=false`
+  - Concise single-line logs for each operation
+  - Shows only essential information: operation type and approval status
+  - Example: `[Date] Bash: npm install express` → `✅ AUTO-APPROVED (matched: ^npm install.*)`
+
+- **Verbose Mode**: `VERBOSE_LOGGING=true`
+  - Detailed debugging information
+  - Shows pattern matching process, full requests, and responses
+  - Useful for troubleshooting pattern matching issues
+
+To enable verbose logging, edit `~/.claude/hooks/auto-approve.sh` and set `VERBOSE_LOGGING=true`.
+
 ## Security Considerations
 
 - All hooks execute with user permissions
