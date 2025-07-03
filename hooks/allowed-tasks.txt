@@ -114,6 +114,28 @@
 ^git tag
 ^git describe
 
+# GitHub CLI commands
+^gh pr create
+^gh pr list
+^gh pr view
+^gh pr merge
+^gh pr close
+^gh pr reopen
+^gh pr checkout
+^gh pr diff
+^gh pr review
+^gh issue create
+^gh issue list
+^gh issue view
+^gh issue close
+^gh repo view
+^gh repo clone
+^gh repo fork
+^gh workflow list
+^gh workflow run
+^gh release list
+^gh release view
+
 # Formatters and linters
 ^prettier --write
 ^prettier --check
