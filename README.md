@@ -1,0 +1,256 @@
+# claude-code
+
+Community hooks and tools to make Claude Code safer, smarter, and more notifiable
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Claude%20Code-Enhanced-blue" alt="Claude Code Enhanced">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License">
+  <img src="https://img.shields.io/badge/Telegram-Ready-blue?logo=telegram" alt="Telegram Ready">
+</p>
+
+## 🚀 What is this?
+
+This repository contains a collection of hooks and tools that enhance your Claude Code experience by:
+
+- **🛡️ Auto-approving safe operations** - No more interruptions for routine commands
+- **📱 Telegram notifications** - Get real-time updates when Claude needs you or completes tasks
+- **📊 Separated logging** - Track approved vs blocked operations easily
+- **🔒 Security-first approach** - Whitelist-based approval system
+- **⚡ Zero-config for common tools** - Pre-configured patterns for npm, dotnet, git, and more
+
+## 🎯 Why use these hooks?
+
+Claude Code is powerful, but constantly approving routine operations interrupts your flow. These hooks:
+
+1. **Save time** - Auto-approve safe operations like `npm install`, `dotnet build`, `ls`, etc.
+2. **Stay informed** - Get Telegram notifications for operations that need your attention
+3. **Maintain security** - Only whitelisted operations are auto-approved
+4. **Track activity** - Separate logs for approved and blocked operations
+5. **Customize easily** - Simple text file configuration
+
+## 📦 Installation
+
+### Prerequisites
+
+- Claude Code installed and working
+- `jq` command-line tool (for JSON parsing)
+  ```bash
+  # macOS
+  brew install jq
+  
+  # Ubuntu/Debian
+  sudo apt-get install jq
+  
+  # Other
+  # https://stedolan.github.io/jq/download/
+  ```
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/binaryworksco/claude-code-goodies.git
+   cd claude-code-goodies
+   ```
+
+2. **Create the hooks directory**
+   ```bash
+   mkdir -p ~/.claude/hooks ~/.claude/logs
+   ```
+
+3. **Copy the hook files**
+   ```bash
+   cp hooks/*.sh ~/.claude/hooks/
+   cp hooks/allowed-tasks.txt ~/.claude/hooks/
+   chmod +x ~/.claude/hooks/*.sh
+   ```
+
+4. **Configure Telegram (Optional but recommended)**
+   
+   Create a Telegram bot:
+   - Message [@BotFather](https://t.me/botfather) on Telegram
+   - Send `/newbot` and follow the instructions
+   - Save your bot token (looks like `1234567890:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`)
+   - Start a chat with your bot and send any message
+   - Visit `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates`
+   - Find your `chat_id` in the response
+
+   Update the scripts with your credentials:
+   ```bash
+   # Replace with your actual token and chat ID
+   sed -i 's/YOUR_TELEGRAM_BOT_TOKEN/YOUR_ACTUAL_TOKEN/g' ~/.claude/hooks/*.sh
+   sed -i 's/YOUR_TELEGRAM_CHAT_ID/YOUR_ACTUAL_CHAT_ID/g' ~/.claude/hooks/*.sh
+   ```
+
+5. **Configure Claude Code settings**
+   ```bash
+   cp settings.json.example ~/.claude/settings.json
+   ```
+
+6. **Restart Claude Code**
+   ```bash
+   # Exit Claude Code completely, then start it again
+   ```
+
+## 🔧 Configuration
+
+### Allowed Tasks (`~/.claude/hooks/allowed-tasks.txt`)
+
+This file controls what operations are auto-approved. It uses regex patterns:
+
+```bash
+# Tasks
+^Run tests.*
+^Build.*
+^Install dependencies.*
+
+# Bash commands
+^npm (install|test|build)
+^dotnet (build|test|run)
+^echo 
+^ls
+^cat
+
+# File operations
+^Read$       # Allow all file reads
+^WebFetch$   # Allow all web fetches
+^src/.*\.js$ # Allow editing JS files in src/
+
+# Exclusions (never auto-approve these)
+!\.env
+!credentials
+!secret
+```
+
+### Adding New Patterns
+
+```bash
+# Allow a specific command
+echo '^yarn install$' >> ~/.claude/hooks/allowed-tasks.txt
+
+# Allow all operations for a tool
+echo '^Glob$' >> ~/.claude/hooks/allowed-tasks.txt
+
+# Allow file operations in a directory
+echo '^src/.*\.(js|ts)$' >> ~/.claude/hooks/allowed-tasks.txt
+```
+
+## 📱 Telegram Notifications
+
+When configured, you'll receive notifications for:
+
+### Operations requiring approval
+```
+🚫 Claude Code Request Blocked
+
+Tool: Bash
+Command: rm -rf node_modules
+
+⏳ Action Required: Please review and approve/deny in Claude Code
+```
+
+### Session completions
+```
+✅ Claude Code Session Complete
+```
+
+## 📊 Monitoring
+
+### View logs
+```bash
+# See approved operations
+tail -f ~/.claude/logs/auto-approve.log
+
+# See blocked operations
+tail -f ~/.claude/logs/auto-blocked.log
+
+# Count today's operations
+echo "Approved: $(grep -c "AUTO-APPROVED" ~/.claude/logs/auto-approve.log)"
+echo "Blocked: $(grep -c "BLOCKED" ~/.claude/logs/auto-blocked.log)"
+```
+
+## 🛠️ Customization
+
+### Modify auto-approval patterns
+Edit `~/.claude/hooks/allowed-tasks.txt` - changes take effect immediately!
+
+### Disable Telegram notifications
+Comment out the `send_telegram` function calls in the hook scripts.
+
+### Change notification format
+Edit the `MESSAGE` variable in the hook scripts to customize notification text.
+
+## 🧪 Testing
+
+Test if hooks are working:
+
+```bash
+# This should auto-approve (if echo is in allowed-tasks.txt)
+echo "Hello, World!"
+
+# This should notify and ask for permission
+rm -rf /tmp/test
+```
+
+## 📁 Repository Structure
+
+```
+claude-code/
+├── README.md
+├── LICENSE
+├── hooks/
+│   ├── auto-approve.sh      # Main auto-approval hook
+│   ├── telegram-completion.sh # Session completion notifications
+│   ├── notification.sh      # Notification when Claude needs input
+│   └── allowed-tasks.txt    # Patterns for auto-approval
+└── settings/
+    └── settings.json        # Claude Code hooks configuration
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. Some ideas:
+
+- Additional notification methods (Discord, Slack, etc.)
+- More sophisticated approval patterns
+- Tool-specific configurations
+- Performance optimizations
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Thanks to Anthropic for creating Claude Code
+- Inspired by the need for a smoother development workflow
+- Community feedback and contributions
+
+## ⚠️ Security Note
+
+These hooks execute with your user permissions. Always:
+- Review the hook scripts before installing
+- Be careful with what patterns you add to `allowed-tasks.txt`
+- Never auto-approve destructive commands
+- Keep your Telegram credentials private
+
+## 🐛 Troubleshooting
+
+### Hooks not triggering
+1. Run `/hooks` in Claude Code to verify they're loaded
+2. Check `~/.claude/settings.json` exists and is valid JSON
+3. Restart Claude Code completely
+
+### Telegram not working
+1. Verify your bot token and chat ID are correct
+2. Check that your bot is started (send `/start` to it)
+3. Look for errors in the logs
+
+### Commands not auto-approving
+1. Check the pattern in `allowed-tasks.txt`
+2. Verify regex syntax (use `^` and `$` for exact matches)
+3. Check logs to see what pattern is being tested
+
+---
+
+Made with ❤️ for the Claude Code community

@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+
+# Backup files
+*.backup
+*.bak
+*~
+
+# Logs
+*.log
+
+# Local settings
+*.local
+
+# Credentials (just in case)
+*credentials*
+*token*
+.env
+
+# Editor
+.vscode/
+.idea/
