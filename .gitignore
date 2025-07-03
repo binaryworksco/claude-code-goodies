@@ -20,3 +20,6 @@
 # Editor
 .vscode/
 .idea/
+
+# Tests
+tests

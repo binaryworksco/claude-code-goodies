@@ -140,6 +140,7 @@
 ^which
 ^Glob$
 ^Grep$
+^LS$
 ^Read$
 ^WebFetch$
 ^TodoWrite$

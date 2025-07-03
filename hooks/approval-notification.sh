@@ -31,17 +31,23 @@ echo "[$(date)] Notification received: Title='$TITLE', Message='$MESSAGE'" >> "$
 # Look for patterns that indicate Claude is waiting for user action
 NEEDS_APPROVAL=false
 
-# Common patterns that indicate approval is needed
-if [[ "$MESSAGE" =~ "waiting for" ]] || \
-   [[ "$MESSAGE" =~ "needs your" ]] || \
-   [[ "$MESSAGE" =~ "requires approval" ]] || \
-   [[ "$MESSAGE" =~ "permission" ]] || \
-   [[ "$MESSAGE" =~ "confirm" ]] || \
-   [[ "$MESSAGE" =~ "approve" ]] || \
-   [[ "$MESSAGE" =~ "deny" ]] || \
-   [[ "$MESSAGE" =~ "review" ]] || \
-   [[ "$MESSAGE" =~ "action required" ]]; then
-    NEEDS_APPROVAL=true
+# Skip the generic "waiting for input" message that appears after task completion
+if [[ "$MESSAGE" == "Claude is waiting for your input" ]]; then
+    NEEDS_APPROVAL=false
+    echo "[$(date)] Skipping generic 'waiting for input' message (post-completion)" >> "$LOG_FILE"
+else
+    # Common patterns that indicate approval is needed
+    if [[ "$MESSAGE" =~ "waiting for" ]] || \
+       [[ "$MESSAGE" =~ "needs your" ]] || \
+       [[ "$MESSAGE" =~ "requires approval" ]] || \
+       [[ "$MESSAGE" =~ "permission" ]] || \
+       [[ "$MESSAGE" =~ "confirm" ]] || \
+       [[ "$MESSAGE" =~ "approve" ]] || \
+       [[ "$MESSAGE" =~ "deny" ]] || \
+       [[ "$MESSAGE" =~ "review" ]] || \
+       [[ "$MESSAGE" =~ "action required" ]]; then
+        NEEDS_APPROVAL=true
+    fi
 fi
 
 # Skip completion notifications
