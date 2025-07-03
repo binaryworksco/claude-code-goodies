@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/notification.sh"
+            "command": "bash ~/.claude/hooks/approval-notification.sh"
           }
         ]
       }

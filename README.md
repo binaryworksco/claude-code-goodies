@@ -143,18 +143,19 @@ When configured, you'll receive notifications for:
 
 ### Operations requiring approval
 ```
-🚫 Claude Code Request Blocked
+⏳ Claude Code Action Required
 
-Tool: Bash
-Command: rm -rf node_modules
+Message: Tool usage requires approval
 
-⏳ Action Required: Please review and approve/deny in Claude Code
+📍 Please return to Claude Code to review and respond.
 ```
 
 ### Session completions
 ```
-✅ Claude Code Session Complete
+🚀 Claude Code session complete for project: `YourProject`
 ```
+
+**Note**: The approval notification only sends when Claude is actually waiting for your input mid-task. Completion notifications won't trigger duplicate alerts.
 
 ## 📊 Monitoring
 
@@ -168,6 +169,9 @@ tail -f ~/.claude/logs/auto-blocked.log
 
 # See dangerous commands
 tail -f ~/.claude/logs/dangerous-commands.log
+
+# See approval notifications
+tail -f ~/.claude/logs/approval-notifications.log
 
 # Count today's operations
 echo "Approved: $(grep -c "AUTO-APPROVED" ~/.claude/logs/auto-approve.log)"
@@ -207,7 +211,7 @@ claude-code/
 ├── hooks/
 │   ├── auto-approve.sh      # Main auto-approval hook
 │   ├── telegram-completion.sh # Session completion notifications
-│   ├── notification.sh      # Notification when Claude needs input
+│   ├── approval-notification.sh # Notification only when approval needed
 │   ├── allowed-tasks.txt    # Patterns for auto-approval
 │   └── dangerous-tasks.txt  # Patterns for dangerous commands
 └── settings/
