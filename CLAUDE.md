@@ -13,10 +13,14 @@ This is a shell script-based enhancement system for Claude Code that provides au
 # Create necessary directories
 mkdir -p ~/.claude/hooks ~/.claude/logs
 
-# Copy hook files
+# Run the installation script (recommended)
+./scripts/install-hooks.sh
+
+# Or manually:
 cp hooks/*.sh ~/.claude/hooks/
 cp hooks/allowed-tasks.txt ~/.claude/hooks/
 chmod +x ~/.claude/hooks/*.sh
+cp .env.example ~/.claude/.env
 
 # Configure Claude Code
 cp settings.json.example ~/.claude/settings.json
@@ -44,6 +48,21 @@ The system uses Claude Code's hook infrastructure to intercept tool operations:
 2. **Notification Hook** (`notification.sh`): Sends Telegram alerts when Claude Code needs user input for blocked operations.
 
 3. **Stop Hook** (`telegram-completion.sh`): Sends a completion notification when a Claude Code session ends.
+
+## Telegram Configuration
+
+Telegram credentials are stored in `~/.claude/.env` to prevent accidental overwrites during updates:
+
+```bash
+# Edit the .env file
+nano ~/.claude/.env
+
+# Add your credentials:
+TELEGRAM_BOT_TOKEN="your-bot-token-here"
+TELEGRAM_CHAT_ID="your-chat-id-here"
+```
+
+The hooks automatically source this file, and will log a message if credentials are missing.
 
 ## Working with Allowed Patterns
 
@@ -100,5 +119,5 @@ To enable verbose logging, edit `~/.claude/hooks/auto-approve.sh` and set `VERBO
 - All hooks execute with user permissions
 - Only whitelisted operations are auto-approved
 - Sensitive files are explicitly excluded via `!` patterns
-- Telegram credentials must be kept secure
+- Telegram credentials are stored in `~/.claude/.env` (excluded from version control)
 - Logs are stored locally in `~/.claude/logs/`

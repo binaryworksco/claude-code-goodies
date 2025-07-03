@@ -2,9 +2,16 @@
 # telegram-completion.sh - Sends notification when Claude Code completes
 # Place this in ~/.claude/hooks/telegram-completion.sh
 
-# Configuration
-TELEGRAM_BOT_TOKEN="ENTER-TELEGRAM-BOT-ID-HERE"
-TELEGRAM_CHAT_ID="ENTER-TELEGRAM-CHAT-ID-HERE"
+# Load configuration from .env file
+ENV_FILE="$HOME/.claude/.env"
+if [[ -f "$ENV_FILE" ]]; then
+    source "$ENV_FILE"
+else
+    # Fallback to empty values if .env doesn't exist
+    TELEGRAM_BOT_TOKEN=""
+    TELEGRAM_CHAT_ID=""
+fi
+
 LOG_FILE="$HOME/.claude/logs/completion.log"
 
 # Create log directory if it doesn't exist
@@ -22,6 +29,13 @@ fi
 # Function to send Telegram notification with proper formatting
 send_telegram() {
     local message="$1"
+    
+    # Check if Telegram is configured
+    if [[ -z "$TELEGRAM_BOT_TOKEN" ]] || [[ -z "$TELEGRAM_CHAT_ID" ]]; then
+        echo "[$(date)] Telegram not configured (missing bot token or chat ID)" >> "$LOG_FILE"
+        return 1
+    fi
+    
     curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
         -d "chat_id=$TELEGRAM_CHAT_ID" \
         -d "text=$message" \

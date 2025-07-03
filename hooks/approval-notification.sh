@@ -2,9 +2,16 @@
 # approval-notification.sh - Sends notification only when Claude Code needs approval
 # Place this in ~/.claude/hooks/approval-notification.sh
 
-# Configuration
-TELEGRAM_BOT_TOKEN="ENTER-TELEGRAM-BOT-ID-HERE"
-TELEGRAM_CHAT_ID="ENTER-TELEGRAM-CHAT-ID-HERE"
+# Load configuration from .env file
+ENV_FILE="$HOME/.claude/.env"
+if [[ -f "$ENV_FILE" ]]; then
+    source "$ENV_FILE"
+else
+    # Fallback to empty values if .env doesn't exist
+    TELEGRAM_BOT_TOKEN=""
+    TELEGRAM_CHAT_ID=""
+fi
+
 LOG_FILE="$HOME/.claude/logs/approval-notifications.log"
 
 # Create log directory if it doesn't exist
@@ -50,6 +57,12 @@ fi
 send_telegram() {
     local message="$1"
     
+    # Check if Telegram is configured
+    if [[ -z "$TELEGRAM_BOT_TOKEN" ]] || [[ -z "$TELEGRAM_CHAT_ID" ]]; then
+        echo "[$(date)] Telegram not configured (missing bot token or chat ID)" >> "$LOG_FILE"
+        return 1
+    fi
+    
     if curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
         -d "chat_id=$TELEGRAM_CHAT_ID" \
         -d "text=$message" \
@@ -64,12 +77,63 @@ send_telegram() {
 
 # Only send notification if approval is needed
 if [[ "$NEEDS_APPROVAL" == "true" ]]; then
+    # Extract tool name from message if possible
+    TOOL_NAME=""
+    if [[ "$MESSAGE" =~ "permission to use "([A-Za-z]+) ]]; then
+        TOOL_NAME="${BASH_REMATCH[1]}"
+    elif [[ "$MESSAGE" =~ "approve "([A-Za-z]+) ]]; then
+        TOOL_NAME="${BASH_REMATCH[1]}"
+    elif [[ "$MESSAGE" =~ "Tool: "([A-Za-z]+) ]]; then
+        TOOL_NAME="${BASH_REMATCH[1]}"
+    fi
+    
     # Build notification message
-    TELEGRAM_MESSAGE="⏳ *Claude Code Action Required*
+    if [[ -n "$TOOL_NAME" ]]; then
+        # Create tool-specific message
+        TOOL_DESC=""
+        case "$TOOL_NAME" in
+            "Write")
+                TOOL_DESC="create or overwrite files"
+                ;;
+            "Edit"|"MultiEdit")
+                TOOL_DESC="modify existing files"
+                ;;
+            "Update")
+                TOOL_DESC="update files"
+                ;;
+            "Bash")
+                TOOL_DESC="execute shell commands"
+                ;;
+            "Read")
+                TOOL_DESC="read file contents"
+                ;;
+            "TodoWrite")
+                TOOL_DESC="manage task lists"
+                ;;
+            "WebFetch")
+                TOOL_DESC="fetch web content"
+                ;;
+            "WebSearch")
+                TOOL_DESC="search the web"
+                ;;
+            *)
+                TOOL_DESC="perform an operation"
+                ;;
+        esac
+        
+        TELEGRAM_MESSAGE="⏳ *Claude Code Action Required*
+
+Claude needs approval to use the *${TOOL_NAME}* tool to ${TOOL_DESC}
+
+📍 Please return to Claude Code to review and respond."
+    else
+        # Fallback to original message if tool name can't be extracted
+        TELEGRAM_MESSAGE="⏳ *Claude Code Action Required*
 
 *Message:* $MESSAGE
 
 📍 Please return to Claude Code to review and respond."
+    fi
 
     # Send the notification
     send_telegram "$TELEGRAM_MESSAGE"

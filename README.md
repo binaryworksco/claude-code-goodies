@@ -48,6 +48,27 @@ Claude Code is powerful, but constantly approving routine operations interrupts 
 
 ### Installation
 
+#### Quick Installation (Recommended)
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/binaryworksco/claude-code-goodies.git
+   cd claude-code-goodies
+   ```
+
+2. **Run the installation script**
+   ```bash
+   ./scripts/install-hooks.sh
+   ```
+
+   This will:
+   - Create necessary directories
+   - Copy all hook files
+   - Create a `.env` configuration file
+   - Preserve any existing configuration
+
+#### Manual Installation
+
 1. **Clone the repository**
    ```bash
    git clone https://github.com/binaryworksco/claude-code-goodies.git
@@ -65,6 +86,9 @@ Claude Code is powerful, but constantly approving routine operations interrupts 
    cp hooks/allowed-tasks.txt ~/.claude/hooks/
    cp hooks/dangerous-tasks.txt ~/.claude/hooks/
    chmod +x ~/.claude/hooks/*.sh
+   
+   # Copy the .env template
+   cp .env.example ~/.claude/.env
    ```
 
 4. **Configure Telegram (Optional but recommended)**
@@ -77,11 +101,14 @@ Claude Code is powerful, but constantly approving routine operations interrupts 
    - Visit `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates`
    - Find your `chat_id` in the response
 
-   Update the scripts with your credentials:
+   Add your credentials to the configuration file:
    ```bash
-   # Replace with your actual token and chat ID
-   sed -i 's/YOUR_TELEGRAM_BOT_TOKEN/YOUR_ACTUAL_TOKEN/g' ~/.claude/hooks/*.sh
-   sed -i 's/YOUR_TELEGRAM_CHAT_ID/YOUR_ACTUAL_CHAT_ID/g' ~/.claude/hooks/*.sh
+   # Edit the .env file
+   nano ~/.claude/.env
+   
+   # Add your credentials:
+   TELEGRAM_BOT_TOKEN="your-bot-token-here"
+   TELEGRAM_CHAT_ID="your-chat-id-here"
    ```
 
 5. **Configure Claude Code settings**
@@ -95,6 +122,18 @@ Claude Code is powerful, but constantly approving routine operations interrupts 
    ```
 
 ## 🔧 Configuration
+
+### Environment Variables (`~/.claude/.env`)
+
+The `.env` file stores your Telegram credentials and other configuration:
+
+```bash
+# Telegram Bot Configuration
+TELEGRAM_BOT_TOKEN="your-bot-token-here"
+TELEGRAM_CHAT_ID="your-chat-id-here"
+```
+
+**Important**: Your credentials are stored separately from the hook scripts, so they won't be overwritten when updating the hooks.
 
 ### Allowed Tasks (`~/.claude/hooks/allowed-tasks.txt`)
 

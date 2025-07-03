@@ -86,8 +86,33 @@
 # Rust commands
 ^cargo (test|fmt|build|check|clippy|run)
 
-# Git commands (read-only)
+# Git commands
 ^git (status|log|diff|branch|show|remote -v)
+^git add
+^git add -A
+^git add --all
+^git add \.
+^git commit
+^git commit -m
+^git commit -am
+^git pull
+^git push
+^git push -u
+^git push --set-upstream
+^git fetch
+^git checkout
+^git checkout -b
+^git merge
+^git rebase
+^git stash
+^git stash (push|pop|apply|list|drop)
+^git reset
+^git reset HEAD
+^git clean -fd
+^git clone
+^git init
+^git tag
+^git describe
 
 # Formatters and linters
 ^prettier --write
@@ -108,6 +133,7 @@
 ^touch 
 ^head 
 ^tail 
+^grep 
 ^grep -r
 ^find .* -name
 ^tree
