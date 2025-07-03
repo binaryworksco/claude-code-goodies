@@ -4,10 +4,12 @@
 
 # Configuration
 ALLOWED_LIST_FILE="$HOME/.claude/hooks/allowed-tasks.txt"
+DANGEROUS_LIST_FILE="$HOME/.claude/hooks/dangerous-tasks.txt"
 TELEGRAM_BOT_TOKEN="ENTER-TELEGRAM-BOT-ID-HERE"
 TELEGRAM_CHAT_ID="ENTER-TELEGRAM-CHAT-ID-HERE"
 APPROVE_LOG_FILE="$HOME/.claude/logs/auto-approve.log"
 BLOCKED_LOG_FILE="$HOME/.claude/logs/auto-blocked.log"
+DANGEROUS_LOG_FILE="$HOME/.claude/logs/dangerous-commands.log"
 
 # Create directories if they don't exist
 mkdir -p "$HOME/.claude/hooks" "$HOME/.claude/logs"
@@ -50,6 +52,51 @@ send_telegram() {
     else
         log_buffer "Failed to send Telegram notification"
     fi
+}
+
+# Function to check if command is dangerous
+is_dangerous_command() {
+    local tool="$1"
+    local input="$2"
+    
+    log_buffer "Checking for dangerous patterns for tool: $tool"
+    
+    # Check if dangerous list file exists
+    if [[ ! -f "$DANGEROUS_LIST_FILE" ]]; then
+        log_buffer "Dangerous list file not found: $DANGEROUS_LIST_FILE"
+        return 1
+    fi
+    
+    # Extract relevant information based on tool type
+    local check_value=""
+    case "$tool" in
+        "Bash")
+            check_value=$(echo "$input" | jq -r '.command // empty')
+            log_buffer "Checking Bash command for dangerous patterns: $check_value"
+            ;;
+        "Write"|"Edit"|"MultiEdit")
+            # Check file paths for dangerous overwrites
+            check_value=$(echo "$input" | jq -r '.path // .file_path // empty')
+            log_buffer "Checking file path for dangerous patterns: $check_value"
+            ;;
+        *)
+            # For other tools, generally not dangerous
+            return 1
+            ;;
+    esac
+    
+    # Check against dangerous patterns
+    if [[ -n "$check_value" ]]; then
+        while IFS= read -r pattern; do
+            [[ -z "$pattern" || "$pattern" =~ ^# ]] && continue
+            if [[ "$check_value" =~ $pattern ]]; then
+                log_buffer "⚠️ DANGEROUS PATTERN DETECTED: $check_value (matched: $pattern)"
+                return 0
+            fi
+        done < "$DANGEROUS_LIST_FILE"
+    fi
+    
+    return 1
 }
 
 # Function to check if task should be auto-approved
@@ -215,6 +262,46 @@ should_auto_approve() {
     
     return 1
 }
+
+# First check if this is a dangerous command
+if is_dangerous_command "$TOOL_NAME" "$TOOL_INPUT"; then
+    # Dangerous command detected - bypass auto-approval and notify
+    MESSAGE="🚨 *DANGEROUS COMMAND DETECTED*
+
+*Tool:* \`$TOOL_NAME\`"
+    
+    case "$TOOL_NAME" in
+        "Bash")
+            COMMAND=$(echo "$TOOL_INPUT" | jq -r '.command // "Unknown"' | head -c 200)
+            MESSAGE="$MESSAGE
+*Command:* \`$COMMAND\`"
+            ;;
+        "Write"|"Edit"|"MultiEdit")
+            FILE_PATH=$(echo "$TOOL_INPUT" | jq -r '.path // .file_path // "Unknown"')
+            MESSAGE="$MESSAGE
+*File:* \`$FILE_PATH\`"
+            ;;
+    esac
+    
+    MESSAGE="$MESSAGE
+
+⚠️ *Status:* This command matches a dangerous pattern and requires manual approval."
+    
+    send_telegram "$MESSAGE"
+    
+    # Log the dangerous command
+    log_buffer "🚨 DANGEROUS COMMAND DETECTED: $TOOL_NAME"
+    
+    # Return undefined decision - let Claude Code's existing permission flow handle it
+    RESPONSE="{\"info\": \"Dangerous command pattern detected\"}"
+    echo "$RESPONSE"
+    log_buffer "Response to Claude: $RESPONSE"
+    log_buffer "===== END REQUEST ====="
+    
+    # Write to dangerous commands log
+    echo -e "$LOG_BUFFER" >> "$DANGEROUS_LOG_FILE"
+    exit 0
+fi
 
 # Check if the request should be auto-approved
 if should_auto_approve "$TOOL_NAME" "$TOOL_INPUT"; then

@@ -13,9 +13,10 @@ Community hooks and tools to make Claude Code safer, smarter, and more notifiabl
 This repository contains a collection of hooks and tools that enhance your Claude Code experience by:
 
 - **🛡️ Auto-approving safe operations** - No more interruptions for routine commands
+- **🚨 Dangerous command detection** - Automatically blocks potentially harmful operations
 - **📱 Telegram notifications** - Get real-time updates when Claude needs you or completes tasks
 - **📊 Separated logging** - Track approved vs blocked operations easily
-- **🔒 Security-first approach** - Whitelist-based approval system
+- **🔒 Security-first approach** - Whitelist-based approval system with dangerous command blocking
 - **⚡ Zero-config for common tools** - Pre-configured patterns for npm, dotnet, git, and more
 
 ## 🎯 Why use these hooks?
@@ -62,6 +63,7 @@ Claude Code is powerful, but constantly approving routine operations interrupts 
    ```bash
    cp hooks/*.sh ~/.claude/hooks/
    cp hooks/allowed-tasks.txt ~/.claude/hooks/
+   cp hooks/dangerous-tasks.txt ~/.claude/hooks/
    chmod +x ~/.claude/hooks/*.sh
    ```
 
@@ -164,9 +166,13 @@ tail -f ~/.claude/logs/auto-approve.log
 # See blocked operations
 tail -f ~/.claude/logs/auto-blocked.log
 
+# See dangerous commands
+tail -f ~/.claude/logs/dangerous-commands.log
+
 # Count today's operations
 echo "Approved: $(grep -c "AUTO-APPROVED" ~/.claude/logs/auto-approve.log)"
 echo "Blocked: $(grep -c "BLOCKED" ~/.claude/logs/auto-blocked.log)"
+echo "Dangerous: $(grep -c "DANGEROUS" ~/.claude/logs/dangerous-commands.log)"
 ```
 
 ## 🛠️ Customization
@@ -202,7 +208,8 @@ claude-code/
 │   ├── auto-approve.sh      # Main auto-approval hook
 │   ├── telegram-completion.sh # Session completion notifications
 │   ├── notification.sh      # Notification when Claude needs input
-│   └── allowed-tasks.txt    # Patterns for auto-approval
+│   ├── allowed-tasks.txt    # Patterns for auto-approval
+│   └── dangerous-tasks.txt  # Patterns for dangerous commands
 └── settings/
     └── settings.json        # Claude Code hooks configuration
 ```

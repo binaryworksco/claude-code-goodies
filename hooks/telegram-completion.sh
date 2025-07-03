@@ -63,7 +63,7 @@ PROJECT_DIR=$(pwd)
 PROJECT_NAME=$(basename "$PROJECT_DIR")
 
 # Build notification message with the command
-MESSAGE="🚀 *Claude Code Session Complete* for project: \`$PROJECT_NAME\`"
+MESSAGE="🚀 *Claude Code session complete* for project: \`$PROJECT_NAME\`"
 
 # Add ellipsis if command was truncated
 if [[ ${#USER_COMMAND} -eq 150 ]]; then

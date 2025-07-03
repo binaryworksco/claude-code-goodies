@@ -1,0 +1,140 @@
+# Claude Code Dangerous Command Patterns
+# These patterns will ALWAYS bypass auto-approval and require manual confirmation
+# Each line is a regex pattern that will be matched against tool inputs
+# Lines starting with # are comments
+
+# ============ DESTRUCTIVE FILE OPERATIONS ============
+# rm with force/recursive flags
+^rm\s+-[rfRF]
+^rm\s+.*\s+-[rfRF]
+^sudo\s+rm
+^find\s+.*\s+-delete
+^find\s+.*\s+-exec\s+rm
+
+# Format/partition commands
+^mkfs
+^fdisk
+^parted
+^dd\s+
+^shred\s+
+^wipe\s+
+
+# ============ SYSTEM MODIFICATION ============
+# Package managers with remove/purge
+^apt(-get)?\s+(remove|purge|autoremove)
+^yum\s+(remove|erase)
+^dnf\s+(remove|erase)
+^brew\s+(uninstall|remove)
+^npm\s+uninstall\s+-g
+^pip\s+uninstall
+
+# System configuration
+^sudo\s+
+^su\s+
+^chown\s+
+^chmod\s+[0-7]*[0-7]0[0-7]
+^usermod
+^groupmod
+^passwd
+^systemctl\s+(stop|disable|mask)
+^service\s+.*\s+stop
+
+# ============ NETWORK OPERATIONS ============
+# Firewall modifications
+^iptables
+^ufw\s+(delete|deny|reject)
+^firewall-cmd
+
+# Network configuration
+^ifconfig\s+.*\s+down
+^ip\s+link\s+.*\s+down
+^nmcli\s+.*\s+(delete|down)
+
+# ============ DANGEROUS REDIRECTS ============
+# Overwriting important files
+>\s*/etc/
+>\s*/usr/
+>\s*/bin/
+>\s*/sbin/
+>\s*/boot/
+>\s*~/\.ssh/
+>\s*~/\.bashrc
+>\s*~/\.zshrc
+>\s*~/\.profile
+
+# ============ DATABASE OPERATIONS ============
+# Destructive database commands
+^mysql.*DROP\s+(DATABASE|TABLE)
+^psql.*DROP\s+(DATABASE|TABLE)
+^mongo.*drop\(\)
+^redis-cli.*FLUSHALL
+^redis-cli.*FLUSHDB
+
+# ============ GIT OPERATIONS ============
+# Dangerous git operations
+^git\s+push\s+.*--force
+^git\s+push\s+.*-f\s+
+^git\s+reset\s+--hard\s+HEAD
+^git\s+clean\s+-[fd]
+^git\s+filter-branch
+
+# ============ PROCESS MANAGEMENT ============
+# Killing processes
+^kill\s+-9
+^killall
+^pkill
+^xkill
+
+# ============ ARCHIVE BOMBS ============
+# Potentially dangerous extraction
+^tar.*--absolute-names
+^unzip.*-j\s+.*\s+/
+^gunzip\s+-c.*>\s*/
+
+# ============ CURL/WGET PIPING TO SHELL ============
+# Remote code execution patterns
+\|\s*sh
+\|\s*bash
+\|\s*zsh
+\|\s*python
+\|\s*perl
+\|\s*ruby
+curl.*\|\s*sudo
+
+# ============ ENVIRONMENT MODIFICATION ============
+# Modifying critical environment variables
+^export\s+PATH=
+^export\s+LD_LIBRARY_PATH=
+^unset\s+PATH
+
+# ============ FILE PERMISSION CHANGES ============
+# Making files world-writable
+^chmod\s+.*777
+^chmod\s+.*[0-7]7[0-7]
+^chmod\s+a\+w
+
+# ============ LOOP DEVICES AND MOUNTS ============
+^mount\s+
+^umount\s+
+^losetup
+
+# ============ CRON MODIFICATIONS ============
+^crontab\s+-r
+>\s*/etc/cron
+>\s*/var/spool/cron
+
+# ============ DOCKER OPERATIONS ============
+^docker\s+system\s+prune
+^docker\s+rm\s+
+^docker\s+rmi\s+
+^docker-compose\s+down.*--volumes
+
+# ============ INFINITE LOOPS/FORKBOMBS ============
+:\(\)\s*{\s*:\|:&\s*}
+while\s+true.*do.*done
+for\s*\(\s*;\s*;\s*\)
+
+# ============ HISTORY CLEARING ============
+^history\s+-c
+^>\s*~/\.bash_history
+^>\s*~/\.zsh_history
