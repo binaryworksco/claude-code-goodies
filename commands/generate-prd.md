@@ -80,6 +80,11 @@ Once the user has reviewed and approved the PRD, proceed with task generation:
    - Edit the PRD issue to include the complete task checklist
    - Tasks will be tracked as checkboxes within the PRD
    - Claude will update these checkboxes as tasks are completed during implementation
+   - The first task should always be to create a new branch for this feature
+
+5. **Commit PRD**
+   - Ask the user to review the PRD and ask them if they are okay to commit this PRD
+   - Always perform the commit on the new branch that is defined in the PRD
 
 Do not include things like man-day estimates or project planning guides (example: Week 1, Week 2 etc...)
 </process>
@@ -135,7 +140,7 @@ Assume the primary reader of the PRD is a **junior developer**. Therefore:
 7. If user confirms, follow the two-phase task generation process:
    - Phase 1: Generate and show parent tasks, wait for "Go"
    - Phase 2: Generate sub-tasks and update the PRD issue with the complete task checklist
-8. During implementation, update task checkboxes as work progresses in the markdown
+8. During implementation, always update task checkboxes as work progresses in the markdown
 
 </implementation_notes>
 
@@ -146,21 +151,20 @@ Assume the primary reader of the PRD is a **junior developer**. Therefore:
 User: `/prd Add customer email notification preferences`
 
 Claude:
-1. Acknowledges the feature request
-2. Asks clarifying questions about notification types, delivery methods, user control, etc.
-3. Waits for user responses
-4. Generates comprehensive PRD based on responses
-5. Creates GitHub issue with PRD content
-6. Adds issue to project board
-7. Provides link to created issue
-8. Asks: "Would you like me to generate the implementation tasks for this PRD?"
+01. Acknowledges the feature request
+02. Asks clarifying questions about notification types, delivery methods, user control, etc.
+03. Waits for user responses
+04. Generates comprehensive PRD based on responses
+05. Creates markdown file with PRD content
+06. Asks: "Would you like me to generate the implementation tasks for this PRD?"
 
 If user says yes:
-9. Generate parent tasks and presents them
-10. Waits for user to say "Go"
-11. Generates detailed sub-tasks
-12. Updates the PRD issue to include the complete task checklist
-13. During implementation, Claude updates checkboxes as tasks are completed
+07. Generate parent tasks and presents them
+08. Waits for user to say "Go"
+09. Generates detailed sub-tasks
+10. Updates the PRD issue to include the complete task checklist
+11. Asks the user if they are happy with this PRD and want to commit it for safe keeping
+12. During implementation, Claude updates checkboxes as tasks are completed
 
 </example_workflow>
 

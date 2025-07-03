@@ -1,4 +1,4 @@
-# /implement-prd Command - Implement Product Requirements Document
+# /implement-prd <PRD No.> - Implement Product Requirements Document
 
 <command_overview>
 Implements a Product Requirements Document (PRD) from the ./docs/prd directory following enterprise development practices. The command takes a PRD number, confirms the correct PRD with the user, then guides development through the task checklist while maintaining review checkpoints and updating progress.
