@@ -71,9 +71,17 @@ nano ~/.claude/.env
 # Add your credentials:
 TELEGRAM_BOT_TOKEN="your-bot-token-here"
 TELEGRAM_CHAT_ID="your-chat-id-here"
+
+# Optional: Disable notifications
+TELEGRAM_NOTIFICATIONS_ENABLED="false"  # Set to "false" to disable all Telegram notifications
 ```
 
-The hooks automatically source this file, and will log a message if credentials are missing.
+The hooks automatically source this file. You can disable notifications entirely by setting `TELEGRAM_NOTIFICATIONS_ENABLED="false"`, which is useful for:
+- Working in quiet mode
+- Debugging issues
+- Temporary focus sessions
+
+When notifications are disabled, the hooks will still log their actions but won't send Telegram messages.
 
 ## Working with Allowed Patterns
 

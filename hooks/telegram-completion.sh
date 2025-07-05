@@ -30,6 +30,12 @@ fi
 send_telegram() {
     local message="$1"
     
+    # Check if notifications are disabled
+    if [[ "${TELEGRAM_NOTIFICATIONS_ENABLED:-true}" == "false" ]]; then
+        echo "[$(date)] Telegram notifications disabled by configuration" >> "$LOG_FILE"
+        return 1
+    fi
+    
     # Check if Telegram is configured
     if [[ -z "$TELEGRAM_BOT_TOKEN" ]] || [[ -z "$TELEGRAM_CHAT_ID" ]]; then
         echo "[$(date)] Telegram not configured (missing bot token or chat ID)" >> "$LOG_FILE"

@@ -136,6 +136,30 @@
 ^gh release list
 ^gh release view
 
+# curl commands (safe operations)
+^curl -X GET
+^curl -X HEAD
+^curl -G
+^curl --get
+^curl -I
+^curl --head
+^curl -L
+^curl --location
+^curl -o
+^curl --output
+^curl -s
+^curl --silent
+^curl -v
+^curl --verbose
+^curl -H
+^curl --header
+^curl https://
+^curl http://localhost
+^curl http://127\.0\.0\.1
+^curl http://0\.0\.0\.0
+# Basic curl without pipes (to prevent curl | sh attacks)
+^curl [^|]*$
+
 # Formatters and linters
 ^prettier --write
 ^prettier --check
@@ -158,6 +182,10 @@
 ^grep 
 ^grep -r
 ^find .* -name
+^find .* -type
+^find .* -path
+^find .* -not
+^find \. 
 ^tree
 ^which
 ^Glob$
@@ -180,6 +208,11 @@
 
 # Make commands
 ^make (test|build|clean|install)
+
+# Tailwind CSS commands
+^tailwindcss 
+^\./tailwindcss 
+^npx tailwindcss
 
 # ============ FILE PATH PATTERNS ============
 # For Write/Edit/MultiEdit operations

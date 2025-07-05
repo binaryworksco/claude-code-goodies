@@ -115,6 +115,9 @@ Claude Code is powerful, but constantly approving routine operations interrupts 
    # Add your credentials:
    TELEGRAM_BOT_TOKEN="your-bot-token-here"
    TELEGRAM_CHAT_ID="your-chat-id-here"
+   
+   # Optional: Disable notifications entirely
+   # TELEGRAM_NOTIFICATIONS_ENABLED="false"
    ```
 
 5. **Configure Claude Code settings**
