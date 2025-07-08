@@ -1,0 +1,181 @@
+{
+  "commands": [
+    {
+      "pattern": "^rm\\s+",
+      "action": "prompt",
+      "reason": "File deletion requires confirmation"
+    },
+    {
+      "pattern": "^rm$",
+      "action": "prompt",
+      "reason": "rm command requires confirmation"
+    },
+    {
+      "pattern": "^sudo\\s+rm",
+      "action": "prompt",
+      "reason": "Sudo file deletion requires confirmation"
+    },
+    {
+      "pattern": "^rmdir",
+      "action": "prompt",
+      "reason": "Directory removal requires confirmation"
+    },
+    {
+      "pattern": "^reboot$",
+      "action": "deny",
+      "reason": "System reboot is not allowed"
+    },
+    {
+      "pattern": "^shutdown",
+      "action": "deny",
+      "reason": "System shutdown is not allowed"
+    },
+    {
+      "pattern": "^poweroff",
+      "action": "deny",
+      "reason": "System poweroff is not allowed"
+    },
+    {
+      "pattern": "^dd\\s+",
+      "action": "deny",
+      "reason": "dd command is too dangerous and can destroy disks"
+    },
+    {
+      "pattern": "^mkfs",
+      "action": "deny",
+      "reason": "Filesystem formatting is not allowed"
+    },
+    {
+      "pattern": "^fdisk",
+      "action": "deny",
+      "reason": "Disk partitioning is not allowed"
+    },
+    {
+      "pattern": "^parted",
+      "action": "deny",
+      "reason": "Disk partitioning is not allowed"
+    },
+    {
+      "pattern": "curl.*\\|\\s*sh",
+      "action": "deny",
+      "reason": "Piping curl to shell is a security risk"
+    },
+    {
+      "pattern": "wget.*\\|\\s*bash",
+      "action": "deny",
+      "reason": "Piping wget to shell is a security risk"
+    },
+    {
+      "pattern": "^kill\\s+-9",
+      "action": "prompt",
+      "reason": "Force killing processes requires confirmation"
+    },
+    {
+      "pattern": "^killall",
+      "action": "prompt",
+      "reason": "Killing all processes requires confirmation"
+    },
+    {
+      "pattern": "^chmod\\s+777",
+      "action": "prompt",
+      "reason": "Making files world-writable requires confirmation"
+    },
+    {
+      "pattern": ">\\s*/dev/sda",
+      "action": "deny",
+      "reason": "Writing directly to disk devices is dangerous"
+    },
+    {
+      "pattern": ":(){ :|:& };:",
+      "action": "deny",
+      "reason": "Fork bomb detected"
+    }
+  ],
+  "files": {
+    "read": [
+      {
+        "pattern": ".env",
+        "action": "prompt",
+        "reason": "Environment file may contain secrets"
+      },
+      {
+        "pattern": ".env.*",
+        "action": "prompt",
+        "reason": "Environment file may contain secrets"
+      },
+      {
+        "pattern": "**/.ssh/**",
+        "action": "deny",
+        "reason": "SSH files contain private keys"
+      },
+      {
+        "pattern": "**/secrets/**",
+        "action": "deny",
+        "reason": "Secrets directory is restricted"
+      },
+      {
+        "pattern": "**/credentials/**",
+        "action": "deny",
+        "reason": "Credentials directory is restricted"
+      },
+      {
+        "pattern": "appsettings.json",
+        "action": "prompt",
+        "reason": "Configuration file may contain sensitive data"
+      },
+      {
+        "pattern": "appsettings.*.json",
+        "action": "prompt",
+        "reason": "Configuration file may contain sensitive data"
+      },
+      {
+        "pattern": "**/config/production.*",
+        "action": "prompt",
+        "reason": "Production config may contain sensitive data"
+      }
+    ],
+    "write": [
+      {
+        "pattern": ".env",
+        "action": "deny",
+        "reason": "Cannot modify environment files directly"
+      },
+      {
+        "pattern": ".env.*",
+        "action": "deny",
+        "reason": "Cannot modify environment files directly"
+      },
+      {
+        "pattern": ".ssh/authorized_keys",
+        "action": "deny",
+        "reason": "SSH authorized keys file is protected"
+      },
+      {
+        "pattern": ".ssh/config",
+        "action": "prompt",
+        "reason": "SSH config modification requires confirmation"
+      },
+      {
+        "pattern": "/etc/**",
+        "action": "deny",
+        "reason": "System configuration files are protected"
+      },
+      {
+        "pattern": "**/.git/config",
+        "action": "prompt",
+        "reason": "Git configuration modification requires confirmation"
+      },
+      {
+        "pattern": "**/*.log",
+        "action": "prompt",
+        "reason": "Log file modification requires confirmation"
+      }
+    ]
+  },
+  "_comment": "This file configures dangerous command detection for Claude Code",
+  "_instructions": "This file should be located at ~/.claude/hooks/ts/config/dangerous-commands.json",
+  "_actions": {
+    "deny": "Blocks the operation immediately with the given reason",
+    "prompt": "Falls back to Claude Code's standard permission prompt"
+  }
+}
