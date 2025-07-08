@@ -1,0 +1,336 @@
+#!/usr/bin/env npx tsx
+// Command filter: blocks dangerous commands, approves safe ones, falls back to Claude for others
+
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
+import { PreToolUseInput, PreToolUseDecision } from './loggers/lib/types';
+
+// Types for our configuration
+interface Rule {
+  pattern: string;
+  reason: string;
+}
+
+interface CommandsConfig {
+  commands: Rule[];
+  files: {
+    read: Rule[];
+    write: Rule[];
+  };
+}
+
+// Helper to read JSON from stdin
+async function readStdin(): Promise<any> {
+  return new Promise((resolve, reject) => {
+    let data = '';
+    
+    process.stdin.setEncoding('utf8');
+    
+    process.stdin.on('data', (chunk) => {
+      data += chunk;
+    });
+    
+    process.stdin.on('end', () => {
+      try {
+        const parsed = JSON.parse(data);
+        resolve(parsed);
+      } catch (error) {
+        reject(new Error(`Failed to parse JSON input: ${error}`));
+      }
+    });
+    
+    process.stdin.on('error', reject);
+  });
+}
+
+// Helper to load blocked commands configuration
+function loadBlockedCommands(): CommandsConfig | null {
+  const configPath = path.join(os.homedir(), '.claude', 'hooks', 'ts', 'config', 'blocked-commands.json');
+  
+  try {
+    if (fs.existsSync(configPath)) {
+      const content = fs.readFileSync(configPath, 'utf-8');
+      return JSON.parse(content);
+    }
+  } catch (error) {
+    console.error(`[CommandFilter] Error loading blocked commands: ${error}`);
+  }
+  
+  return null;
+}
+
+// Helper to load allowed commands configuration
+function loadAllowedCommands(): CommandsConfig | null {
+  const configPath = path.join(os.homedir(), '.claude', 'hooks', 'ts', 'config', 'allowed-commands.json');
+  
+  try {
+    if (fs.existsSync(configPath)) {
+      const content = fs.readFileSync(configPath, 'utf-8');
+      return JSON.parse(content);
+    }
+  } catch (error) {
+    console.error(`[CommandFilter] Error loading allowed commands: ${error}`);
+  }
+  
+  return null;
+}
+
+// Helper to check if a string matches a glob pattern
+function matchesGlob(str: string, pattern: string): boolean {
+  // Convert glob to regex
+  let regex = pattern
+    .replace(/\./g, '\\.')
+    .replace(/\*\*/g, '___DOUBLE_STAR___')
+    .replace(/\*/g, '[^/]*')
+    .replace(/___DOUBLE_STAR___/g, '.*')
+    .replace(/\?/g, '.');
+  
+  // Add anchors if not present
+  if (!regex.startsWith('^')) regex = '^' + regex;
+  if (!regex.endsWith('$')) regex = regex + '$';
+  
+  try {
+    return new RegExp(regex).test(str);
+  } catch {
+    return false;
+  }
+}
+
+// Enhanced logging system
+interface LogEntry {
+  timestamp: string;
+  event: string;
+  tool?: string;
+  input?: any;
+  configLoaded?: boolean;
+  checks?: Array<{
+    pattern: string;
+    matched: boolean;
+    action?: string;
+    reason?: string;
+  }>;
+  decision?: string;
+  response?: string;
+  error?: string;
+}
+
+class Logger {
+  private logDir: string;
+  private logFile: string;
+  private checks: LogEntry['checks'] = [];
+  
+  constructor() {
+    // Use project-local directory
+    this.logDir = path.join(process.cwd(), '.claude', 'logs', 'hooks');
+    this.logFile = path.join(this.logDir, 'command-filter.log');
+    this.ensureLogDirectory();
+  }
+  
+  private ensureLogDirectory(): void {
+    try {
+      fs.mkdirSync(this.logDir, { recursive: true });
+    } catch (error) {
+      console.error(`[DangerousCommands] Failed to create log directory: ${error}`);
+    }
+  }
+  
+  private writeLog(entry: LogEntry): void {
+    try {
+      fs.appendFileSync(this.logFile, JSON.stringify(entry) + '\n', 'utf-8');
+    } catch (error) {
+      console.error(`[DangerousCommands] Failed to write log: ${error}`);
+    }
+  }
+  
+  logRequest(tool: string, input: any): void {
+    this.writeLog({
+      timestamp: new Date().toISOString(),
+      event: 'request_received',
+      tool,
+      input
+    });
+  }
+  
+  logConfigStatus(loaded: boolean, error?: string): void {
+    this.writeLog({
+      timestamp: new Date().toISOString(),
+      event: 'config_load',
+      configLoaded: loaded,
+      error
+    });
+  }
+  
+  addCheck(pattern: string, matched: boolean, action?: string, reason?: string): void {
+    this.checks.push({ pattern, matched, action, reason });
+  }
+  
+  logDecision(tool: string, input: any, decision: string, response: string): void {
+    this.writeLog({
+      timestamp: new Date().toISOString(),
+      event: 'decision_made',
+      tool,
+      input,
+      checks: this.checks,
+      decision,
+      response
+    });
+  }
+  
+  logError(error: string): void {
+    this.writeLog({
+      timestamp: new Date().toISOString(),
+      event: 'error',
+      error
+    });
+  }
+}
+
+async function main() {
+  const logger = new Logger();
+  
+  try {
+    // Read input from stdin
+    const input = await readStdin() as PreToolUseInput;
+    
+    const toolName = input.tool_name;
+    const toolInput = input.tool_input;
+    
+    // Log incoming request
+    logger.logRequest(toolName, toolInput);
+    
+    // Load configurations
+    const blockedConfig = loadBlockedCommands();
+    const allowedConfig = loadAllowedCommands();
+    
+    logger.logConfigStatus(!!blockedConfig, blockedConfig ? undefined : 'Blocked commands config not found');
+    logger.logConfigStatus(!!allowedConfig, allowedConfig ? undefined : 'Allowed commands config not found');
+    
+    // Helper function to check command patterns
+    function checkCommandPatterns(command: string, rules: Rule[], phase: string): Rule | null {
+      for (const rule of rules) {
+        try {
+          const regex = new RegExp(rule.pattern);
+          const matched = regex.test(command);
+          
+          logger.addCheck(rule.pattern, matched, matched ? phase : undefined, matched ? rule.reason : undefined);
+          
+          if (matched) {
+            return rule;
+          }
+        } catch (error) {
+          console.error(`[CommandFilter] Invalid regex pattern: ${rule.pattern}`);
+          logger.addCheck(rule.pattern, false, undefined, `Invalid regex: ${error}`);
+        }
+      }
+      return null;
+    }
+    
+    // Helper function to check file patterns
+    function checkFilePatterns(filePath: string, rules: Rule[], phase: string): Rule | null {
+      for (const rule of rules) {
+        const matched = matchesGlob(filePath, rule.pattern);
+        
+        logger.addCheck(rule.pattern, matched, matched ? phase : undefined, matched ? rule.reason : undefined);
+        
+        if (matched) {
+          return rule;
+        }
+      }
+      return null;
+    }
+    
+    // Check Bash commands
+    if (toolName === 'Bash' && toolInput.command) {
+      const command = toolInput.command.trim();
+      
+      // Phase 1: Check blocked commands
+      if (blockedConfig) {
+        const blockedRule = checkCommandPatterns(command, blockedConfig.commands, 'blocked');
+        if (blockedRule) {
+          const response: PreToolUseDecision = {
+            decision: 'block',
+            reason: blockedRule.reason
+          };
+          const responseStr = JSON.stringify(response);
+          logger.logDecision(toolName, toolInput, 'block', responseStr);
+          process.stdout.write(responseStr);
+          return;
+        }
+      }
+      
+      // Phase 2: Check allowed commands
+      if (allowedConfig) {
+        const allowedRule = checkCommandPatterns(command, allowedConfig.commands, 'allowed');
+        if (allowedRule) {
+          const response: PreToolUseDecision = {
+            decision: 'approve',
+            reason: allowedRule.reason
+          };
+          const responseStr = JSON.stringify(response);
+          logger.logDecision(toolName, toolInput, 'approve', responseStr);
+          process.stdout.write(responseStr);
+          return;
+        }
+      }
+    }
+    
+    // Check file operations
+    if ((toolName === 'Read' || toolName === 'Write' || toolName === 'Edit' || toolName === 'MultiEdit') && 
+        (toolInput.file_path || toolInput.path)) {
+      const filePath = toolInput.file_path || toolInput.path;
+      const isReadOperation = toolName === 'Read';
+      
+      // Only check blocked files - if not blocked, it's allowed by default
+      if (blockedConfig) {
+        const blockedRules = isReadOperation ? blockedConfig.files.read : blockedConfig.files.write;
+        const blockedRule = checkFilePatterns(filePath, blockedRules, 'blocked');
+        if (blockedRule) {
+          const response: PreToolUseDecision = {
+            decision: 'block',
+            reason: blockedRule.reason
+          };
+          const responseStr = JSON.stringify(response);
+          logger.logDecision(toolName, toolInput, 'block', responseStr);
+          process.stdout.write(responseStr);
+          return;
+        }
+      }
+      
+      // File operations not in blocked list are automatically approved
+      const response: PreToolUseDecision = {
+        decision: 'approve',
+        reason: 'File operation is not blocked'
+      };
+      const responseStr = JSON.stringify(response);
+      logger.logDecision(toolName, toolInput, 'approve', responseStr);
+      process.stdout.write(responseStr);
+      return;
+    }
+    
+    // Phase 3: Default - fall back to Claude's standard process
+    logger.logDecision(toolName, toolInput, 'default', '{}');
+    process.stdout.write('{}');
+    
+  } catch (error) {
+    // On error, fall back to default to not break Claude Code
+    const errorMsg = `Hook error: ${error}`;
+    console.error(`[CommandFilter] ${errorMsg}`);
+    logger.logError(errorMsg);
+    process.stdout.write('{}');
+  }
+}
+
+// Run the hook
+main().catch((error) => {
+  console.error('[CommandFilter] Unexpected error:', error);
+  // Try to log the error if possible
+  try {
+    const logger = new Logger();
+    logger.logError(`Unexpected error: ${error}`);
+  } catch {
+    // Ignore logging errors
+  }
+  process.stdout.write('{}');
+  process.exit(0);
+});

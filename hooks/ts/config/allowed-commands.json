@@ -1,0 +1,151 @@
+{
+  "commands": [
+    {
+      "pattern": "^echo\\s+",
+      "reason": "Echo commands are safe"
+    },
+    {
+      "pattern": "^echo$",
+      "reason": "Echo without arguments is safe"
+    },
+    {
+      "pattern": "^ls",
+      "reason": "All ls commands are safe"
+    },
+    {
+      "pattern": "^pwd$",
+      "reason": "Showing current directory is safe"
+    },
+    {
+      "pattern": "^cd\\s+",
+      "reason": "Changing directories is safe"
+    },
+    {
+      "pattern": "^cat\\s+",
+      "reason": "Reading files with cat is safe"
+    },
+    {
+      "pattern": "^git\\s+",
+      "reason": "All git commands are safe"
+    },
+    {
+      "pattern": "^git$",
+      "reason": "Git without arguments is safe"
+    },
+    {
+      "pattern": "^npm list",
+      "reason": "Listing npm packages is safe"
+    },
+    {
+      "pattern": "^npm install$",
+      "reason": "Installing all dependencies is safe"
+    },
+    {
+      "pattern": "^npm ci$",
+      "reason": "Clean install of dependencies is safe"
+    },
+    {
+      "pattern": "^npm test$",
+      "reason": "Running tests is safe"
+    },
+    {
+      "pattern": "^npm run build$",
+      "reason": "Building the project is safe"
+    },
+    {
+      "pattern": "^npx\\s+",
+      "reason": "Running npx commands is generally safe"
+    },
+    {
+      "pattern": "^node --version$",
+      "reason": "Checking node version is safe"
+    },
+    {
+      "pattern": "^npm --version$",
+      "reason": "Checking npm version is safe"
+    },
+    {
+      "pattern": "^which\\s+",
+      "reason": "Finding command locations is safe"
+    },
+    {
+      "pattern": "^type\\s+",
+      "reason": "Checking command types is safe"
+    },
+    {
+      "pattern": "^date$",
+      "reason": "Showing date is safe"
+    },
+    {
+      "pattern": "^whoami$",
+      "reason": "Showing current user is safe"
+    },
+    {
+      "pattern": "^hostname$",
+      "reason": "Showing hostname is safe"
+    },
+    {
+      "pattern": "^env$",
+      "reason": "Listing environment variables is safe"
+    },
+    {
+      "pattern": "^printenv\\s+",
+      "reason": "Printing specific env vars is safe"
+    },
+    {
+      "pattern": "^find\\s+.*\\s+-name\\s+",
+      "reason": "Finding files by name is safe"
+    },
+    {
+      "pattern": "^grep\\s+",
+      "reason": "Searching file contents is safe"
+    },
+    {
+      "pattern": "^rg\\s+",
+      "reason": "Ripgrep searches are safe"
+    },
+    {
+      "pattern": "^head\\s+",
+      "reason": "Reading file beginnings is safe"
+    },
+    {
+      "pattern": "^tail\\s+",
+      "reason": "Reading file endings is safe"
+    },
+    {
+      "pattern": "^wc\\s+",
+      "reason": "Counting lines/words is safe"
+    },
+    {
+      "pattern": "^du\\s+-h",
+      "reason": "Checking disk usage is safe"
+    },
+    {
+      "pattern": "^df\\s+-h",
+      "reason": "Checking disk space is safe"
+    },
+    {
+      "pattern": "^dotnet\\s+",
+      "reason": "All dotnet commands are safe"
+    },
+    {
+      "pattern": "^dotnet$",
+      "reason": "Dotnet without arguments is safe"
+    },
+    {
+      "pattern": "^dotnet-ef\\s+",
+      "reason": "All Entity Framework commands are safe"
+    },
+    {
+      "pattern": "^dotnet-ef$",
+      "reason": "Entity Framework CLI without arguments is safe"
+    },
+    {
+      "pattern": "^ef\\s+",
+      "reason": "Entity Framework commands are safe"
+    }
+  ],
+  "_comment": "This file lists commands that should be auto-approved",
+  "_instructions": "This file should be located at ~/.claude/hooks/ts/config/allowed-commands.json",
+  "_note": "All patterns in this file will approve the operation with the given reason. File operations are auto-approved unless explicitly blocked."
+}

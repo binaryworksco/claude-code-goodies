@@ -1,0 +1,32 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx tsx ~/.claude/hooks/ts/command-filter.ts"
+          }
+        ]
+      }
+    ]
+  },
+  "_comment": "This configuration adds command filtering to Claude Code",
+  "_description": "The command filter provides a three-phase check: block dangerous → approve safe → default to Claude",
+  "_installation": [
+    "1. Copy the entire hooks/ts directory to ~/.claude/hooks/ts/",
+    "2. This includes both config files: blocked-commands.json and allowed-commands.json",
+    "3. Copy this file to ~/.claude/settings.json",
+    "4. Customize the config files in ~/.claude/hooks/ts/config/ as needed"
+  ],
+  "_flow": {
+    "phase1": "Check blocked-commands.json - if matched, block the operation",
+    "phase2": "Check allowed-commands.json - if matched, auto-approve the operation",
+    "phase3": "If not in either list, fall back to Claude's standard approval process"
+  },
+  "_customization": {
+    "blocked": "Add patterns to blocked-commands.json for operations that should always be blocked",
+    "allowed": "Add patterns to allowed-commands.json for operations that are safe to auto-approve"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "commands": [
+    {
+      "pattern": "^reboot$",
+      "reason": "System reboot is not allowed"
+    },
+    {
+      "pattern": "^shutdown",
+      "reason": "System shutdown is not allowed"
+    },
+    {
+      "pattern": "^poweroff",
+      "reason": "System poweroff is not allowed"
+    },
+    {
+      "pattern": "^dd\\s+",
+      "reason": "dd command is too dangerous and can destroy disks"
+    },
+    {
+      "pattern": "^mkfs",
+      "reason": "Filesystem formatting is not allowed"
+    },
+    {
+      "pattern": "^fdisk",
+      "reason": "Disk partitioning is not allowed"
+    },
+    {
+      "pattern": "^parted",
+      "reason": "Disk partitioning is not allowed"
+    },
+    {
+      "pattern": "curl.*\\|\\s*sh",
+      "reason": "Piping curl to shell is a security risk"
+    },
+    {
+      "pattern": "wget.*\\|\\s*bash",
+      "reason": "Piping wget to shell is a security risk"
+    },
+    {
+      "pattern": "^kill\\s+-9",
+      "reason": "Force killing processes requires confirmation"
+    },
+    {
+      "pattern": "^killall",
+      "reason": "Killing all processes requires confirmation"
+    },
+    {
+      "pattern": "^chmod\\s+777",
+      "reason": "Making files world-writable requires confirmation"
+    },
+    {
+      "pattern": ">\\s*/dev/sda",
+      "reason": "Writing directly to disk devices is dangerous"
+    },
+    {
+      "pattern": ":(){ :|:& };:",
+      "reason": "Fork bomb detected"
+    }
+  ],
+  "files": {
+    "read": [
+      {
+        "pattern": ".env",
+          "reason": "Environment file may contain secrets"
+      },
+      {
+        "pattern": ".env.*",
+          "reason": "Environment file may contain secrets"
+      },
+      {
+        "pattern": "**/.ssh/**",
+          "reason": "SSH files contain private keys"
+      },
+      {
+        "pattern": "**/secrets/**",
+          "reason": "Secrets directory is restricted"
+      },
+      {
+        "pattern": "**/credentials/**",
+          "reason": "Credentials directory is restricted"
+      },
+      {
+        "pattern": "appsettings.json",
+          "reason": "Configuration file may contain sensitive data"
+      },
+      {
+        "pattern": "appsettings.*.json",
+          "reason": "Configuration file may contain sensitive data"
+      },
+      {
+        "pattern": "**/config/production.*",
+          "reason": "Production config may contain sensitive data"
+      }
+    ],
+    "write": [
+      {
+        "pattern": ".env",
+          "reason": "Cannot modify environment files directly"
+      },
+      {
+        "pattern": ".env.*",
+          "reason": "Cannot modify environment files directly"
+      },
+      {
+        "pattern": ".ssh/authorized_keys",
+          "reason": "SSH authorized keys file is protected"
+      },
+      {
+        "pattern": ".ssh/config",
+          "reason": "SSH config modification requires confirmation"
+      },
+      {
+        "pattern": "/etc/**",
+          "reason": "System configuration files are protected"
+      },
+      {
+        "pattern": "**/.git/config",
+          "reason": "Git configuration modification requires confirmation"
+      },
+      {
+        "pattern": "**/*.log",
+          "reason": "Log file modification requires confirmation"
+      }
+    ]
+  },
+  "_comment": "This file lists commands and file operations that should be blocked",
+  "_instructions": "This file should be located at ~/.claude/hooks/ts/config/blocked-commands.json",
+  "_note": "All patterns in this file will block the operation with the given reason"
+}
