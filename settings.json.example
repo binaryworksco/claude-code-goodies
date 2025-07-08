@@ -1,0 +1,40 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun ~/.claude/hooks/ts/command-filter.ts"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun ~/.claude/hooks/ts/sound-player.ts"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun ~/.claude/hooks/ts/sound-player.ts"
+          }
+        ]
+      }
+    ]
+  },
+  "_comment": "This configuration enables command filtering and sound notifications",
+  "_sounds": "Configure different sounds for each event type in ~/.claude/.env",
+  "_note": "The sound-player.ts hook detects the hook type and plays the appropriate sound"
+}

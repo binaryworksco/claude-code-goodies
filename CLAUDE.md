@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a shell script-based enhancement system for Claude Code that provides auto-approval of safe operations and Telegram notifications. The project consists of bash hooks that integrate with Claude Code's hooks system to improve workflow efficiency while maintaining security.
+This is a TypeScript-based enhancement system for Claude Code that provides auto-approval of safe operations and sound notifications. The project consists of TypeScript hooks that integrate with Claude Code's hooks system to improve workflow efficiency while maintaining security.
 
 ## Key Commands
 
@@ -17,16 +17,11 @@ mkdir -p ~/.claude/hooks ~/.claude/logs
 ./scripts/install-hooks.sh
 ./scripts/install-commands.sh
 
-# Or manually:
-cp hooks/*.sh ~/.claude/hooks/
-cp hooks/allowed-tasks.txt ~/.claude/hooks/
-chmod +x ~/.claude/hooks/*.sh
-mkdir -p ~/.claude/commands
-cp commands/*.md ~/.claude/commands/
-cp .env.example ~/.claude/.env
-
-# Configure Claude Code
+# Configure Claude Code settings
 cp settings.json.example ~/.claude/settings.json
+
+# Or use advanced settings with all hooks enabled
+cp settings-advanced.json.example ~/.claude/settings.json
 ```
 
 ### Testing Hooks
@@ -34,23 +29,30 @@ cp settings.json.example ~/.claude/settings.json
 # Test auto-approval (should auto-approve if pattern matches)
 echo "Hello, World!"
 
-# Test blocking (should notify and ask for permission)
+# Test blocking (should ask for permission)
 rm -rf /tmp/test
 
-# View logs
-tail -f ~/.claude/logs/auto-approve.log
-tail -f ~/.claude/logs/auto-blocked.log
+# View command filter logs
+tail -f ~/.claude/logs/hooks/command-filter.log
+
+# View hook activity logs (JSON format)
+jq '.' ./logs/hooks/pre-tool-use.json
+jq '.' ./logs/hooks/notification.json
 ```
 
 ## Architecture
 
 The system uses Claude Code's hook infrastructure to intercept tool operations:
 
-1. **PreToolUse Hook** (`auto-approve.sh`): Evaluates each tool operation against whitelist patterns in `allowed-tasks.txt`. Operations matching patterns are auto-approved; others prompt for user approval.
+1. **PreToolUse Hook** (`command-filter.ts`): Evaluates each tool operation against blocked and allowed patterns. Operations matching allowed patterns are auto-approved; blocked patterns require confirmation; others prompt for user approval.
 
-2. **Notification Hook** (`notification.sh`): Sends Telegram alerts when Claude Code needs user input for blocked operations.
+2. **Universal Sound Player** (`sound-player.ts`): Plays different system sounds based on the hook event type:
+   - Stop events: Plays completion sound when Claude finishes
+   - Notification events: Plays alert sound when Claude needs input
+   - PreToolUse blocked events: Plays warning sound when dangerous command is blocked
+   - Error events: Plays error sound when issues occur
 
-3. **Stop Hook** (`telegram-completion.sh`): Sends a completion notification when a Claude Code session ends.
+3. **Logging Hooks** (`loggers/*.ts`): Record all hook activities to JSON files for debugging and analysis.
 
 ## Custom Commands
 
@@ -60,83 +62,109 @@ The repository includes pre-built commands in the `commands/` directory that pro
 
 Commands are markdown files containing prompts that Claude Code executes. They're installed to `~/.claude/commands/` and can be invoked by typing `/<command_name>`.
 
-## Telegram Configuration
+## Configuration
 
-Telegram credentials are stored in `~/.claude/.env` to prevent accidental overwrites during updates:
+### Sound Notifications
+
+The universal sound player (`sound-player.ts`) can be configured to play different sounds for different events. Settings are stored in `~/.claude/.env`:
 
 ```bash
 # Edit the .env file
 nano ~/.claude/.env
 
-# Add your credentials:
-TELEGRAM_BOT_TOKEN="your-bot-token-here"
-TELEGRAM_CHAT_ID="your-chat-id-here"
+# Enable sound notifications:
+SOUND_NOTIFICATIONS_ENABLED="true"
 
-# Optional: Disable notifications
-TELEGRAM_NOTIFICATIONS_ENABLED="false"  # Set to "false" to disable all Telegram notifications
+# Configure sounds for different events:
+STOP_SOUND="Glass"                 # When Claude completes
+NOTIFICATION_SOUND="Ping"          # When Claude needs input
+PRETOOLUSE_BLOCK_SOUND="Basso"     # When command is blocked
+ERROR_SOUND="Sosumi"               # When error occurs
 ```
 
-The hooks automatically source this file. You can disable notifications entirely by setting `TELEGRAM_NOTIFICATIONS_ENABLED="false"`, which is useful for:
-- Working in quiet mode
-- Debugging issues
-- Temporary focus sessions
+Available sounds on macOS: Basso, Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi, Submarine, Tink
 
-When notifications are disabled, the hooks will still log their actions but won't send Telegram messages.
+To use the sound player, add it to any hook in your `settings.json`:
+```json
+{
+  "Stop": [{"hooks": [{"command": "bun ~/.claude/hooks/ts/sound-player.ts"}]}],
+  "Notification": [{"hooks": [{"command": "bun ~/.claude/hooks/ts/sound-player.ts"}]}]
+}
+```
 
-## Working with Allowed Patterns
+### Command Filtering
 
-The `allowed-tasks.txt` file uses regex patterns to control auto-approval:
+The TypeScript command filter uses two JSON configuration files located in `~/.claude/hooks/ts/config/`:
 
-- **Task patterns**: Match against task titles (e.g., `^Run tests.*`)
-- **Command patterns**: Match bash commands (e.g., `^npm install$`)
-- **File patterns**: Match file paths for read/write operations
-- **Exclusion patterns**: Start with `!` to never auto-approve (e.g., `!\.env`)
+1. **`allowed-commands.json`**: Patterns for commands that should be auto-approved
+2. **`blocked-commands.json`**: Patterns for dangerous commands that always require confirmation
 
-When modifying patterns:
-1. Test regex carefully - patterns are matched against the full input
-2. Use `^` and `$` anchors for exact matches
-3. Changes take effect immediately without restart
-4. Check logs to verify pattern matching behavior
+The filter checks patterns in this order:
+1. Check blocked patterns first (always block if matched)
+2. Check allowed patterns (auto-approve if matched)
+3. Default to manual approval for everything else
 
-## Dangerous Command Detection
+## Working with Patterns
 
-The system includes a safety feature that checks for dangerous commands before auto-approval. The `dangerous-tasks.txt` file contains patterns for potentially harmful operations that should always require manual approval.
+### Allowed Commands (`config/allowed-commands.json`)
 
-### How it works:
-1. **Priority checking**: Dangerous patterns are checked BEFORE allowed patterns
-2. **Immediate bypass**: If a command matches a dangerous pattern, it bypasses auto-approval entirely
-3. **Separate logging**: Dangerous commands are logged to `~/.claude/logs/dangerous-commands.log`
-4. **Telegram alerts**: Special notifications are sent for dangerous command detections
+The file contains regex patterns for safe operations:
+- **Package managers**: npm, yarn, pnpm, bun commands
+- **Build tools**: dotnet, make, msbuild
+- **Version control**: git, gh (GitHub CLI)
+- **Languages**: python, go, rust tools
+- **Claude Code tools**: Glob, Grep, Read, Write, etc.
 
-### Common dangerous patterns include:
-- Destructive file operations (`rm -rf`, `dd`, `mkfs`)
-- System modifications (`sudo`, package removals)
-- Git force operations (`git push --force`)
-- Database drops and truncations
-- Commands that pipe to shell (`curl ... | sh`)
+### Blocked Commands (`config/blocked-commands.json`)
 
-Even if a command matches an allowed pattern, it will be blocked if it also matches a dangerous pattern, providing an extra layer of safety.
+Contains patterns for dangerous operations:
+- **Destructive**: rm -rf, dd, mkfs
+- **System**: sudo, chmod 777, package removals
+- **Database**: DROP, TRUNCATE commands
+- **Git dangerous**: force push, git rm
+- **Security risks**: curl | sh patterns
 
-## Logging Configuration
+## TypeScript Hooks
 
-The auto-approve hook supports configurable verbosity levels:
+All hooks are written in TypeScript and run with `bun`:
 
-- **Normal Mode (default)**: `VERBOSE_LOGGING=false`
-  - Concise single-line logs for each operation
-  - Shows only essential information: operation type and approval status
-  - Example: `[Date] Bash: npm install express` → `✅ AUTO-APPROVED (matched: ^npm install.*)`
+- **No installation required**: Uses `bun` for execution (pre-installed for most Claude Code users)
+- **Cross-platform**: Works on Windows, macOS, and Linux
+- **Type-safe**: Full TypeScript type checking
+- **JSON logging**: Structured logs in `./logs/hooks/`
+- **Modular design**: Shared utilities in `lib/` directory
 
-- **Verbose Mode**: `VERBOSE_LOGGING=true`
-  - Detailed debugging information
-  - Shows pattern matching process, full requests, and responses
-  - Useful for troubleshooting pattern matching issues
+### Available Hooks
 
-To enable verbose logging, edit `~/.claude/hooks/auto-approve.sh` and set `VERBOSE_LOGGING=true`.
+- **`command-filter.ts`**: Auto-approval and blocking system for PreToolUse events
+- **`sound-player.ts`**: Universal sound player that detects hook type and plays appropriate sounds
+- **`loggers/pre-tool-use.ts`**: Logs all pre-tool-use events to JSON
+- **`loggers/post-tool-use.ts`**: Logs all post-tool-use events to JSON
+- **`loggers/notification.ts`**: Logs all notification events to JSON
+- **`loggers/stop.ts`**: Logs all stop events to JSON
+- **`loggers/subagent-stop.ts`**: Logs all subagent-stop events to JSON
+
+## Logging
+
+The TypeScript hooks log to both user and project directories:
+- Command filter logs: `~/.claude/logs/hooks/command-filter.log` (user directory)
+- Hook activity logs: `./logs/hooks/*.json` (project directory)
+
+The dual logging approach ensures:
+- Command filter decisions are persisted across sessions
+- Hook activity logs are available for local debugging without cluttering the user directory
+
+Log entries include:
+- Timestamp
+- Tool name and input
+- Matched patterns (or `noMatch: true`)
+- Decision made
+- Process information
 
 ## Security Considerations
 
 - All hooks execute with user permissions
-- Only whitelisted operations are auto-approved
-- Sensitive files are explicitly excluded via `!` patterns
-- Telegram credentials are stored in `~/.claude/.env` (excluded from version control)
-- Logs are stored locally in `~/.claude/logs/`
+- Blocked patterns are checked before allowed patterns
+- Sensitive files are explicitly blocked (`.env`, `.ssh`, etc.)
+- Configuration is stored separately from code
+- Logs are stored locally and gitignored

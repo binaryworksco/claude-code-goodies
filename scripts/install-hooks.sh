@@ -113,41 +113,53 @@ if [ ! -f "$CLAUDE_DIR/.env" ]; then
         cp "$PROJECT_ROOT/.env.example" "$CLAUDE_DIR/.env"
         if [ $? -eq 0 ]; then
             echo -e "${GREEN}✓ Created ~/.claude/.env from template${NC}"
-            echo -e "${YELLOW}! IMPORTANT: Edit ~/.claude/.env to add your Telegram credentials${NC}"
+            echo -e "${YELLOW}! IMPORTANT: Edit ~/.claude/.env to configure your preferences${NC}"
         else
             echo -e "${RED}✗ Failed to create .env file${NC}"
         fi
     fi
 else
     echo -e "${YELLOW}! .env file already exists, skipping${NC}"
-    echo -e "${YELLOW}! Your existing Telegram configuration has been preserved${NC}"
+    echo -e "${YELLOW}! Your existing configuration has been preserved${NC}"
 fi
 
 # Verify installation
 echo ""
 echo "Verifying installation..."
-INSTALLED_COUNT=$(ls -1 "$HOOKS_DEST"/*.sh 2>/dev/null | wc -l)
-if [ $INSTALLED_COUNT -gt 0 ]; then
-    echo -e "${GREEN}✓ Successfully installed $INSTALLED_COUNT hook scripts${NC}"
+# Count both shell scripts and TypeScript files
+SH_COUNT=$(ls -1 "$HOOKS_DEST"/*.sh 2>/dev/null | wc -l)
+TS_COUNT=$(find "$HOOKS_DEST/ts" -name "*.ts" -type f 2>/dev/null | wc -l)
+TOTAL_COUNT=$((SH_COUNT + TS_COUNT))
+
+if [ $TOTAL_COUNT -gt 0 ]; then
+    echo -e "${GREEN}✓ Successfully installed:${NC}"
+    [ $SH_COUNT -gt 0 ] && echo -e "${GREEN}  - $SH_COUNT shell scripts${NC}"
+    [ $TS_COUNT -gt 0 ] && echo -e "${GREEN}  - $TS_COUNT TypeScript files${NC}"
     echo ""
     echo "Installation complete! Your hooks are now active."
     echo ""
     echo "Next steps:"
-    echo "1. Configure Telegram bot token (optional):"
+    echo "1. Configure settings (optional):"
     echo "   - Edit ~/.claude/.env"
-    echo "   - Add your TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID"
+    echo "   - Set your preferences for sound notifications"
     echo ""
     echo "2. Test the hooks:"
     echo "   - Try: echo 'Hello, World!' (should auto-approve)"
     echo "   - Try: rm -rf /tmp/test (should ask for permission)"
     echo ""
     echo "3. View logs:"
-    echo "   - tail -f ~/.claude/logs/auto-approve.log"
-    echo "   - tail -f ~/.claude/logs/auto-blocked.log"
+    echo "   - tail -f ~/.claude/logs/hooks/command-filter.log"
+    echo "   - jq '.' ./logs/hooks/pre-tool-use.json"
     echo ""
-    echo "4. To use TypeScript logging hooks:"
-    echo "   - Copy settings-typescript.json.example to ~/.claude/settings.json"
+    echo "4. To use advanced settings with all hooks enabled:"
+    echo "   - Copy settings-advanced.json.example to ~/.claude/settings.json"
     echo "   - TypeScript hooks will log to ./logs/hooks/*.json"
+    echo ""
+    echo "5. To enable sound notifications (macOS):"
+    echo "   - Add SOUND_NOTIFICATIONS_ENABLED=true to ~/.claude/.env"
+    echo "   - Add sound-player.ts to your hooks in settings.json"
+    echo "   - Different sounds play for different events (completion, notification, blocked, error)"
+    echo "   - Customize sounds in ~/.claude/.env (see .env.example for options)"
 else
     echo -e "${RED}✗ Installation may have failed - no scripts found in destination${NC}"
     exit 1

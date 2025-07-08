@@ -25,6 +25,19 @@
       "reason": "Reading files with cat is safe"
     },
     {
+      "pattern": "^mkdir -p",
+      "reason": "Creating directories with parent paths is safe"
+    },
+    {
+      "pattern": "^touch\\s+",
+      "reason": "Creating empty files is safe"
+    },
+    {
+      "pattern": "^tree",
+      "reason": "Showing directory tree is safe"
+    },
+    
+    {
       "pattern": "^git\\s+",
       "reason": "Git commands are allowed (except git rm which is blocked)"
     },
@@ -32,9 +45,10 @@
       "pattern": "^git$",
       "reason": "Git without arguments is safe"
     },
+    
     {
-      "pattern": "^npm list",
-      "reason": "Listing npm packages is safe"
+      "pattern": "^npm (install|test|run build|run dev|run start|list|outdated)",
+      "reason": "Common npm commands are safe"
     },
     {
       "pattern": "^npm install$",
@@ -49,9 +63,501 @@
       "reason": "Running tests is safe"
     },
     {
-      "pattern": "^npm run build$",
-      "reason": "Building the project is safe"
+      "pattern": "^npm run",
+      "reason": "Running npm scripts is safe"
     },
+    {
+      "pattern": "^npm list",
+      "reason": "Listing npm packages is safe"
+    },
+    {
+      "pattern": "^npm outdated",
+      "reason": "Checking outdated packages is safe"
+    },
+    {
+      "pattern": "^npm audit",
+      "reason": "Security audit is safe"
+    },
+    {
+      "pattern": "^npm --version$",
+      "reason": "Checking npm version is safe"
+    },
+    
+    {
+      "pattern": "^yarn (install|test|build|dev|start|list|outdated)",
+      "reason": "Common yarn commands are safe"
+    },
+    {
+      "pattern": "^yarn install$",
+      "reason": "Installing dependencies with yarn is safe"
+    },
+    {
+      "pattern": "^yarn$",
+      "reason": "Yarn without arguments installs dependencies"
+    },
+    {
+      "pattern": "^yarn add",
+      "reason": "Adding packages with yarn is safe"
+    },
+    {
+      "pattern": "^yarn remove",
+      "reason": "Removing packages with yarn is safe"
+    },
+    
+    {
+      "pattern": "^pnpm (install|test|build|dev|start|list|outdated)",
+      "reason": "Common pnpm commands are safe"
+    },
+    {
+      "pattern": "^pnpm install$",
+      "reason": "Installing dependencies with pnpm is safe"
+    },
+    {
+      "pattern": "^pnpm add",
+      "reason": "Adding packages with pnpm is safe"
+    },
+    
+    {
+      "pattern": "^bun install",
+      "reason": "Installing dependencies with bun is safe"
+    },
+    {
+      "pattern": "^bun add",
+      "reason": "Adding packages with bun is safe"
+    },
+    {
+      "pattern": "^bun run",
+      "reason": "Running scripts with bun is safe"
+    },
+    {
+      "pattern": "^bun test",
+      "reason": "Running tests with bun is safe"
+    },
+    
+    {
+      "pattern": "^dotnet new (console|classlib|web|webapi|mvc|razor|blazor|grpc|worker|mstest|nunit|xunit|sln)",
+      "reason": "Creating new .NET projects is safe"
+    },
+    {
+      "pattern": "^dotnet add package",
+      "reason": "Adding NuGet packages is safe"
+    },
+    {
+      "pattern": "^dotnet add reference",
+      "reason": "Adding project references is safe"
+    },
+    {
+      "pattern": "^dotnet add .*\\.csproj reference",
+      "reason": "Adding csproj references is safe"
+    },
+    {
+      "pattern": "^dotnet remove package",
+      "reason": "Removing packages is safe"
+    },
+    {
+      "pattern": "^dotnet remove reference",
+      "reason": "Removing references is safe"
+    },
+    {
+      "pattern": "^dotnet restore",
+      "reason": "Restoring packages is safe"
+    },
+    {
+      "pattern": "^dotnet build",
+      "reason": "Building .NET projects is safe"
+    },
+    {
+      "pattern": "^dotnet run",
+      "reason": "Running .NET projects is safe"
+    },
+    {
+      "pattern": "^dotnet test",
+      "reason": "Running .NET tests is safe"
+    },
+    {
+      "pattern": "^dotnet publish",
+      "reason": "Publishing .NET projects is safe"
+    },
+    {
+      "pattern": "^dotnet clean",
+      "reason": "Cleaning .NET builds is safe"
+    },
+    {
+      "pattern": "^dotnet watch (run|test|build)",
+      "reason": "Watch mode commands are safe"
+    },
+    {
+      "pattern": "^dotnet tool (install|uninstall|list|update)",
+      "reason": ".NET tool management is safe"
+    },
+    {
+      "pattern": "^dotnet nuget (push|delete|locals)",
+      "reason": "NuGet operations are safe"
+    },
+    {
+      "pattern": "^dotnet sln (add|remove|list)",
+      "reason": "Solution file operations are safe"
+    },
+    {
+      "pattern": "^dotnet list (package|reference)",
+      "reason": "Listing packages and references is safe"
+    },
+    {
+      "pattern": "^dotnet format",
+      "reason": "Formatting .NET code is safe"
+    },
+    {
+      "pattern": "^dotnet ef (migrations add|database update|dbcontext scaffold)",
+      "reason": "Entity Framework operations are safe"
+    },
+    {
+      "pattern": "^dotnet --version$",
+      "reason": "Checking dotnet version is safe"
+    },
+    {
+      "pattern": "^dotnet --info$",
+      "reason": "Getting dotnet info is safe"
+    },
+    {
+      "pattern": "^dotnet$",
+      "reason": "Dotnet without arguments is safe"
+    },
+    {
+      "pattern": "^dotnet-ef\\s+",
+      "reason": "All Entity Framework commands are safe"
+    },
+    {
+      "pattern": "^dotnet-ef$",
+      "reason": "Entity Framework CLI without arguments is safe"
+    },
+    {
+      "pattern": "^ef\\s+",
+      "reason": "Entity Framework commands are safe"
+    },
+    
+    {
+      "pattern": "^msbuild",
+      "reason": "MSBuild commands are safe"
+    },
+    {
+      "pattern": "^msbuild .*\\.(sln|csproj|vbproj|fsproj)",
+      "reason": "Building solution and project files is safe"
+    },
+    {
+      "pattern": "^msbuild /t:(Build|Rebuild|Clean|Restore|Pack|Publish)",
+      "reason": "MSBuild targets are safe"
+    },
+    
+    {
+      "pattern": "^gh pr create",
+      "reason": "Creating pull requests is safe"
+    },
+    {
+      "pattern": "^gh pr list",
+      "reason": "Listing pull requests is safe"
+    },
+    {
+      "pattern": "^gh pr view",
+      "reason": "Viewing pull requests is safe"
+    },
+    {
+      "pattern": "^gh pr merge",
+      "reason": "Merging pull requests is safe"
+    },
+    {
+      "pattern": "^gh pr close",
+      "reason": "Closing pull requests is safe"
+    },
+    {
+      "pattern": "^gh pr reopen",
+      "reason": "Reopening pull requests is safe"
+    },
+    {
+      "pattern": "^gh pr checkout",
+      "reason": "Checking out pull requests is safe"
+    },
+    {
+      "pattern": "^gh pr diff",
+      "reason": "Viewing PR diffs is safe"
+    },
+    {
+      "pattern": "^gh pr review",
+      "reason": "Reviewing pull requests is safe"
+    },
+    {
+      "pattern": "^gh issue create",
+      "reason": "Creating issues is safe"
+    },
+    {
+      "pattern": "^gh issue list",
+      "reason": "Listing issues is safe"
+    },
+    {
+      "pattern": "^gh issue view",
+      "reason": "Viewing issues is safe"
+    },
+    {
+      "pattern": "^gh issue close",
+      "reason": "Closing issues is safe"
+    },
+    {
+      "pattern": "^gh repo view",
+      "reason": "Viewing repository info is safe"
+    },
+    {
+      "pattern": "^gh repo clone",
+      "reason": "Cloning repositories is safe"
+    },
+    {
+      "pattern": "^gh repo fork",
+      "reason": "Forking repositories is safe"
+    },
+    {
+      "pattern": "^gh workflow list",
+      "reason": "Listing workflows is safe"
+    },
+    {
+      "pattern": "^gh workflow run",
+      "reason": "Running workflows is safe"
+    },
+    {
+      "pattern": "^gh release list",
+      "reason": "Listing releases is safe"
+    },
+    {
+      "pattern": "^gh release view",
+      "reason": "Viewing releases is safe"
+    },
+    {
+      "pattern": "^gh api",
+      "reason": "GitHub API calls are safe"
+    },
+    
+    {
+      "pattern": "^python -m pytest",
+      "reason": "Running pytest is safe"
+    },
+    {
+      "pattern": "^pytest",
+      "reason": "Running pytest is safe"
+    },
+    {
+      "pattern": "^python -m pip install -r requirements\\.txt",
+      "reason": "Installing requirements is safe"
+    },
+    {
+      "pattern": "^python -m venv",
+      "reason": "Creating virtual environments is safe"
+    },
+    {
+      "pattern": "^python setup\\.py",
+      "reason": "Running setup.py is safe"
+    },
+    {
+      "pattern": "^python --version$",
+      "reason": "Checking Python version is safe"
+    },
+    {
+      "pattern": "^pip --version$",
+      "reason": "Checking pip version is safe"
+    },
+    {
+      "pattern": "^pip list",
+      "reason": "Listing pip packages is safe"
+    },
+    {
+      "pattern": "^pip freeze",
+      "reason": "Freezing pip requirements is safe"
+    },
+    
+    {
+      "pattern": "^go (test|fmt|build|get|mod tidy|mod download|run)",
+      "reason": "Common Go commands are safe"
+    },
+    {
+      "pattern": "^go version$",
+      "reason": "Checking Go version is safe"
+    },
+    {
+      "pattern": "^gofmt -w",
+      "reason": "Formatting Go code is safe"
+    },
+    
+    {
+      "pattern": "^cargo (test|fmt|build|check|clippy|run)",
+      "reason": "Common Cargo commands are safe"
+    },
+    {
+      "pattern": "^cargo --version$",
+      "reason": "Checking Cargo version is safe"
+    },
+    {
+      "pattern": "^rustc --version$",
+      "reason": "Checking Rust version is safe"
+    },
+    
+    {
+      "pattern": "^prettier --write",
+      "reason": "Formatting with Prettier is safe"
+    },
+    {
+      "pattern": "^prettier --check",
+      "reason": "Checking formatting with Prettier is safe"
+    },
+    {
+      "pattern": "^eslint --fix",
+      "reason": "Fixing with ESLint is safe"
+    },
+    {
+      "pattern": "^eslint\\s+",
+      "reason": "Running ESLint is safe"
+    },
+    {
+      "pattern": "^black\\s+",
+      "reason": "Formatting with Black is safe"
+    },
+    {
+      "pattern": "^ruff check",
+      "reason": "Running Ruff linter is safe"
+    },
+    {
+      "pattern": "^ruff format",
+      "reason": "Formatting with Ruff is safe"
+    },
+    
+    {
+      "pattern": "^make (test|build|clean|install)",
+      "reason": "Common make targets are safe"
+    },
+    {
+      "pattern": "^make$",
+      "reason": "Running default make target is safe"
+    },
+    
+    {
+      "pattern": "^tailwindcss\\s+",
+      "reason": "Tailwind CSS commands are safe"
+    },
+    {
+      "pattern": "^\\.\/tailwindcss\\s+",
+      "reason": "Running local Tailwind CSS is safe"
+    },
+    {
+      "pattern": "^npx tailwindcss",
+      "reason": "Running Tailwind CSS via npx is safe"
+    },
+    
+    {
+      "pattern": "^curl -X GET",
+      "reason": "GET requests are safe"
+    },
+    {
+      "pattern": "^curl -X HEAD",
+      "reason": "HEAD requests are safe"
+    },
+    {
+      "pattern": "^curl -G",
+      "reason": "GET requests are safe"
+    },
+    {
+      "pattern": "^curl --get",
+      "reason": "GET requests are safe"
+    },
+    {
+      "pattern": "^curl -I",
+      "reason": "HEAD requests are safe"
+    },
+    {
+      "pattern": "^curl --head",
+      "reason": "HEAD requests are safe"
+    },
+    {
+      "pattern": "^curl https://",
+      "reason": "HTTPS requests are safe"
+    },
+    {
+      "pattern": "^curl http://localhost",
+      "reason": "Localhost requests are safe"
+    },
+    {
+      "pattern": "^curl http://127\\.0\\.0\\.1",
+      "reason": "Local IP requests are safe"
+    },
+    {
+      "pattern": "^curl [^|]*$",
+      "reason": "Curl without pipes is safe"
+    },
+    
+    {
+      "pattern": "^docker ps",
+      "reason": "Listing containers is safe"
+    },
+    {
+      "pattern": "^docker images",
+      "reason": "Listing images is safe"
+    },
+    {
+      "pattern": "^docker-compose ps",
+      "reason": "Listing compose services is safe"
+    },
+    {
+      "pattern": "^docker --version$",
+      "reason": "Checking Docker version is safe"
+    },
+    {
+      "pattern": "^docker-compose --version$",
+      "reason": "Checking Docker Compose version is safe"
+    },
+    
+    {
+      "pattern": "^Glob$",
+      "reason": "Claude Code Glob tool is safe"
+    },
+    {
+      "pattern": "^Grep$",
+      "reason": "Claude Code Grep tool is safe"
+    },
+    {
+      "pattern": "^LS$",
+      "reason": "Claude Code LS tool is safe"
+    },
+    {
+      "pattern": "^Read$",
+      "reason": "Claude Code Read tool is safe"
+    },
+    {
+      "pattern": "^WebFetch$",
+      "reason": "Claude Code WebFetch tool is safe"
+    },
+    {
+      "pattern": "^WebSearch$",
+      "reason": "Claude Code WebSearch tool is safe"
+    },
+    {
+      "pattern": "^TodoWrite$",
+      "reason": "Claude Code TodoWrite tool is safe"
+    },
+    {
+      "pattern": "^TodoRead$",
+      "reason": "Claude Code TodoRead tool is safe"
+    },
+    {
+      "pattern": "^Update$",
+      "reason": "Claude Code Update tool is safe"
+    },
+    {
+      "pattern": "^Write$",
+      "reason": "Claude Code Write tool is safe"
+    },
+    {
+      "pattern": "^Edit$",
+      "reason": "Claude Code Edit tool is safe"
+    },
+    {
+      "pattern": "^MultiEdit$",
+      "reason": "Claude Code MultiEdit tool is safe"
+    },
+    
     {
       "pattern": "^npx\\s+",
       "reason": "Running npx commands is generally safe"
@@ -59,10 +565,6 @@
     {
       "pattern": "^node --version$",
       "reason": "Checking node version is safe"
-    },
-    {
-      "pattern": "^npm --version$",
-      "reason": "Checking npm version is safe"
     },
     {
       "pattern": "^which\\s+",
@@ -97,8 +599,20 @@
       "reason": "Finding files by name is safe"
     },
     {
+      "pattern": "^find\\s+.*\\s+-type\\s+",
+      "reason": "Finding files by type is safe"
+    },
+    {
+      "pattern": "^find\\s+.*\\s+-path\\s+",
+      "reason": "Finding files by path is safe"
+    },
+    {
       "pattern": "^grep\\s+",
       "reason": "Searching file contents is safe"
+    },
+    {
+      "pattern": "^grep -r",
+      "reason": "Recursive grep is safe"
     },
     {
       "pattern": "^rg\\s+",
@@ -125,24 +639,16 @@
       "reason": "Checking disk space is safe"
     },
     {
-      "pattern": "^dotnet\\s+",
-      "reason": "All dotnet commands are safe"
+      "pattern": "^jq\\s+",
+      "reason": "JSON processing is safe"
     },
     {
-      "pattern": "^dotnet$",
-      "reason": "Dotnet without arguments is safe"
+      "pattern": "^sed\\s+-n",
+      "reason": "Non-destructive sed is safe"
     },
     {
-      "pattern": "^dotnet-ef\\s+",
-      "reason": "All Entity Framework commands are safe"
-    },
-    {
-      "pattern": "^dotnet-ef$",
-      "reason": "Entity Framework CLI without arguments is safe"
-    },
-    {
-      "pattern": "^ef\\s+",
-      "reason": "Entity Framework commands are safe"
+      "pattern": "^awk\\s+",
+      "reason": "AWK processing is safe"
     }
   ],
   "_comment": "This file lists commands that should be auto-approved",

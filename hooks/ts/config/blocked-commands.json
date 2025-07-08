@@ -12,6 +12,28 @@
       "pattern": "^poweroff",
       "reason": "System poweroff is not allowed"
     },
+    
+    {
+      "pattern": "^rm\\s+-[rfRF]",
+      "reason": "Destructive file removal requires confirmation"
+    },
+    {
+      "pattern": "^rm\\s+.*\\s+-[rfRF]",
+      "reason": "Destructive file removal requires confirmation"
+    },
+    {
+      "pattern": "^sudo\\s+rm",
+      "reason": "Sudo file removal requires confirmation"
+    },
+    {
+      "pattern": "^find\\s+.*\\s+-delete",
+      "reason": "Find with delete requires confirmation"
+    },
+    {
+      "pattern": "^find\\s+.*\\s+-exec\\s+rm",
+      "reason": "Find with rm exec requires confirmation"
+    },
+    
     {
       "pattern": "^dd\\s+",
       "reason": "dd command is too dangerous and can destroy disks"
@@ -29,13 +51,217 @@
       "reason": "Disk partitioning is not allowed"
     },
     {
-      "pattern": "curl.*\\|\\s*sh",
-      "reason": "Piping curl to shell is a security risk"
+      "pattern": "^shred\\s+",
+      "reason": "Secure file deletion requires confirmation"
     },
     {
-      "pattern": "wget.*\\|\\s*bash",
-      "reason": "Piping wget to shell is a security risk"
+      "pattern": "^wipe\\s+",
+      "reason": "Secure file deletion requires confirmation"
     },
+    
+    {
+      "pattern": "^apt(-get)?\\s+(remove|purge|autoremove)",
+      "reason": "Package removal requires confirmation"
+    },
+    {
+      "pattern": "^yum\\s+(remove|erase)",
+      "reason": "Package removal requires confirmation"
+    },
+    {
+      "pattern": "^dnf\\s+(remove|erase)",
+      "reason": "Package removal requires confirmation"
+    },
+    {
+      "pattern": "^brew\\s+(uninstall|remove)",
+      "reason": "Package removal requires confirmation"
+    },
+    {
+      "pattern": "^npm\\s+uninstall\\s+-g",
+      "reason": "Global npm package removal requires confirmation"
+    },
+    {
+      "pattern": "^pip\\s+uninstall",
+      "reason": "Python package removal requires confirmation"
+    },
+    
+    {
+      "pattern": "^sudo\\s+",
+      "reason": "Sudo commands require explicit confirmation"
+    },
+    {
+      "pattern": "^su\\s+",
+      "reason": "User switching requires confirmation"
+    },
+    {
+      "pattern": "^chown\\s+",
+      "reason": "Changing file ownership requires confirmation"
+    },
+    {
+      "pattern": "^chmod\\s+[0-7]*[0-7]0[0-7]",
+      "reason": "Removing owner permissions requires confirmation"
+    },
+    {
+      "pattern": "^chmod\\s+.*777",
+      "reason": "Making files world-writable requires confirmation"
+    },
+    {
+      "pattern": "^chmod\\s+.*[0-7]7[0-7]",
+      "reason": "Giving write permissions to group/others requires confirmation"
+    },
+    {
+      "pattern": "^chmod\\s+a\\+w",
+      "reason": "Making files world-writable requires confirmation"
+    },
+    {
+      "pattern": "^usermod",
+      "reason": "User modification requires confirmation"
+    },
+    {
+      "pattern": "^groupmod",
+      "reason": "Group modification requires confirmation"
+    },
+    {
+      "pattern": "^passwd",
+      "reason": "Password changes require confirmation"
+    },
+    {
+      "pattern": "^systemctl\\s+(stop|disable|mask)",
+      "reason": "System service changes require confirmation"
+    },
+    {
+      "pattern": "^service\\s+.*\\s+stop",
+      "reason": "Stopping services requires confirmation"
+    },
+    
+    {
+      "pattern": "^iptables",
+      "reason": "Firewall modifications require confirmation"
+    },
+    {
+      "pattern": "^ufw\\s+(delete|deny|reject)",
+      "reason": "Firewall modifications require confirmation"
+    },
+    {
+      "pattern": "^firewall-cmd",
+      "reason": "Firewall modifications require confirmation"
+    },
+    
+    {
+      "pattern": "^ifconfig\\s+.*\\s+down",
+      "reason": "Network interface changes require confirmation"
+    },
+    {
+      "pattern": "^ip\\s+link\\s+.*\\s+down",
+      "reason": "Network interface changes require confirmation"
+    },
+    {
+      "pattern": "^nmcli\\s+.*\\s+(delete|down)",
+      "reason": "Network configuration changes require confirmation"
+    },
+    
+    {
+      "pattern": ">\\s*/etc/",
+      "reason": "Overwriting system files requires confirmation"
+    },
+    {
+      "pattern": ">\\s*/usr/",
+      "reason": "Overwriting system files requires confirmation"
+    },
+    {
+      "pattern": ">\\s*/bin/",
+      "reason": "Overwriting system binaries requires confirmation"
+    },
+    {
+      "pattern": ">\\s*/sbin/",
+      "reason": "Overwriting system binaries requires confirmation"
+    },
+    {
+      "pattern": ">\\s*/boot/",
+      "reason": "Overwriting boot files requires confirmation"
+    },
+    {
+      "pattern": ">\\s*~/\\.ssh/",
+      "reason": "Overwriting SSH files requires confirmation"
+    },
+    {
+      "pattern": ">\\s*~/\\.bashrc",
+      "reason": "Overwriting shell config requires confirmation"
+    },
+    {
+      "pattern": ">\\s*~/\\.zshrc",
+      "reason": "Overwriting shell config requires confirmation"
+    },
+    {
+      "pattern": ">\\s*~/\\.profile",
+      "reason": "Overwriting shell profile requires confirmation"
+    },
+    {
+      "pattern": ">\\s*/dev/sda",
+      "reason": "Writing directly to disk devices is dangerous"
+    },
+    
+    {
+      "pattern": "DROP\\s+(DATABASE|TABLE|SCHEMA)",
+      "reason": "Database deletion requires confirmation"
+    },
+    {
+      "pattern": "TRUNCATE\\s+TABLE",
+      "reason": "Table truncation requires confirmation"
+    },
+    {
+      "pattern": "DELETE\\s+FROM\\s+.*WHERE\\s+1\\s*=\\s*1",
+      "reason": "Mass deletion requires confirmation"
+    },
+    {
+      "pattern": "DELETE\\s+FROM\\s+[^\\s]+\\s*;",
+      "reason": "Deleting all rows requires confirmation"
+    },
+    {
+      "pattern": "^mysql.*DROP\\s+(DATABASE|TABLE)",
+      "reason": "MySQL deletion requires confirmation"
+    },
+    {
+      "pattern": "^psql.*DROP\\s+(DATABASE|TABLE)",
+      "reason": "PostgreSQL deletion requires confirmation"
+    },
+    {
+      "pattern": "^mongo.*drop\\(\\)",
+      "reason": "MongoDB deletion requires confirmation"
+    },
+    {
+      "pattern": "^redis-cli.*FLUSHALL",
+      "reason": "Redis full flush requires confirmation"
+    },
+    {
+      "pattern": "^redis-cli.*FLUSHDB",
+      "reason": "Redis database flush requires confirmation"
+    },
+    
+    {
+      "pattern": "^git\\s+rm\\s+",
+      "reason": "Git remove command requires confirmation to prevent accidental file deletion"
+    },
+    {
+      "pattern": "^git\\s+push\\s+.*--force",
+      "reason": "Force push can overwrite remote history"
+    },
+    {
+      "pattern": "^git\\s+push\\s+.*-f\\s+",
+      "reason": "Force push can overwrite remote history"
+    },
+    {
+      "pattern": "^git\\s+reset\\s+--hard\\s+HEAD",
+      "reason": "Hard reset discards all changes"
+    },
+    {
+      "pattern": "^git\\s+clean\\s+-[fd]",
+      "reason": "Git clean removes untracked files"
+    },
+    {
+      "pattern": "^git\\s+filter-branch",
+      "reason": "Filter-branch rewrites history"
+    },
+    
     {
       "pattern": "^kill\\s+-9",
       "reason": "Force killing processes requires confirmation"
@@ -45,85 +271,221 @@
       "reason": "Killing all processes requires confirmation"
     },
     {
-      "pattern": "^chmod\\s+777",
-      "reason": "Making files world-writable requires confirmation"
+      "pattern": "^pkill",
+      "reason": "Pattern-based process killing requires confirmation"
     },
     {
-      "pattern": ">\\s*/dev/sda",
-      "reason": "Writing directly to disk devices is dangerous"
+      "pattern": "^xkill",
+      "reason": "GUI process killing requires confirmation"
     },
+    
+    {
+      "pattern": "^tar.*--absolute-names",
+      "reason": "Absolute path extraction can overwrite system files"
+    },
+    {
+      "pattern": "^unzip.*-j\\s+.*\\s+/",
+      "reason": "Junk paths with absolute destination is dangerous"
+    },
+    {
+      "pattern": "^gunzip\\s+-c.*>\\s*/",
+      "reason": "Extracting to root paths is dangerous"
+    },
+    
+    {
+      "pattern": "curl.*\\|\\s*sh",
+      "reason": "Piping curl to shell is a security risk"
+    },
+    {
+      "pattern": "wget.*\\|\\s*bash",
+      "reason": "Piping wget to shell is a security risk"
+    },
+    {
+      "pattern": "\\|\\s*sh",
+      "reason": "Piping to shell requires confirmation"
+    },
+    {
+      "pattern": "\\|\\s*bash",
+      "reason": "Piping to bash requires confirmation"
+    },
+    {
+      "pattern": "\\|\\s*zsh",
+      "reason": "Piping to zsh requires confirmation"
+    },
+    {
+      "pattern": "\\|\\s*python",
+      "reason": "Piping to python requires confirmation"
+    },
+    {
+      "pattern": "\\|\\s*perl",
+      "reason": "Piping to perl requires confirmation"
+    },
+    {
+      "pattern": "\\|\\s*ruby",
+      "reason": "Piping to ruby requires confirmation"
+    },
+    {
+      "pattern": "curl.*\\|\\s*sudo",
+      "reason": "Piping to sudo is extremely dangerous"
+    },
+    
+    {
+      "pattern": "^export\\s+PATH=",
+      "reason": "Modifying PATH requires confirmation"
+    },
+    {
+      "pattern": "^export\\s+LD_LIBRARY_PATH=",
+      "reason": "Modifying library path requires confirmation"
+    },
+    {
+      "pattern": "^unset\\s+PATH",
+      "reason": "Unsetting PATH breaks the shell"
+    },
+    
+    {
+      "pattern": "^mount\\s+",
+      "reason": "Mounting filesystems requires confirmation"
+    },
+    {
+      "pattern": "^umount\\s+",
+      "reason": "Unmounting filesystems requires confirmation"
+    },
+    {
+      "pattern": "^losetup",
+      "reason": "Loop device setup requires confirmation"
+    },
+    
+    {
+      "pattern": "^crontab\\s+-r",
+      "reason": "Removing crontab requires confirmation"
+    },
+    {
+      "pattern": ">\\s*/etc/cron",
+      "reason": "Modifying cron files requires confirmation"
+    },
+    {
+      "pattern": ">\\s*/var/spool/cron",
+      "reason": "Modifying cron spool requires confirmation"
+    },
+    
+    {
+      "pattern": "^docker\\s+run",
+      "reason": "Running containers requires confirmation"
+    },
+    {
+      "pattern": "^docker\\s+exec",
+      "reason": "Executing in containers requires confirmation"
+    },
+    {
+      "pattern": "^docker\\s+system\\s+prune",
+      "reason": "Docker cleanup requires confirmation"
+    },
+    {
+      "pattern": "^docker\\s+rm\\s+",
+      "reason": "Removing containers requires confirmation"
+    },
+    {
+      "pattern": "^docker\\s+rmi\\s+",
+      "reason": "Removing images requires confirmation"
+    },
+    {
+      "pattern": "^docker-compose\\s+down.*--volumes",
+      "reason": "Removing volumes requires confirmation"
+    },
+    
     {
       "pattern": ":(){ :|:& };:",
       "reason": "Fork bomb detected"
     },
     {
-      "pattern": "^git\\s+rm\\s+",
-      "reason": "Git remove command requires confirmation to prevent accidental file deletion"
+      "pattern": ":\\(\\)\\s*{\\s*:\\|:&\\s*}",
+      "reason": "Fork bomb pattern detected"
+    },
+    {
+      "pattern": "while\\s+true.*do.*done",
+      "reason": "Infinite loop detected"
+    },
+    {
+      "pattern": "for\\s*\\(\\s*;\\s*;\\s*\\)",
+      "reason": "Infinite loop detected"
+    },
+    
+    {
+      "pattern": "^history\\s+-c",
+      "reason": "Clearing history requires confirmation"
+    },
+    {
+      "pattern": ">\\s*~/\\.bash_history",
+      "reason": "Overwriting history requires confirmation"
+    },
+    {
+      "pattern": ">\\s*~/\\.zsh_history",
+      "reason": "Overwriting history requires confirmation"
     }
   ],
   "files": {
     "read": [
       {
         "pattern": ".env",
-          "reason": "Environment file may contain secrets"
+        "reason": "Environment file may contain secrets"
       },
       {
         "pattern": ".env.*",
-          "reason": "Environment file may contain secrets"
+        "reason": "Environment file may contain secrets"
       },
       {
         "pattern": "**/.ssh/**",
-          "reason": "SSH files contain private keys"
+        "reason": "SSH files contain private keys"
       },
       {
         "pattern": "**/secrets/**",
-          "reason": "Secrets directory is restricted"
+        "reason": "Secrets directory is restricted"
       },
       {
         "pattern": "**/credentials/**",
-          "reason": "Credentials directory is restricted"
+        "reason": "Credentials directory is restricted"
       },
       {
         "pattern": "appsettings.json",
-          "reason": "Configuration file may contain sensitive data"
+        "reason": "Configuration file may contain sensitive data"
       },
       {
         "pattern": "appsettings.*.json",
-          "reason": "Configuration file may contain sensitive data"
+        "reason": "Configuration file may contain sensitive data"
       },
       {
         "pattern": "**/config/production.*",
-          "reason": "Production config may contain sensitive data"
+        "reason": "Production config may contain sensitive data"
       }
     ],
     "write": [
       {
         "pattern": ".env",
-          "reason": "Cannot modify environment files directly"
+        "reason": "Cannot modify environment files directly"
       },
       {
         "pattern": ".env.*",
-          "reason": "Cannot modify environment files directly"
+        "reason": "Cannot modify environment files directly"
       },
       {
         "pattern": ".ssh/authorized_keys",
-          "reason": "SSH authorized keys file is protected"
+        "reason": "SSH authorized keys file is protected"
       },
       {
         "pattern": ".ssh/config",
-          "reason": "SSH config modification requires confirmation"
+        "reason": "SSH config modification requires confirmation"
       },
       {
         "pattern": "/etc/**",
-          "reason": "System configuration files are protected"
+        "reason": "System configuration files are protected"
       },
       {
         "pattern": "**/.git/config",
-          "reason": "Git configuration modification requires confirmation"
+        "reason": "Git configuration modification requires confirmation"
       },
       {
         "pattern": "**/*.log",
-          "reason": "Log file modification requires confirmation"
+        "reason": "Log file modification requires confirmation"
       }
     ]
   },

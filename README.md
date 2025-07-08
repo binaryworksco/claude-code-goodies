@@ -5,7 +5,6 @@ Community hooks and tools to make Claude Code safer, smarter, and more notifiabl
 <p align="center">
   <img src="https://img.shields.io/badge/Claude%20Code-Enhanced-blue" alt="Claude Code Enhanced">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License">
-  <img src="https://img.shields.io/badge/Telegram-Ready-blue?logo=telegram" alt="Telegram Ready">
 </p>
 
 ## 🚀 What is this?
@@ -14,7 +13,7 @@ This repository contains a collection of hooks and tools that enhance your Claud
 
 - **🛡️ Auto-approving safe operations** - No more interruptions for routine commands
 - **🚨 Dangerous command detection** - Automatically blocks potentially harmful operations
-- **📱 Telegram notifications** - Get real-time updates when Claude needs you or completes tasks
+- **🔊 Sound notifications** - Get audio alerts when Claude completes tasks (macOS)
 - **📊 Separated logging** - Track approved vs blocked operations easily
 - **🔒 Security-first approach** - Whitelist-based approval system with dangerous command blocking
 - **⚡ Zero-config for common tools** - Pre-configured patterns for npm, dotnet, git, and more
@@ -25,7 +24,7 @@ This repository contains a collection of hooks and tools that enhance your Claud
 Claude Code is powerful, but constantly approving routine operations interrupts your flow. These hooks:
 
 1. **Save time** - Auto-approve safe operations like `npm install`, `dotnet build`, `ls`, etc.
-2. **Stay informed** - Get Telegram notifications for operations that need your attention
+2. **Stay informed** - Get sound notifications when Claude completes tasks
 3. **Maintain security** - Only whitelisted operations are auto-approved
 4. **Track activity** - Separate logs for approved and blocked operations
 5. **Customize easily** - Simple text file configuration
@@ -35,7 +34,14 @@ Claude Code is powerful, but constantly approving routine operations interrupts 
 ### Prerequisites
 
 - Claude Code installed and working
-- `jq` command-line tool (for JSON parsing)
+- Bun runtime (for TypeScript execution) - Most users have this pre-installed
+  ```bash
+  # Check if bun is installed
+  bun --version
+  
+  # If not installed, visit: https://bun.sh
+  ```
+- `jq` command-line tool (optional, for viewing JSON logs)
   ```bash
   # macOS
   brew install jq
@@ -84,10 +90,9 @@ Claude Code is powerful, but constantly approving routine operations interrupts 
 
 3. **Copy the hook files and commands**
    ```bash
-   cp hooks/*.sh ~/.claude/hooks/
-   cp hooks/allowed-tasks.txt ~/.claude/hooks/
-   cp hooks/dangerous-tasks.txt ~/.claude/hooks/
-   chmod +x ~/.claude/hooks/*.sh
+   # Copy TypeScript hooks
+   cp -r hooks/ts ~/.claude/hooks/
+   chmod +x ~/.claude/hooks/ts/*.ts
    
    # Copy commands
    mkdir -p ~/.claude/commands
@@ -97,27 +102,16 @@ Claude Code is powerful, but constantly approving routine operations interrupts 
    cp .env.example ~/.claude/.env
    ```
 
-4. **Configure Telegram (Optional but recommended)**
+4. **Configure settings (Optional)**
    
-   Create a Telegram bot:
-   - Message [@BotFather](https://t.me/botfather) on Telegram
-   - Send `/newbot` and follow the instructions
-   - Save your bot token (looks like `1234567890:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`)
-   - Start a chat with your bot and send any message
-   - Visit `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates`
-   - Find your `chat_id` in the response
-
-   Add your credentials to the configuration file:
+   Edit the configuration file to set your preferences:
    ```bash
    # Edit the .env file
    nano ~/.claude/.env
    
-   # Add your credentials:
-   TELEGRAM_BOT_TOKEN="your-bot-token-here"
-   TELEGRAM_CHAT_ID="your-chat-id-here"
-   
-   # Optional: Disable notifications entirely
-   # TELEGRAM_NOTIFICATIONS_ENABLED="false"
+   # Enable sound notifications (macOS):
+   SOUND_NOTIFICATIONS_ENABLED="true"
+   COMPLETION_SOUND="Glass"  # Choose from: Basso, Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, etc.
    ```
 
 5. **Configure Claude Code settings**
@@ -134,76 +128,110 @@ Claude Code is powerful, but constantly approving routine operations interrupts 
 
 ### Environment Variables (`~/.claude/.env`)
 
-The `.env` file stores your Telegram credentials and other configuration:
+The `.env` file stores your configuration preferences:
 
 ```bash
-# Telegram Bot Configuration
-TELEGRAM_BOT_TOKEN="your-bot-token-here"
-TELEGRAM_CHAT_ID="your-chat-id-here"
+# Sound Notification Settings (macOS)
+SOUND_NOTIFICATIONS_ENABLED="true"
+
+# Different sounds for different events
+STOP_SOUND="Glass"                 # When Claude completes (default: Glass)
+NOTIFICATION_SOUND="Ping"          # When Claude needs input (default: Ping)
+PRETOOLUSE_BLOCK_SOUND="Basso"     # When a command is blocked (default: Basso)
+ERROR_SOUND="Sosumi"               # When an error occurs (default: Sosumi)
 ```
 
-**Important**: Your credentials are stored separately from the hook scripts, so they won't be overwritten when updating the hooks.
+**Important**: Your configuration is stored separately from the hook scripts, so it won't be overwritten when updating the hooks.
 
-### Allowed Tasks (`~/.claude/hooks/allowed-tasks.txt`)
+### Command Filtering Configuration
 
-This file controls what operations are auto-approved. It uses regex patterns:
+The TypeScript command filter uses two JSON configuration files:
 
-```bash
-# Tasks
-^Run tests.*
-^Build.*
-^Install dependencies.*
+1. **`~/.claude/hooks/ts/config/allowed-commands.json`** - Patterns for safe operations that auto-approve
+2. **`~/.claude/hooks/ts/config/blocked-commands.json`** - Patterns for dangerous operations that always require confirmation
 
-# Bash commands
-^npm (install|test|build)
-^dotnet (build|test|run)
-^echo 
-^ls
-^cat
+The filter checks patterns in this order:
+1. Check blocked patterns first (always block if matched)
+2. Check allowed patterns (auto-approve if matched)  
+3. Default to manual approval for everything else
 
-# File operations
-^Read$       # Allow all file reads
-^WebFetch$   # Allow all web fetches
-^src/.*\.js$ # Allow editing JS files in src/
+#### Example Allowed Patterns
+```json
+{
+  "patterns": [
+    "^npm (install|test|build|run)",
+    "^echo ",
+    "^ls",
+    "^git (status|diff|log|add|commit)",
+    "^Read$",
+    "^Glob$"
+  ]
+}
+```
 
-# Exclusions (never auto-approve these)
-!\.env
-!credentials
-!secret
+#### Example Blocked Patterns
+```json
+{
+  "patterns": [
+    "rm -rf",
+    "sudo",
+    "DROP TABLE",
+    "git push.*--force"
+  ]
+}
 ```
 
 ### Adding New Patterns
 
+Edit the JSON configuration files to add new patterns:
+
 ```bash
-# Allow a specific command
-echo '^yarn install$' >> ~/.claude/hooks/allowed-tasks.txt
+# Edit allowed commands
+nano ~/.claude/hooks/ts/config/allowed-commands.json
 
-# Allow all operations for a tool
-echo '^Glob$' >> ~/.claude/hooks/allowed-tasks.txt
-
-# Allow file operations in a directory
-echo '^src/.*\.(js|ts)$' >> ~/.claude/hooks/allowed-tasks.txt
+# Edit blocked commands  
+nano ~/.claude/hooks/ts/config/blocked-commands.json
 ```
 
-## 📱 Telegram Notifications
+Example additions:
+```json
+// Allow a specific command
+"^yarn install$"
 
-When configured, you'll receive notifications for:
+// Allow all operations for a tool
+"^Glob$"
 
-### Operations requiring approval
-```
-⏳ Claude Code Action Required
-
-Message: Tool usage requires approval
-
-📍 Please return to Claude Code to review and respond.
-```
-
-### Session completions
-```
-🚀 Claude Code session complete for project: `YourProject`
+// Allow file operations in a directory
+"^src/.*\\.(js|ts)$"
 ```
 
-**Note**: The approval notification only sends when Claude is actually waiting for your input mid-task. Completion notifications won't trigger duplicate alerts.
+## 🔊 Sound Notifications (macOS)
+
+The universal sound player plays different sounds for different Claude Code events:
+
+### Sound Types
+- **Completion Sound**: When Claude finishes a task
+- **Notification Sound**: When Claude needs your input
+- **Blocked Command Sound**: When a dangerous command is blocked
+- **Error Sound**: When an error occurs
+
+### Setup
+1. Add `SOUND_NOTIFICATIONS_ENABLED="true"` to `~/.claude/.env`
+2. Add the sound-player hook to your desired hooks in `settings.json`:
+   ```json
+   "Stop": [{"hooks": [{"command": "bun ~/.claude/hooks/ts/sound-player.ts"}]}],
+   "Notification": [{"hooks": [{"command": "bun ~/.claude/hooks/ts/sound-player.ts"}]}]
+   ```
+3. Customize sounds in `~/.claude/.env`:
+   ```bash
+   STOP_SOUND="Glass"              # When Claude completes
+   NOTIFICATION_SOUND="Ping"       # When Claude needs input
+   PRETOOLUSE_BLOCK_SOUND="Basso"  # When command is blocked
+   ERROR_SOUND="Sosumi"            # When an error occurs
+   ```
+
+### Available Sounds
+Basso, Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi, Submarine, Tink
 
 ## ⌨️ Custom Commands
 
@@ -238,46 +266,53 @@ Commands are markdown files with prompts that Claude Code executes. To create yo
 ## 📊 Monitoring
 
 ### View logs
+
+The TypeScript hooks log to both project-local and user directories:
+
 ```bash
-# See approved operations
-tail -f ~/.claude/logs/auto-approve.log
+# Command filter logs (in user directory)
+tail -f ~/.claude/logs/hooks/command-filter.log
 
-# See blocked operations
-tail -f ~/.claude/logs/auto-blocked.log
+# Hook activity logs (in project directory)
+tail -f ./logs/hooks/pre-tool-use.json
+tail -f ./logs/hooks/post-tool-use.json
+tail -f ./logs/hooks/notification.json
 
-# See dangerous commands
-tail -f ~/.claude/logs/dangerous-commands.log
-
-# See approval notifications
-tail -f ~/.claude/logs/approval-notifications.log
-
-# Count today's operations
-echo "Approved: $(grep -c "AUTO-APPROVED" ~/.claude/logs/auto-approve.log)"
-echo "Blocked: $(grep -c "BLOCKED" ~/.claude/logs/auto-blocked.log)"
-echo "Dangerous: $(grep -c "DANGEROUS" ~/.claude/logs/dangerous-commands.log)"
+# Parse JSON logs with jq
+jq '.[] | select(.tool_name == "Bash")' ./logs/hooks/pre-tool-use.json
+jq '.[] | select(.matchedPattern != null)' ./logs/hooks/pre-tool-use.json
 ```
+
+Log entries include:
+- Timestamp
+- Tool name and input
+- Matched patterns (or `noMatch: true`)
+- Decision made (approved/blocked/manual)
+- Process information
 
 ## 🛠️ Customization
 
 ### Enable verbose logging
 
-For debugging or detailed logging, edit `~/.claude/hooks/auto-approve.sh`:
+The TypeScript hooks automatically log all activity to JSON files. For additional debugging:
 
-```bash
-# Change from:
-VERBOSE_LOGGING=false
+1. Check the command filter logs:
+   ```bash
+   tail -f ~/.claude/logs/hooks/command-filter.log
+   ```
 
-# To:
-VERBOSE_LOGGING=true
-```
-
-This provides detailed pattern matching information helpful for troubleshooting.
+2. View raw hook inputs/outputs:
+   ```bash
+   jq '.' ./logs/hooks/pre-tool-use.json
+   ```
 
 ### Modify auto-approval patterns
-Edit `~/.claude/hooks/allowed-tasks.txt` - changes take effect immediately!
+Edit the JSON configuration files - changes take effect immediately:
+- `~/.claude/hooks/ts/config/allowed-commands.json`
+- `~/.claude/hooks/ts/config/blocked-commands.json`
 
-### Disable Telegram notifications
-Comment out the `send_telegram` function calls in the hook scripts.
+### Disable sound notifications
+Set `SOUND_NOTIFICATIONS_ENABLED="false"` in `~/.claude/.env`.
 
 ### Change notification format
 Edit the `MESSAGE` variable in the hook scripts to customize notification text.
@@ -297,17 +332,39 @@ rm -rf /tmp/test
 ## 📁 Repository Structure
 
 ```
-claude-code/
+claude-code-goodies/
 ├── README.md
+├── CLAUDE.md                    # Claude Code specific instructions
 ├── LICENSE
+├── .env.example                 # Environment configuration template
+├── settings.json.example        # Claude Code settings template
+├── settings-advanced.json.example # Advanced settings example
 ├── hooks/
-│   ├── auto-approve.sh      # Main auto-approval hook
-│   ├── telegram-completion.sh # Session completion notifications
-│   ├── approval-notification.sh # Notification only when approval needed
-│   ├── allowed-tasks.txt    # Patterns for auto-approval
-│   └── dangerous-tasks.txt  # Patterns for dangerous commands
-└── settings/
-    └── settings.json        # Claude Code hooks configuration
+│   └── ts/                      # TypeScript hooks
+│       ├── command-filter.ts    # Auto-approval/blocking system
+│       ├── sound-player.ts      # Universal sound notifications (macOS)
+│       ├── lib/                 # Shared utilities
+│       │   ├── types.ts         # TypeScript type definitions
+│       │   └── logger.ts        # JSON logging utility
+│       ├── loggers/             # Logging hooks
+│       │   ├── pre-tool-use.ts  # Log pre-tool-use events
+│       │   ├── post-tool-use.ts # Log post-tool-use events
+│       │   ├── notification.ts  # Log notification events
+│       │   ├── stop.ts          # Log stop events
+│       │   └── subagent-stop.ts # Log subagent-stop events
+│       └── config/              # Configuration files
+│           ├── allowed-commands.json # Auto-approve patterns
+│           └── blocked-commands.json # Dangerous command patterns
+├── commands/                    # Custom Claude Code commands
+│   └── cpr.md                   # Commit, Push, PR command
+├── scripts/                     # Installation scripts
+│   ├── install-hooks.sh         # Install hooks
+│   └── install-commands.sh      # Install custom commands
+└── logs/                        # Local log files (gitignored)
+    └── hooks/                   # Hook-specific logs
+        ├── pre-tool-use.json
+        ├── post-tool-use.json
+        └── ...
 ```
 
 ## 🤝 Contributing
@@ -335,7 +392,7 @@ These hooks execute with your user permissions. Always:
 - Review the hook scripts before installing
 - Be careful with what patterns you add to `allowed-tasks.txt`
 - Never auto-approve destructive commands
-- Keep your Telegram credentials private
+- Keep your configuration files private
 
 ## 🐛 Troubleshooting
 
@@ -344,15 +401,18 @@ These hooks execute with your user permissions. Always:
 2. Check `~/.claude/settings.json` exists and is valid JSON
 3. Restart Claude Code completely
 
-### Telegram not working
-1. Verify your bot token and chat ID are correct
-2. Check that your bot is started (send `/start` to it)
-3. Look for errors in the logs
+### Sound notifications not working
+1. Ensure you're on macOS (uses `afplay` command)
+2. Check volume settings are not muted
+3. Try playing a sound manually: `afplay /System/Library/Sounds/Glass.aiff`
+4. Check the configuration in `~/.claude/.env`
 
 ### Commands not auto-approving
-1. Check the pattern in `allowed-tasks.txt`
+1. Check the pattern in `allowed-commands.json`
 2. Verify regex syntax (use `^` and `$` for exact matches)
-3. Check logs to see what pattern is being tested
+3. Check command filter logs: `tail -f ~/.claude/logs/hooks/command-filter.log`
+4. Ensure the command isn't matching a blocked pattern first
+5. Look for the `matchedPattern` field in logs to see what was matched
 
 ---
 
