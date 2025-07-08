@@ -104,12 +104,12 @@ interface LogEntry {
   tool?: string;
   input?: any;
   configLoaded?: boolean;
-  checks?: Array<{
+  matchedPattern?: {
     pattern: string;
-    matched: boolean;
-    action?: string;
-    reason?: string;
-  }>;
+    list: 'blocked' | 'allowed';
+    reason: string;
+  };
+  noMatch?: boolean;
   decision?: string;
   response?: string;
   error?: string;
@@ -118,7 +118,7 @@ interface LogEntry {
 class Logger {
   private logDir: string;
   private logFile: string;
-  private checks: LogEntry['checks'] = [];
+  private matchedPattern: LogEntry['matchedPattern'] | null = null;
   
   constructor() {
     // Use project-local directory
@@ -161,20 +161,27 @@ class Logger {
     });
   }
   
-  addCheck(pattern: string, matched: boolean, action?: string, reason?: string): void {
-    this.checks.push({ pattern, matched, action, reason });
+  setMatchedPattern(pattern: string, list: 'blocked' | 'allowed', reason: string): void {
+    this.matchedPattern = { pattern, list, reason };
   }
   
   logDecision(tool: string, input: any, decision: string, response: string): void {
-    this.writeLog({
+    const entry: LogEntry = {
       timestamp: new Date().toISOString(),
       event: 'decision_made',
       tool,
       input,
-      checks: this.checks,
       decision,
       response
-    });
+    };
+    
+    if (this.matchedPattern) {
+      entry.matchedPattern = this.matchedPattern;
+    } else {
+      entry.noMatch = true;
+    }
+    
+    this.writeLog(entry);
   }
   
   logError(error: string): void {
@@ -207,33 +214,30 @@ async function main() {
     logger.logConfigStatus(!!allowedConfig, allowedConfig ? undefined : 'Allowed commands config not found');
     
     // Helper function to check command patterns
-    function checkCommandPatterns(command: string, rules: Rule[], phase: string): Rule | null {
+    function checkCommandPatterns(command: string, rules: Rule[], phase: 'blocked' | 'allowed'): Rule | null {
       for (const rule of rules) {
         try {
           const regex = new RegExp(rule.pattern);
           const matched = regex.test(command);
           
-          logger.addCheck(rule.pattern, matched, matched ? phase : undefined, matched ? rule.reason : undefined);
-          
           if (matched) {
+            logger.setMatchedPattern(rule.pattern, phase, rule.reason);
             return rule;
           }
         } catch (error) {
           console.error(`[CommandFilter] Invalid regex pattern: ${rule.pattern}`);
-          logger.addCheck(rule.pattern, false, undefined, `Invalid regex: ${error}`);
         }
       }
       return null;
     }
     
     // Helper function to check file patterns
-    function checkFilePatterns(filePath: string, rules: Rule[], phase: string): Rule | null {
+    function checkFilePatterns(filePath: string, rules: Rule[], phase: 'blocked' | 'allowed'): Rule | null {
       for (const rule of rules) {
         const matched = matchesGlob(filePath, rule.pattern);
         
-        logger.addCheck(rule.pattern, matched, matched ? phase : undefined, matched ? rule.reason : undefined);
-        
         if (matched) {
+          logger.setMatchedPattern(rule.pattern, phase, rule.reason);
           return rule;
         }
       }
