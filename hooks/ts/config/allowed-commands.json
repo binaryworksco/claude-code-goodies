@@ -26,7 +26,7 @@
     },
     {
       "pattern": "^git\\s+",
-      "reason": "All git commands are safe"
+      "reason": "Git commands are allowed (except git rm which is blocked)"
     },
     {
       "pattern": "^git$",

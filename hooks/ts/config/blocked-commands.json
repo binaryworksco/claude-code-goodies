@@ -55,6 +55,10 @@
     {
       "pattern": ":(){ :|:& };:",
       "reason": "Fork bomb detected"
+    },
+    {
+      "pattern": "^git\\s+rm\\s+",
+      "reason": "Git remove command requires confirmation to prevent accidental file deletion"
     }
   ],
   "files": {
