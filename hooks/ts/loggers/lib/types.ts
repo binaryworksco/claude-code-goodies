@@ -16,7 +16,7 @@ export interface PreToolUseInput extends HookInput {
 }
 
 export interface PreToolUseDecision {
-  decision?: 'approve' | 'deny';
+  decision?: 'approve' | 'block';
   reason?: string;
   info?: string;
 }

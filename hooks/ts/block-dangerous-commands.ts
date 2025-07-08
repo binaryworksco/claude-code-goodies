@@ -9,13 +9,13 @@ import { PreToolUseInput, PreToolUseDecision } from './loggers/lib/types';
 // Types for our configuration
 interface CommandRule {
   pattern: string;
-  action: 'deny' | 'prompt';
+  action: 'block' | 'prompt';
   reason: string;
 }
 
 interface FileRule {
   pattern: string;
-  action: 'deny' | 'prompt';
+  action: 'block' | 'prompt';
   reason: string;
 }
 
@@ -214,13 +214,13 @@ async function main() {
           logger.addCheck(rule.pattern, matched, matched ? rule.action : undefined, matched ? rule.reason : undefined);
           
           if (matched) {
-            if (rule.action === 'deny') {
+            if (rule.action === 'block') {
               const response: PreToolUseDecision = {
-                decision: 'deny',
+                decision: 'block',
                 reason: rule.reason
               };
               const responseStr = JSON.stringify(response);
-              logger.logDecision(toolName, toolInput, 'deny', responseStr);
+              logger.logDecision(toolName, toolInput, 'block', responseStr);
               process.stdout.write(responseStr);
               return;
             } else if (rule.action === 'prompt') {
@@ -250,13 +250,13 @@ async function main() {
         logger.addCheck(rule.pattern, matched, matched ? rule.action : undefined, matched ? rule.reason : undefined);
         
         if (matched) {
-          if (rule.action === 'deny') {
+          if (rule.action === 'block') {
             const response: PreToolUseDecision = {
-              decision: 'deny',
+              decision: 'block',
               reason: rule.reason
             };
             const responseStr = JSON.stringify(response);
-            logger.logDecision(toolName, toolInput, 'deny', responseStr);
+            logger.logDecision(toolName, toolInput, 'block', responseStr);
             process.stdout.write(responseStr);
             return;
           } else if (rule.action === 'prompt') {

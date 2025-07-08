@@ -22,47 +22,47 @@
     },
     {
       "pattern": "^reboot$",
-      "action": "deny",
+      "action": "block",
       "reason": "System reboot is not allowed"
     },
     {
       "pattern": "^shutdown",
-      "action": "deny",
+      "action": "block",
       "reason": "System shutdown is not allowed"
     },
     {
       "pattern": "^poweroff",
-      "action": "deny",
+      "action": "block",
       "reason": "System poweroff is not allowed"
     },
     {
       "pattern": "^dd\\s+",
-      "action": "deny",
+      "action": "block",
       "reason": "dd command is too dangerous and can destroy disks"
     },
     {
       "pattern": "^mkfs",
-      "action": "deny",
+      "action": "block",
       "reason": "Filesystem formatting is not allowed"
     },
     {
       "pattern": "^fdisk",
-      "action": "deny",
+      "action": "block",
       "reason": "Disk partitioning is not allowed"
     },
     {
       "pattern": "^parted",
-      "action": "deny",
+      "action": "block",
       "reason": "Disk partitioning is not allowed"
     },
     {
       "pattern": "curl.*\\|\\s*sh",
-      "action": "deny",
+      "action": "block",
       "reason": "Piping curl to shell is a security risk"
     },
     {
       "pattern": "wget.*\\|\\s*bash",
-      "action": "deny",
+      "action": "block",
       "reason": "Piping wget to shell is a security risk"
     },
     {
@@ -82,12 +82,12 @@
     },
     {
       "pattern": ">\\s*/dev/sda",
-      "action": "deny",
+      "action": "block",
       "reason": "Writing directly to disk devices is dangerous"
     },
     {
       "pattern": ":(){ :|:& };:",
-      "action": "deny",
+      "action": "block",
       "reason": "Fork bomb detected"
     }
   ],
@@ -105,17 +105,17 @@
       },
       {
         "pattern": "**/.ssh/**",
-        "action": "deny",
+        "action": "block",
         "reason": "SSH files contain private keys"
       },
       {
         "pattern": "**/secrets/**",
-        "action": "deny",
+        "action": "block",
         "reason": "Secrets directory is restricted"
       },
       {
         "pattern": "**/credentials/**",
-        "action": "deny",
+        "action": "block",
         "reason": "Credentials directory is restricted"
       },
       {
@@ -137,17 +137,17 @@
     "write": [
       {
         "pattern": ".env",
-        "action": "deny",
+        "action": "block",
         "reason": "Cannot modify environment files directly"
       },
       {
         "pattern": ".env.*",
-        "action": "deny",
+        "action": "block",
         "reason": "Cannot modify environment files directly"
       },
       {
         "pattern": ".ssh/authorized_keys",
-        "action": "deny",
+        "action": "block",
         "reason": "SSH authorized keys file is protected"
       },
       {
@@ -157,7 +157,7 @@
       },
       {
         "pattern": "/etc/**",
-        "action": "deny",
+        "action": "block",
         "reason": "System configuration files are protected"
       },
       {
@@ -175,7 +175,7 @@
   "_comment": "This file configures dangerous command detection for Claude Code",
   "_instructions": "This file should be located at ~/.claude/hooks/ts/config/dangerous-commands.json",
   "_actions": {
-    "deny": "Blocks the operation immediately with the given reason",
+    "block": "Blocks the operation immediately with the given reason",
     "prompt": "Falls back to Claude Code's standard permission prompt"
   }
 }
