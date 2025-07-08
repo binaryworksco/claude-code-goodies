@@ -40,13 +40,16 @@ Claude Code is powerful, but constantly approving routine operations interrupts 
   bun --version
   
   # If not installed, visit: https://bun.sh
+  
+  # For WSL users: Install bun in WSL environment
+  curl -fsSL https://bun.sh/install | bash
   ```
 - `jq` command-line tool (optional, for viewing JSON logs)
   ```bash
   # macOS
   brew install jq
   
-  # Ubuntu/Debian
+  # Ubuntu/Debian/WSL
   sudo apt-get install jq
   
   # Other
@@ -208,9 +211,9 @@ Example additions:
 "^src/.*\\.(js|ts)$"
 ```
 
-## 🔊 Sound Notifications (macOS)
+## 🔊 Sound Notifications
 
-The universal sound player plays different sounds for different Claude Code events:
+The universal sound player plays different sounds for different Claude Code events across multiple platforms:
 
 ### Sound Types
 - **Completion Sound**: When Claude finishes a task
@@ -233,8 +236,22 @@ The universal sound player plays different sounds for different Claude Code even
    ERROR_SOUND="Sosumi"            # When an error occurs
    ```
 
-### Available Sounds
-Basso, Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi, Submarine, Tink
+### Platform Support
+
+#### macOS
+- Uses native system sounds from `/System/Library/Sounds/`
+- Available sounds: Basso, Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi, Submarine, Tink
+
+#### Windows / WSL
+- Uses PowerShell to play beep sounds
+- Sound names map to different frequencies and durations
+- Works in both native Windows and WSL environments
+- Note: Actual system sounds are not available; uses beeps instead
+
+#### Linux (Native)
+- Uses PulseAudio (`paplay`) for system sounds
+- Falls back to `speaker-test` if PulseAudio is not available
+- Requires audio system to be properly configured
 
 ## ⌨️ Custom Commands
 
@@ -270,11 +287,11 @@ Commands are markdown files with prompts that Claude Code executes. To create yo
 
 ### View logs
 
-The TypeScript hooks log to both project-local and user directories:
+All logs are stored in the current working directory to keep them contained per Claude instance:
 
 ```bash
-# Command filter logs (in user directory)
-tail -f ~/.claude/logs/hooks/command-filter.log
+# Command filter logs (in current directory)
+tail -f ./.claude/logs/hooks/command-filter.log
 
 # Hook activity logs (in project directory)
 tail -f ./logs/hooks/pre-tool-use.json
@@ -409,17 +426,36 @@ These hooks execute with your user permissions. Always:
 3. Restart Claude Code completely
 
 ### Sound notifications not working
-1. Ensure you're on macOS (uses `afplay` command)
-2. Check volume settings are not muted
-3. Try playing a sound manually: `afplay /System/Library/Sounds/Glass.aiff`
+
+#### macOS
+1. Check volume settings are not muted
+2. Try playing a sound manually: `afplay /System/Library/Sounds/Glass.aiff`
+3. Check the configuration in `~/.claude/.env`
+
+#### Windows / WSL
+1. Ensure PowerShell is accessible from your environment
+2. Test PowerShell beep: `powershell.exe -c "[Console]::Beep(1000, 300)"`
+3. For WSL, ensure Windows interop is enabled
+4. Check the configuration in `~/.claude/.env`
+
+#### Linux
+1. Check if PulseAudio is running: `pactl info`
+2. Test sound playback: `paplay /usr/share/sounds/freedesktop/stereo/complete.oga`
+3. Ensure audio permissions are configured correctly
 4. Check the configuration in `~/.claude/.env`
 
 ### Commands not auto-approving
 1. Check the pattern in `allowed-commands.json`
 2. Verify regex syntax (use `^` and `$` for exact matches)
-3. Check command filter logs: `tail -f ~/.claude/logs/hooks/command-filter.log`
+3. Check command filter logs: `tail -f ./.claude/logs/hooks/command-filter.log`
 4. Ensure the command isn't matching a blocked pattern first
 5. Look for the `matchedPattern` field in logs to see what was matched
+
+### WSL-specific issues
+1. Ensure bun is installed in the WSL environment, not Windows
+2. File paths should use Unix format (`/mnt/c/...` not `C:\...`)
+3. Sound notifications require Windows interop to be enabled
+4. Use `powershell.exe` instead of `powershell` for sound commands
 
 ---
 

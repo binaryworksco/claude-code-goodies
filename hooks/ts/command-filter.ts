@@ -183,8 +183,8 @@ class Logger {
     const envConfig = loadEnvConfig();
     this.loggingEnabled = envConfig.COMMAND_FILTER_LOG_ENABLED !== 'false';
     
-    // Use user directory for persistent logs
-    this.logDir = path.join(os.homedir(), '.claude', 'logs', 'hooks');
+    // Use current working directory for logs (contained per Claude instance)
+    this.logDir = path.join(process.cwd(), '.claude', 'logs', 'hooks');
     this.logFile = path.join(this.logDir, 'command-filter.log');
     
     if (this.loggingEnabled) {

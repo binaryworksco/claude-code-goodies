@@ -155,24 +155,113 @@ function getSoundForHook(hookType: string, config: SoundConfig, input: HookInput
   }
 }
 
-// Play sound using macOS afplay
-function playSound(soundName: string): void {
-  const soundPath = `/System/Library/Sounds/${soundName}.aiff`;
-  
-  // Check if sound file exists
-  if (!fs.existsSync(soundPath)) {
-    console.error(`Sound file not found: ${soundPath}`);
-    return;
+// Detect if running under WSL
+function isWSL(): boolean {
+  try {
+    // Check if /proc/version exists and contains Microsoft or WSL
+    if (fs.existsSync('/proc/version')) {
+      const procVersion = fs.readFileSync('/proc/version', 'utf-8');
+      return procVersion.toLowerCase().includes('microsoft') || procVersion.toLowerCase().includes('wsl');
+    }
+    // Check for WSL-specific directory
+    return fs.existsSync('/mnt/c');
+  } catch {
+    return false;
   }
+}
+
+// Play sound based on platform
+function playSound(soundName: string): void {
+  const platform = process.platform;
   
-  // Spawn afplay process
-  const afplay = spawn('afplay', [soundPath], {
-    detached: true,
-    stdio: 'ignore'
-  });
-  
-  // Allow the parent process to exit independently
-  afplay.unref();
+  if (platform === 'darwin') {
+    // macOS - use afplay
+    const soundPath = `/System/Library/Sounds/${soundName}.aiff`;
+    
+    if (!fs.existsSync(soundPath)) {
+      console.error(`Sound file not found: ${soundPath}`);
+      return;
+    }
+    
+    const afplay = spawn('afplay', [soundPath], {
+      detached: true,
+      stdio: 'ignore'
+    });
+    afplay.unref();
+    
+  } else if (platform === 'win32' || isWSL()) {
+    // Windows or WSL - use PowerShell to play a beep
+    // Note: This is a simple beep, not the actual system sound
+    const command = isWSL() ? 'powershell.exe' : 'powershell';
+    
+    // Map sound names to different beep patterns
+    let frequency = 800;
+    let duration = 200;
+    
+    switch (soundName) {
+      case 'Glass':
+      case 'Funk':
+        frequency = 1000;
+        duration = 300;
+        break;
+      case 'Basso':
+        frequency = 400;
+        duration = 500;
+        break;
+      case 'Ping':
+      case 'Submarine':
+        frequency = 1500;
+        duration = 150;
+        break;
+      case 'Sosumi':
+        frequency = 600;
+        duration = 400;
+        break;
+    }
+    
+    const ps = spawn(command, [
+      '-NoProfile',
+      '-NonInteractive',
+      '-Command',
+      `[Console]::Beep(${frequency}, ${duration})`
+    ], {
+      detached: true,
+      stdio: 'ignore',
+      windowsHide: true
+    });
+    ps.unref();
+    
+  } else if (platform === 'linux' && !isWSL()) {
+    // Native Linux - try paplay or speaker-test
+    // First try paplay (PulseAudio)
+    const paplay = spawn('paplay', ['/usr/share/sounds/freedesktop/stereo/complete.oga'], {
+      detached: true,
+      stdio: 'ignore'
+    });
+    
+    paplay.on('error', () => {
+      // If paplay fails, try speaker-test for a simple beep
+      const speakerTest = spawn('speaker-test', ['-t', 'sine', '-f', '1000', '-l', '1'], {
+        detached: true,
+        stdio: 'ignore'
+      });
+      
+      // Kill speaker-test after 200ms
+      setTimeout(() => {
+        try {
+          speakerTest.kill();
+        } catch {}
+      }, 200);
+      
+      speakerTest.unref();
+    });
+    
+    paplay.unref();
+    
+  } else {
+    // Unsupported platform
+    console.error(`Sound notifications not supported on platform: ${platform}`);
+  }
 }
 
 async function main() {
