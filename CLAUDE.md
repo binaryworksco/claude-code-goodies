@@ -44,13 +44,14 @@ jq '.' ./logs/hooks/notification.json
 
 The system uses Claude Code's hook infrastructure to intercept tool operations:
 
-1. **PreToolUse Hook** (`command-filter.ts`): Evaluates each tool operation against blocked and allowed patterns. Operations matching allowed patterns are auto-approved; blocked patterns require confirmation; others prompt for user approval.
+1. **PreToolUse Hook** (`command-filter/command-filter.ts`): Evaluates each tool operation against blocked and allowed patterns. Operations matching allowed patterns are auto-approved; blocked patterns require confirmation; others prompt for user approval.
 
-2. **Universal Sound Player** (`sound-player.ts`): Plays different system sounds based on the hook event type:
+2. **Universal Sound Player** (`sound-player/sound-player.ts`): Plays WAV files based on the hook event type:
    - Stop events: Plays completion sound when Claude finishes
    - Notification events: Plays alert sound when Claude needs input
    - PreToolUse blocked events: Plays warning sound when dangerous command is blocked
    - Error events: Plays error sound when issues occur
+   - Uses local WAV files for consistent sound across all platforms
 
 3. **Logging Hooks** (`loggers/*.ts`): Record all hook activities to JSON files for debugging and analysis.
 
@@ -66,7 +67,7 @@ Commands are markdown files containing prompts that Claude Code executes. They'r
 
 ### Sound Notifications
 
-The universal sound player (`sound-player.ts`) can be configured to play different sounds for different events. Settings are stored in `~/.claude/.env`:
+The universal sound player (`sound-player/sound-player.ts`) plays WAV files for different events. Settings are stored in `~/.claude/.env`:
 
 ```bash
 # Edit the .env file
@@ -76,25 +77,37 @@ nano ~/.claude/.env
 SOUND_NOTIFICATIONS_ENABLED="true"
 
 # Configure sounds for different events:
-STOP_SOUND="Glass"                 # When Claude completes
-NOTIFICATION_SOUND="Ping"          # When Claude needs input
-PRETOOLUSE_BLOCK_SOUND="Basso"     # When command is blocked
-ERROR_SOUND="Sosumi"               # When error occurs
+STOP_SOUND="mixkit-happy-bell-alert.wav"     # When Claude completes
+NOTIFICATION_SOUND="mixkit-happy-bell-alert.wav"  # When Claude needs input
+PRETOOLUSE_BLOCK_SOUND="mixkit-happy-bell-alert.wav" # When command is blocked
+ERROR_SOUND="mixkit-happy-bell-alert.wav"    # When error occurs
 ```
 
-Available sounds on macOS: Basso, Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi, Submarine, Tink
+The sound player uses local WAV files stored in the `sound-player/wav/` directory, ensuring consistent audio across all platforms.
+
+You can specify different WAV files for each event type in your `~/.claude/.env`:
+```bash
+STOP_SOUND="completion.wav"          # Custom sound for completion
+NOTIFICATION_SOUND="alert.wav"       # Custom sound for notifications
+PRETOOLUSE_BLOCK_SOUND="warning.wav" # Custom sound for blocked commands
+ERROR_SOUND="error.wav"              # Custom sound for errors
+```
+
+WAV files can be:
+- Filenames from the `wav/` directory (e.g., `"mixkit-happy-bell-alert.wav"`)
+- Absolute paths to WAV files anywhere on your system (e.g., `"/Users/you/sounds/custom.wav"`)
 
 To use the sound player, add it to any hook in your `settings.json`:
 ```json
 {
-  "Stop": [{"hooks": [{"command": "bun ~/.claude/hooks/ts/sound-player.ts"}]}],
-  "Notification": [{"hooks": [{"command": "bun ~/.claude/hooks/ts/sound-player.ts"}]}]
+  "Stop": [{"hooks": [{"command": "bun ~/.claude/hooks/ts/sound-player/sound-player.ts"}]}],
+  "Notification": [{"hooks": [{"command": "bun ~/.claude/hooks/ts/sound-player/sound-player.ts"}]}]
 }
 ```
 
 ### Command Filtering
 
-The TypeScript command filter uses two JSON configuration files located in `~/.claude/hooks/ts/config/`:
+The TypeScript command filter uses two JSON configuration files located in `~/.claude/hooks/ts/command-filter/config/`:
 
 1. **`allowed-commands.json`**: Patterns for commands that should be auto-approved
 2. **`blocked-commands.json`**: Patterns for dangerous commands that always require confirmation
@@ -106,7 +119,7 @@ The filter checks patterns in this order:
 
 ## Working with Patterns
 
-### Allowed Commands (`config/allowed-commands.json`)
+### Allowed Commands (`command-filter/config/allowed-commands.json`)
 
 The file contains regex patterns for safe operations:
 - **Package managers**: npm, yarn, pnpm, bun commands
@@ -115,7 +128,7 @@ The file contains regex patterns for safe operations:
 - **Languages**: python, go, rust tools
 - **Claude Code tools**: Glob, Grep, Read, Write, etc.
 
-### Blocked Commands (`config/blocked-commands.json`)
+### Blocked Commands (`command-filter/config/blocked-commands.json`)
 
 Contains patterns for dangerous operations:
 - **Destructive**: rm -rf, dd, mkfs
@@ -136,8 +149,8 @@ All hooks are written in TypeScript and run with `bun`:
 
 ### Available Hooks
 
-- **`command-filter.ts`**: Auto-approval and blocking system for PreToolUse events
-- **`sound-player.ts`**: Universal sound player that detects hook type and plays appropriate sounds
+- **`command-filter/command-filter.ts`**: Auto-approval and blocking system for PreToolUse events
+- **`sound-player/sound-player.ts`**: Universal sound player that plays WAV files based on hook type
 - **`loggers/pre-tool-use.ts`**: Logs all pre-tool-use events to JSON
 - **`loggers/post-tool-use.ts`**: Logs all post-tool-use events to JSON
 - **`loggers/notification.ts`**: Logs all notification events to JSON

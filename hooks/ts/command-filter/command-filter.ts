@@ -4,7 +4,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { PreToolUseInput, PreToolUseDecision } from './loggers/lib/types';
+import { PreToolUseInput, PreToolUseDecision } from '../loggers/lib/types';
 
 // Types for our configuration
 interface Rule {
@@ -46,7 +46,7 @@ async function readStdin(): Promise<any> {
 
 // Helper to load blocked commands configuration
 function loadBlockedCommands(): CommandsConfig | null {
-  const configPath = path.join(os.homedir(), '.claude', 'hooks', 'ts', 'config', 'blocked-commands.json');
+  const configPath = path.join(os.homedir(), '.claude', 'hooks', 'ts', 'command-filter', 'config', 'blocked-commands.json');
   
   try {
     if (fs.existsSync(configPath)) {
@@ -69,7 +69,7 @@ function loadBlockedCommands(): CommandsConfig | null {
 
 // Helper to load allowed commands configuration
 function loadAllowedCommands(): CommandsConfig | null {
-  const configPath = path.join(os.homedir(), '.claude', 'hooks', 'ts', 'config', 'allowed-commands.json');
+  const configPath = path.join(os.homedir(), '.claude', 'hooks', 'ts', 'command-filter', 'config', 'allowed-commands.json');
   
   try {
     if (fs.existsSync(configPath)) {

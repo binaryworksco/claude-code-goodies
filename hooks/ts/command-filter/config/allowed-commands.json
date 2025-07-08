@@ -38,6 +38,11 @@
     },
     
     {
+      "pattern": "^grep\\s+",
+      "reason": "Searching file contents with grep is safe"
+    },
+    
+    {
       "pattern": "^git\\s+",
       "reason": "Git commands are allowed (except git rm which is blocked)"
     },

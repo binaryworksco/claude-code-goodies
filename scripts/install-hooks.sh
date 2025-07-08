@@ -155,11 +155,11 @@ if [ $TOTAL_COUNT -gt 0 ]; then
     echo "   - Copy settings-advanced.json.example to ~/.claude/settings.json"
     echo "   - TypeScript hooks will log to ./logs/hooks/*.json"
     echo ""
-    echo "5. To enable sound notifications (macOS):"
+    echo "5. To enable sound notifications (cross-platform):"
     echo "   - Add SOUND_NOTIFICATIONS_ENABLED=true to ~/.claude/.env"
-    echo "   - Add sound-player.ts to your hooks in settings.json"
-    echo "   - Different sounds play for different events (completion, notification, blocked, error)"
-    echo "   - Customize sounds in ~/.claude/.env (see .env.example for options)"
+    echo "   - Add sound-player/sound-player.ts to your hooks in settings.json"
+    echo "   - Uses WAV files for consistent sound across all platforms"
+    echo "   - Works on macOS, Windows, WSL, and Linux"
 else
     echo -e "${RED}✗ Installation may have failed - no scripts found in destination${NC}"
     exit 1

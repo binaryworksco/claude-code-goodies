@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// Universal sound player hook - Plays different sounds based on hook type (macOS)
+// Universal sound player hook - Plays WAV files based on hook type
 
 import { spawn } from 'child_process';
 import * as fs from 'fs';
@@ -31,13 +31,12 @@ interface SoundConfig {
   COMPLETION_SOUND?: string;
 }
 
-// Default sounds for different events
-const DEFAULT_SOUNDS = {
-  Stop: 'Glass',
-  Notification: 'Ping',
-  PreToolUseBlock: 'Basso',
-  Error: 'Sosumi',
-  Default: 'Tink'
+// Default WAV files for different events
+const DEFAULT_WAVS = {
+  Stop: 'mixkit-happy-bell-alert.wav',
+  Notification: 'mixkit-happy-bell-alert.wav',
+  PreToolUseBlock: 'mixkit-happy-bell-alert.wav',
+  Error: 'mixkit-happy-bell-alert.wav'
 };
 
 // Load environment configuration
@@ -118,8 +117,22 @@ function wasCommandBlocked(input: PreToolUseInput): boolean {
   }
 }
 
-// Determine which sound to play based on hook type and configuration
-function getSoundForHook(hookType: string, config: SoundConfig, input: HookInput): string | null {
+// Get the WAV file path based on configuration
+function getWavFilePath(wavFileName: string): string {
+  // Get the directory where this script is located
+  const scriptDir = path.dirname(new URL(import.meta.url).pathname);
+  
+  // Check if it's an absolute path
+  if (path.isAbsolute(wavFileName)) {
+    return wavFileName;
+  }
+  
+  // Otherwise, look in the wav subdirectory
+  return path.join(scriptDir, 'wav', wavFileName);
+}
+
+// Get the WAV filename for the given hook type and configuration
+function getWavForHook(hookType: string, config: SoundConfig, input: HookInput): string | null {
   // Check if sound notifications are enabled
   const soundEnabled = config.SOUND_NOTIFICATIONS_ENABLED?.toLowerCase() !== 'false';
   if (!soundEnabled) {
@@ -129,23 +142,23 @@ function getSoundForHook(hookType: string, config: SoundConfig, input: HookInput
   switch (hookType) {
     case 'Stop':
       // Use STOP_SOUND or fall back to COMPLETION_SOUND for backward compatibility
-      return config.STOP_SOUND || config.COMPLETION_SOUND || DEFAULT_SOUNDS.Stop;
+      return config.STOP_SOUND || config.COMPLETION_SOUND || DEFAULT_WAVS.Stop;
       
     case 'Notification':
-      return config.NOTIFICATION_SOUND || DEFAULT_SOUNDS.Notification;
+      return config.NOTIFICATION_SOUND || DEFAULT_WAVS.Notification;
       
     case 'PreToolUse':
       // Only play sound if command was blocked
       const preToolInput = input as PreToolUseInput;
       if (wasCommandBlocked(preToolInput)) {
-        return config.PRETOOLUSE_BLOCK_SOUND || DEFAULT_SOUNDS.PreToolUseBlock;
+        return config.PRETOOLUSE_BLOCK_SOUND || DEFAULT_WAVS.PreToolUseBlock;
       }
-      return null; // Don't play sound for allowed commands
+      return null;
       
     case 'PostToolUse':
-      // Could check for errors in tool_response
+      // Check for errors in tool_response
       if (input.tool_error) {
-        return config.ERROR_SOUND || DEFAULT_SOUNDS.Error;
+        return config.ERROR_SOUND || DEFAULT_WAVS.Error;
       }
       return null;
       
@@ -170,60 +183,36 @@ function isWSL(): boolean {
   }
 }
 
-// Play sound based on platform
-function playSound(soundName: string): void {
+// Play WAV file based on platform
+function playWavFile(wavPath: string): void {
+  // Check if WAV file exists
+  if (!fs.existsSync(wavPath)) {
+    console.error(`WAV file not found: ${wavPath}`);
+    return;
+  }
+  
   const platform = process.platform;
   
   if (platform === 'darwin') {
     // macOS - use afplay
-    const soundPath = `/System/Library/Sounds/${soundName}.aiff`;
-    
-    if (!fs.existsSync(soundPath)) {
-      console.error(`Sound file not found: ${soundPath}`);
-      return;
-    }
-    
-    const afplay = spawn('afplay', [soundPath], {
+    const afplay = spawn('afplay', [wavPath], {
       detached: true,
       stdio: 'ignore'
     });
     afplay.unref();
     
   } else if (platform === 'win32' || isWSL()) {
-    // Windows or WSL - use PowerShell to play a beep
-    // Note: This is a simple beep, not the actual system sound
+    // Windows or WSL - use PowerShell SoundPlayer
     const command = isWSL() ? 'powershell.exe' : 'powershell';
     
-    // Map sound names to different beep patterns
-    let frequency = 800;
-    let duration = 200;
-    
-    switch (soundName) {
-      case 'Glass':
-      case 'Funk':
-        frequency = 1000;
-        duration = 300;
-        break;
-      case 'Basso':
-        frequency = 400;
-        duration = 500;
-        break;
-      case 'Ping':
-      case 'Submarine':
-        frequency = 1500;
-        duration = 150;
-        break;
-      case 'Sosumi':
-        frequency = 600;
-        duration = 400;
-        break;
-    }
+    // Escape the path for PowerShell
+    const escapedPath = wavPath.replace(/'/g, "''");
     
     const ps = spawn(command, [
       '-NoProfile',
       '-NonInteractive',
       '-Command',
-      `[Console]::Beep(${frequency}, ${duration})`
+      `(New-Object Media.SoundPlayer '${escapedPath}').PlaySync()`
     ], {
       detached: true,
       stdio: 'ignore',
@@ -232,28 +221,24 @@ function playSound(soundName: string): void {
     ps.unref();
     
   } else if (platform === 'linux' && !isWSL()) {
-    // Native Linux - try paplay or speaker-test
-    // First try paplay (PulseAudio)
-    const paplay = spawn('paplay', ['/usr/share/sounds/freedesktop/stereo/complete.oga'], {
+    // Native Linux - try paplay first, then aplay
+    const paplay = spawn('paplay', [wavPath], {
       detached: true,
       stdio: 'ignore'
     });
     
     paplay.on('error', () => {
-      // If paplay fails, try speaker-test for a simple beep
-      const speakerTest = spawn('speaker-test', ['-t', 'sine', '-f', '1000', '-l', '1'], {
+      // If paplay fails, try aplay
+      const aplay = spawn('aplay', [wavPath], {
         detached: true,
         stdio: 'ignore'
       });
       
-      // Kill speaker-test after 200ms
-      setTimeout(() => {
-        try {
-          speakerTest.kill();
-        } catch {}
-      }, 200);
+      aplay.on('error', (err) => {
+        console.error('Failed to play sound with both paplay and aplay:', err.message);
+      });
       
-      speakerTest.unref();
+      aplay.unref();
     });
     
     paplay.unref();
@@ -280,12 +265,13 @@ async function main() {
     // Load configuration
     const config = loadEnvConfig();
     
-    // Determine which sound to play
-    const soundName = getSoundForHook(hookType, config, input);
+    // Determine which WAV file to play
+    const wavFileName = getWavForHook(hookType, config, input);
     
-    if (soundName) {
-      // Play the sound
-      playSound(soundName);
+    if (wavFileName) {
+      // Get WAV file path and play it
+      const wavPath = getWavFilePath(wavFileName);
+      playWavFile(wavPath);
     }
     
     // For PreToolUse hooks, we need to pass through the original response

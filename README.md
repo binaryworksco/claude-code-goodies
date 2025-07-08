@@ -134,14 +134,14 @@ Claude Code is powerful, but constantly approving routine operations interrupts 
 The `.env` file stores your configuration preferences:
 
 ```bash
-# Sound Notification Settings (macOS)
+# Sound Notification Settings
 SOUND_NOTIFICATIONS_ENABLED="true"
 
-# Different sounds for different events
-STOP_SOUND="Glass"                 # When Claude completes (default: Glass)
-NOTIFICATION_SOUND="Ping"          # When Claude needs input (default: Ping)
-PRETOOLUSE_BLOCK_SOUND="Basso"     # When a command is blocked (default: Basso)
-ERROR_SOUND="Sosumi"               # When an error occurs (default: Sosumi)
+# Specify WAV files for different events
+STOP_SOUND="mixkit-happy-bell-alert.wav"         # When Claude completes
+NOTIFICATION_SOUND="mixkit-happy-bell-alert.wav"  # When Claude needs input
+PRETOOLUSE_BLOCK_SOUND="mixkit-happy-bell-alert.wav" # When command is blocked
+ERROR_SOUND="mixkit-happy-bell-alert.wav"        # When an error occurs
 
 # Logging Settings
 COMMAND_FILTER_LOG_ENABLED="true"  # Set to "false" to disable command filter logging
@@ -153,8 +153,8 @@ COMMAND_FILTER_LOG_ENABLED="true"  # Set to "false" to disable command filter lo
 
 The TypeScript command filter uses two JSON configuration files:
 
-1. **`~/.claude/hooks/ts/config/allowed-commands.json`** - Patterns for safe operations that auto-approve
-2. **`~/.claude/hooks/ts/config/blocked-commands.json`** - Patterns for dangerous operations that always require confirmation
+1. **`~/.claude/hooks/ts/command-filter/config/allowed-commands.json`** - Patterns for safe operations that auto-approve
+2. **`~/.claude/hooks/ts/command-filter/config/blocked-commands.json`** - Patterns for dangerous operations that always require confirmation
 
 The filter checks patterns in this order:
 1. Check blocked patterns first (always block if matched)
@@ -193,10 +193,10 @@ Edit the JSON configuration files to add new patterns:
 
 ```bash
 # Edit allowed commands
-nano ~/.claude/hooks/ts/config/allowed-commands.json
+nano ~/.claude/hooks/ts/command-filter/config/allowed-commands.json
 
 # Edit blocked commands  
-nano ~/.claude/hooks/ts/config/blocked-commands.json
+nano ~/.claude/hooks/ts/command-filter/config/blocked-commands.json
 ```
 
 Example additions:
@@ -225,33 +225,36 @@ The universal sound player plays different sounds for different Claude Code even
 1. Add `SOUND_NOTIFICATIONS_ENABLED="true"` to `~/.claude/.env`
 2. Add the sound-player hook to your desired hooks in `settings.json`:
    ```json
-   "Stop": [{"hooks": [{"command": "bun ~/.claude/hooks/ts/sound-player.ts"}]}],
-   "Notification": [{"hooks": [{"command": "bun ~/.claude/hooks/ts/sound-player.ts"}]}]
+   "Stop": [{"hooks": [{"command": "bun ~/.claude/hooks/ts/sound-player/sound-player.ts"}]}],
+   "Notification": [{"hooks": [{"command": "bun ~/.claude/hooks/ts/sound-player/sound-player.ts"}]}]
    ```
 3. Customize sounds in `~/.claude/.env`:
    ```bash
-   STOP_SOUND="Glass"              # When Claude completes
-   NOTIFICATION_SOUND="Ping"       # When Claude needs input
-   PRETOOLUSE_BLOCK_SOUND="Basso"  # When command is blocked
-   ERROR_SOUND="Sosumi"            # When an error occurs
+   # Use WAV files from the wav/ directory
+   STOP_SOUND="mixkit-happy-bell-alert.wav"
+   NOTIFICATION_SOUND="mixkit-happy-bell-alert.wav"
+   PRETOOLUSE_BLOCK_SOUND="mixkit-happy-bell-alert.wav"
+   ERROR_SOUND="mixkit-happy-bell-alert.wav"
+   
+   # Or use absolute paths to your own WAV files
+   STOP_SOUND="/path/to/your/completion-sound.wav"
    ```
 
 ### Platform Support
 
+The sound player uses local WAV files for consistent audio across all platforms:
+
 #### macOS
-- Uses native system sounds from `/System/Library/Sounds/`
-- Available sounds: Basso, Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi, Submarine, Tink
+- Uses `afplay` command to play WAV files
+- Pre-installed on all macOS systems
 
 #### Windows / WSL
-- Uses PowerShell to play beep sounds
-- Sound names map to different frequencies and durations
+- Uses PowerShell's Media.SoundPlayer to play WAV files
 - Works in both native Windows and WSL environments
-- Note: Actual system sounds are not available; uses beeps instead
 
 #### Linux (Native)
-- Uses PulseAudio (`paplay`) for system sounds
-- Falls back to `speaker-test` if PulseAudio is not available
-- Requires audio system to be properly configured
+- Uses PulseAudio (`paplay`) to play WAV files
+- Falls back to ALSA (`aplay`) if PulseAudio is not available
 
 ## ⌨️ Custom Commands
 
@@ -332,8 +335,8 @@ The TypeScript hooks automatically log all activity to JSON files. For additiona
 
 ### Modify auto-approval patterns
 Edit the JSON configuration files - changes take effect immediately:
-- `~/.claude/hooks/ts/config/allowed-commands.json`
-- `~/.claude/hooks/ts/config/blocked-commands.json`
+- `~/.claude/hooks/ts/command-filter/config/allowed-commands.json`
+- `~/.claude/hooks/ts/command-filter/config/blocked-commands.json`
 
 ### Disable sound notifications
 Set `SOUND_NOTIFICATIONS_ENABLED="false"` in `~/.claude/.env`.
@@ -365,20 +368,23 @@ claude-code-goodies/
 ├── settings-advanced.json.example # Advanced settings example
 ├── hooks/
 │   └── ts/                      # TypeScript hooks
-│       ├── command-filter.ts    # Auto-approval/blocking system
-│       ├── sound-player.ts      # Universal sound notifications (macOS)
+│       ├── command-filter/     # Command filtering system
+│       │   ├── command-filter.ts # Auto-approval/blocking logic
+│       │   └── config/          # Configuration files
+│       │       ├── allowed-commands.json # Auto-approve patterns
+│       │       └── blocked-commands.json # Dangerous command patterns
+│       ├── sound-player/        # Sound notification system
+│       │   ├── sound-player.ts  # Universal sound player
+│       │   └── wav/             # WAV sound files
 │       ├── lib/                 # Shared utilities
 │       │   ├── types.ts         # TypeScript type definitions
 │       │   └── logger.ts        # JSON logging utility
-│       ├── loggers/             # Logging hooks
-│       │   ├── pre-tool-use.ts  # Log pre-tool-use events
-│       │   ├── post-tool-use.ts # Log post-tool-use events
-│       │   ├── notification.ts  # Log notification events
-│       │   ├── stop.ts          # Log stop events
-│       │   └── subagent-stop.ts # Log subagent-stop events
-│       └── config/              # Configuration files
-│           ├── allowed-commands.json # Auto-approve patterns
-│           └── blocked-commands.json # Dangerous command patterns
+│       └── loggers/             # Logging hooks
+│           ├── pre-tool-use.ts  # Log pre-tool-use events
+│           ├── post-tool-use.ts # Log post-tool-use events
+│           ├── notification.ts  # Log notification events
+│           ├── stop.ts          # Log stop events
+│           └── subagent-stop.ts # Log subagent-stop events
 ├── commands/                    # Custom Claude Code commands
 │   └── cpr.md                   # Commit, Push, PR command
 ├── scripts/                     # Installation scripts

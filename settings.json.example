@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bun ~/.claude/hooks/ts/command-filter.ts"
+            "command": "bun ~/.claude/hooks/ts/command-filter/command-filter.ts"
           }
         ]
       }
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bun ~/.claude/hooks/ts/sound-player.ts"
+            "command": "bun ~/.claude/hooks/ts/sound-player/sound-player.ts"
           }
         ]
       }
@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bun ~/.claude/hooks/ts/sound-player.ts"
+            "command": "bun ~/.claude/hooks/ts/sound-player/sound-player.ts"
           }
         ]
       }
