@@ -1,4 +1,4 @@
-#!/usr/bin/env npx tsx
+#!/usr/bin/env bun
 // Command filter: blocks dangerous commands, approves safe ones, falls back to Claude for others
 
 import * as fs from 'fs';
@@ -55,6 +55,13 @@ function loadBlockedCommands(): CommandsConfig | null {
     }
   } catch (error) {
     console.error(`[CommandFilter] Error loading blocked commands: ${error}`);
+    // Log config errors
+    try {
+      const logger = new Logger();
+      logger.logConfigError(`Error loading blocked commands: ${error}`);
+    } catch {
+      // Ignore logging errors
+    }
   }
   
   return null;
@@ -71,6 +78,13 @@ function loadAllowedCommands(): CommandsConfig | null {
     }
   } catch (error) {
     console.error(`[CommandFilter] Error loading allowed commands: ${error}`);
+    // Log config errors
+    try {
+      const logger = new Logger();
+      logger.logConfigError(`Error loading allowed commands: ${error}`);
+    } catch {
+      // Ignore logging errors
+    }
   }
   
   return null;
@@ -97,6 +111,49 @@ function matchesGlob(str: string, pattern: string): boolean {
   }
 }
 
+// Environment configuration interface
+interface EnvConfig {
+  COMMAND_FILTER_LOG_ENABLED?: string;
+  [key: string]: string | undefined;
+}
+
+// Load environment configuration
+function loadEnvConfig(): EnvConfig {
+  const envPath = path.join(os.homedir(), '.claude', '.env');
+  const config: EnvConfig = {};
+  
+  try {
+    if (fs.existsSync(envPath)) {
+      const content = fs.readFileSync(envPath, 'utf-8');
+      content.split('\n').forEach(line => {
+        const trimmed = line.trim();
+        if (trimmed && !trimmed.startsWith('#')) {
+          const equalIndex = trimmed.indexOf('=');
+          if (equalIndex > 0) {
+            const key = trimmed.substring(0, equalIndex).trim();
+            let value = trimmed.substring(equalIndex + 1).trim();
+            
+            // Remove quotes from value if present
+            value = value.replace(/^["']|["']$/g, '');
+            
+            // Remove inline comments
+            const commentIndex = value.indexOf('#');
+            if (commentIndex > 0) {
+              value = value.substring(0, commentIndex).trim();
+            }
+            
+            config[key] = value;
+          }
+        }
+      });
+    }
+  } catch (error) {
+    // Silently ignore env loading errors
+  }
+  
+  return config;
+}
+
 // Enhanced logging system
 interface LogEntry {
   timestamp: string;
@@ -119,27 +176,37 @@ class Logger {
   private logDir: string;
   private logFile: string;
   private matchedPattern: LogEntry['matchedPattern'] | null = null;
+  private loggingEnabled: boolean;
   
   constructor() {
-    // Use project-local directory
-    this.logDir = path.join(process.cwd(), '.claude', 'logs', 'hooks');
+    // Load env config to check if logging is enabled
+    const envConfig = loadEnvConfig();
+    this.loggingEnabled = envConfig.COMMAND_FILTER_LOG_ENABLED !== 'false';
+    
+    // Use user directory for persistent logs
+    this.logDir = path.join(os.homedir(), '.claude', 'logs', 'hooks');
     this.logFile = path.join(this.logDir, 'command-filter.log');
-    this.ensureLogDirectory();
+    
+    if (this.loggingEnabled) {
+      this.ensureLogDirectory();
+    }
   }
   
   private ensureLogDirectory(): void {
     try {
       fs.mkdirSync(this.logDir, { recursive: true });
     } catch (error) {
-      console.error(`[DangerousCommands] Failed to create log directory: ${error}`);
+      console.error(`[CommandFilter] Failed to create log directory: ${error}`);
     }
   }
   
   private writeLog(entry: LogEntry): void {
+    if (!this.loggingEnabled) return;
+    
     try {
       fs.appendFileSync(this.logFile, JSON.stringify(entry) + '\n', 'utf-8');
     } catch (error) {
-      console.error(`[DangerousCommands] Failed to write log: ${error}`);
+      console.error(`[CommandFilter] Failed to write log: ${error}`);
     }
   }
   
@@ -152,11 +219,10 @@ class Logger {
     });
   }
   
-  logConfigStatus(loaded: boolean, error?: string): void {
+  logConfigError(error: string): void {
     this.writeLog({
       timestamp: new Date().toISOString(),
-      event: 'config_load',
-      configLoaded: loaded,
+      event: 'config_error',
       error
     });
   }
@@ -209,9 +275,6 @@ async function main() {
     // Load configurations
     const blockedConfig = loadBlockedCommands();
     const allowedConfig = loadAllowedCommands();
-    
-    logger.logConfigStatus(!!blockedConfig, blockedConfig ? undefined : 'Blocked commands config not found');
-    logger.logConfigStatus(!!allowedConfig, allowedConfig ? undefined : 'Allowed commands config not found');
     
     // Helper function to check command patterns
     function checkCommandPatterns(command: string, rules: Rule[], phase: 'blocked' | 'allowed'): Rule | null {

@@ -139,6 +139,9 @@ STOP_SOUND="Glass"                 # When Claude completes (default: Glass)
 NOTIFICATION_SOUND="Ping"          # When Claude needs input (default: Ping)
 PRETOOLUSE_BLOCK_SOUND="Basso"     # When a command is blocked (default: Basso)
 ERROR_SOUND="Sosumi"               # When an error occurs (default: Sosumi)
+
+# Logging Settings
+COMMAND_FILTER_LOG_ENABLED="true"  # Set to "false" to disable command filter logging
 ```
 
 **Important**: Your configuration is stored separately from the hook scripts, so it won't be overwritten when updating the hooks.
@@ -289,6 +292,10 @@ Log entries include:
 - Matched patterns (or `noMatch: true`)
 - Decision made (approved/blocked/manual)
 - Process information
+
+### Disable logging
+
+You can disable command filter logging by setting `COMMAND_FILTER_LOG_ENABLED="false"` in your `~/.claude/.env` file. This is useful if you want to reduce disk usage or improve performance.
 
 ## 🛠️ Customization
 
