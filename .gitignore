@@ -8,6 +8,10 @@
 
 # Logs
 *.log
+logs
+
+# Claude project-specific files
+.claude/
 
 # Local settings
 *.local

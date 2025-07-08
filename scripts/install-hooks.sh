@@ -69,6 +69,26 @@ for file in "$HOOKS_SOURCE"/*.txt; do
     fi
 done
 
+# Copy TypeScript hooks if they exist
+if [ -d "$HOOKS_SOURCE/ts" ]; then
+    echo ""
+    echo "Copying TypeScript hooks..."
+    
+    # Copy the entire TypeScript directory structure
+    cp -r "$HOOKS_SOURCE/ts" "$HOOKS_DEST/"
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✓ Copied TypeScript hooks directory${NC}"
+        # Make all .ts files executable
+        find "$HOOKS_DEST/ts" -name "*.ts" -type f -exec chmod +x {} \;
+        
+        # Count and display copied files
+        TS_COUNT=$(find "$HOOKS_DEST/ts" -name "*.ts" -type f | wc -l)
+        echo -e "${GREEN}✓ Installed $TS_COUNT TypeScript files${NC}"
+    else
+        echo -e "${RED}✗ Failed to copy TypeScript hooks${NC}"
+    fi
+fi
+
 # Check if settings.json needs to be copied
 echo ""
 if [ ! -f "$CLAUDE_DIR/settings.json" ]; then
@@ -124,6 +144,10 @@ if [ $INSTALLED_COUNT -gt 0 ]; then
     echo "3. View logs:"
     echo "   - tail -f ~/.claude/logs/auto-approve.log"
     echo "   - tail -f ~/.claude/logs/auto-blocked.log"
+    echo ""
+    echo "4. To use TypeScript logging hooks:"
+    echo "   - Copy settings-typescript.json.example to ~/.claude/settings.json"
+    echo "   - TypeScript hooks will log to ./logs/hooks/*.json"
 else
     echo -e "${RED}✗ Installation may have failed - no scripts found in destination${NC}"
     exit 1
