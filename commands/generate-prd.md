@@ -5,15 +5,13 @@ Creates a Product Requirements Document (PRD) as a new markdown file based on a 
 </command_overview>
 
 <usage>
-/generate-prd <feature_description></feature_description>
+/generate-prd <feature_description/>
 
 Example:
 /generate-prd Add ability to export contacts to CSV
 </usage>
 
-<feature_description>
-#$ARGUMENTS
-</feature_description>
+<feature_description>$ARGUMENTS</feature_description>
 
 <prd_number>
 Every PRD is given a number, if there are no files in the ./docs/prd folder, the first PRD number is 0001. For every new PRD generated, increment the prd-number by 1.

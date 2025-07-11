@@ -5,7 +5,7 @@ Implements a Product Requirements Document (PRD) from the ./docs/prd directory f
 </command_overview>
 
 <usage>
-/implement-prd <prd_number>
+/implement-prd <prd_number/>
 
 Example:
 /implement-prd 5

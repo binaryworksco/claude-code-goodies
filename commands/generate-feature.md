@@ -11,9 +11,7 @@ Example:
 /generate-feature Add dark mode toggle to settings
 </usage>
 
-<feature_description>
-$ARGUMENTS
-</feature_description>
+<feature_description>$ARGUMENTS</feature_description>
 
 <feature_number>
 Every feature is given a number. If there are no files in the ./docs/features folder, the first feature number is 0001. For every new feature generated, increment the feature-number by 1.
