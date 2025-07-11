@@ -212,8 +212,16 @@
       "reason": "Formatting .NET code is safe"
     },
     {
-      "pattern": "^dotnet ef (migrations add|database update|dbcontext scaffold)",
-      "reason": "Entity Framework operations are safe"
+      "pattern": "^dotnet ef migrations",
+      "reason": "All Entity Framework migrations commands are safe"
+    },
+    {
+      "pattern": "^dotnet ef database",
+      "reason": "Entity Framework database commands are safe"
+    },
+    {
+      "pattern": "^dotnet ef dbcontext",
+      "reason": "Entity Framework dbcontext commands are safe"
     },
     {
       "pattern": "^dotnet --version$",
