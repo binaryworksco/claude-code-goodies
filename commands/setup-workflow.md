@@ -41,6 +41,7 @@ When you are given a task, always do the following:
 - Create logical connections between implementation, structure, and design
 </response_style>
 
-<claude_context>
-Update the project CLAUDE.md to include the above instructions, explaining what you need to do. Don't change the structure, workflow or response_style instructions.
-</claude_context>
+<actions>
+1. Create the /docs folder structure as set out in <structure> section.
+2. Update the project CLAUDE.md to include the above instructions, explaining what you need to do. Don't change the structure, workflow or response_style instructions.
+</actions>
