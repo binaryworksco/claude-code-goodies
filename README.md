@@ -286,6 +286,42 @@ Commands are markdown files with prompts that Claude Code executes. To create yo
 3. Use `$ARGUMENTS` to accept parameters
 4. Run `./scripts/install-commands.sh` to install
 
+## 📚 Feature-Centric Workflow
+
+This repository includes a comprehensive workflow system for managing development with Claude Code. The workflow organizes all work around features, PRDs, and bugs with full session management.
+
+### Workflow Documentation
+
+- **[Workflow Guide](docs/WORKFLOW-GUIDE.md)** - Comprehensive guide to using the feature-centric workflow
+- **[Quick Reference](docs/WORKFLOW-QUICKREF.md)** - Command cheat sheet and quick tips
+
+### Key Workflow Commands
+
+- `/setup-workflow` - Initialize the workflow in your project
+- `/generate-feature` - Start a new feature with session tracking
+- `/generate-prd` - Create a Product Requirements Document
+- `/resume` - Continue your most recent work
+- `/status` - View all active work
+- `/switch [name]` - Switch between different features
+
+### Quick Start
+
+```bash
+# First time in a project
+/setup-workflow
+
+# Check what's active
+/status
+
+# Start new work
+/generate-feature "Add user authentication"
+
+# Continue where you left off
+/resume
+```
+
+The workflow ensures continuity across Claude Code sessions and helps maintain organization in complex projects.
+
 ## 📊 Monitoring
 
 ### View logs

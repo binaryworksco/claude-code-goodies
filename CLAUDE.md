@@ -6,6 +6,36 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a TypeScript-based enhancement system for Claude Code that provides auto-approval of safe operations and sound notifications. The project consists of TypeScript hooks that integrate with Claude Code's hooks system to improve workflow efficiency while maintaining security.
 
+## Feature-Centric Workflow
+
+This project uses a feature-centric workflow where all artifacts related to a feature, PRD, or bug are stored together in dedicated folders. This ensures better organization and session continuity.
+
+### Quick Start for New Sessions
+1. Run `/status` to see all active work
+2. Run `/resume` to continue the most recent session
+3. Or start new work with `/generate-feature`, `/generate-prd`, or `/report-bug`
+
+### Workflow Commands
+- **`/setup-workflow`**: Initialize the project's workflow structure
+- **`/generate-feature`**: Create a new feature with session tracking
+- **`/generate-prd`**: Create a Product Requirements Document for major features
+- **`/resume`**: Continue working on active sessions
+- **`/switch-feature`**: Switch between different active features
+- **`/status`**: View overview of all active work
+
+### Session Management
+Each feature/PRD/bug maintains its own session state in a dedicated folder:
+```
+/docs/features/feature-XXXX-name/
+├── feature-XXXX-name.md    # Feature document
+├── session.md              # Current progress and state
+├── decisions.md            # Key decisions log
+├── notes.md               # Working notes
+└── agents/                # Multi-agent coordination
+```
+
+Always check for active sessions when starting work and update session.md as you progress.
+
 ## Key Commands
 
 ### Installation

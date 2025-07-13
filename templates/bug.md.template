@@ -1,0 +1,120 @@
+# Bug Report: [Brief Description]
+
+**Bug ID:** bug-[XXXX]  
+**Reported Date:** [Date]  
+**Reporter:** [Name/Source]  
+**Severity:** [Critical|High|Medium|Low]  
+**Status:** [New|Investigating|In Progress|Fixed|Closed]  
+**Affected Version:** [Version number]
+
+## Summary
+[One sentence description of the bug]
+
+## Description
+[Detailed description of the issue, including:]
+- What is happening (actual behavior)
+- What should happen (expected behavior)
+- When it started happening (if known)
+- How often it occurs (always/sometimes/rarely)
+
+## Impact
+- **Users Affected**: [Number or percentage]
+- **Features Affected**: [List of features]
+- **Business Impact**: [Revenue, user experience, etc.]
+
+## Steps to Reproduce
+1. [First step]
+2. [Second step]
+3. [Third step]
+4. [... continue as needed]
+
+**Expected Result**: [What should happen]
+**Actual Result**: [What actually happens]
+
+## Environment
+- **Browser**: [Chrome, Firefox, Safari, etc. with version]
+- **Operating System**: [Windows, macOS, Linux with version]
+- **Device**: [Desktop, Mobile, Tablet]
+- **App Version**: [Version where bug occurs]
+- **User Role**: [If role-specific]
+
+## Evidence
+### Screenshots/Videos
+[Attach or link to visual evidence]
+
+### Error Messages
+```
+[Copy any error messages, stack traces, or console logs]
+```
+
+### Logs
+```
+[Relevant application logs]
+```
+
+## Investigation Notes
+### Initial Analysis
+- [What has been checked so far]
+- [Potential causes identified]
+
+### Root Cause
+[Once identified, document the root cause here]
+
+### Related Code
+- File: `[path/to/file.js]` - [Brief description]
+- Function: `[functionName()]` - [What it does]
+- Line: [Line numbers if specific]
+
+## Fix Approach
+### Proposed Solution
+[Description of how to fix the issue]
+
+### Implementation Steps
+- [ ] [Step 1 to fix]
+- [ ] [Step 2 to fix]
+- [ ] [Write/update tests]
+- [ ] [Test fix in dev environment]
+- [ ] [Code review]
+
+### Testing Plan
+- [ ] Verify original issue is fixed
+- [ ] Test edge cases
+- [ ] Regression testing for related features
+- [ ] Cross-browser testing (if applicable)
+
+## Workaround
+[If available, provide temporary workaround for users]
+
+## Prevention
+[How can we prevent similar issues in the future?]
+- [ ] Add monitoring/alerting
+- [ ] Improve test coverage
+- [ ] Update documentation
+- [ ] Process improvements
+
+## References
+- **Related Bugs**: [bug-XXXX]
+- **Related Features**: [feature-XXXX]
+- **Support Tickets**: [ticket numbers]
+- **Documentation**: [relevant docs]
+
+## Resolution
+**Fixed Version**: [Version where fix is deployed]
+**Fix Deployed Date**: [Date]
+**Verified By**: [Name]
+**Verification Date**: [Date]
+
+### Post-Fix Monitoring
+- [ ] Monitor error rates
+- [ ] Check user feedback
+- [ ] Verify performance impact
+
+## Lessons Learned
+[What did we learn from this bug that can help us improve?]
+
+---
+
+## Updates Log
+| Date | Updated By | Update |
+|------|-----------|---------|
+| [Date] | [Name] | [What was updated] |

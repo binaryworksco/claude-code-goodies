@@ -1,0 +1,222 @@
+# Lessons Learned
+
+This document captures important learnings, patterns, and gotchas discovered while working on this project. It helps future development sessions avoid repeated mistakes and leverage proven solutions.
+
+## Effective Patterns
+
+### Code Patterns That Work Well
+<!-- Add patterns that have proven successful -->
+
+#### Example: Error Handling Pattern
+**Context**: Consistent error handling across the application
+**Pattern**: 
+```javascript
+try {
+  const result = await someOperation();
+  return { success: true, data: result };
+} catch (error) {
+  logger.error('Operation failed', { error, context });
+  return { success: false, error: error.message };
+}
+```
+**Why it works**: Provides consistent structure, always logs errors with context
+
+---
+
+### Architecture Decisions That Paid Off
+<!-- Document architectural choices that worked well -->
+
+---
+
+### Testing Strategies That Work
+<!-- Effective testing approaches -->
+
+---
+
+## Common Pitfalls
+
+### Things That Don't Work
+<!-- Document approaches that seemed good but caused problems -->
+
+#### Example: Avoid Global State in Tests
+**What we tried**: Using global test data
+**Problem**: Tests became interdependent and flaky
+**Solution**: Each test creates its own data in `beforeEach`
+
+---
+
+### Performance Gotchas
+<!-- Performance issues and their solutions -->
+
+---
+
+### Security Considerations
+<!-- Security issues discovered and fixed -->
+
+---
+
+## Project-Specific Quirks
+
+### Build System
+<!-- Quirks about building the project -->
+
+---
+
+### Database
+<!-- Database-specific learnings -->
+
+---
+
+### Third-Party Services
+<!-- Integration gotchas -->
+
+---
+
+## Development Workflow
+
+### Git Workflow Lessons
+<!-- What works for branching, commits, PRs -->
+
+---
+
+### Code Review Insights
+<!-- Common code review feedback -->
+
+---
+
+### Debugging Techniques
+<!-- Effective debugging approaches for this project -->
+
+---
+
+## Team Knowledge
+
+### Domain Knowledge
+<!-- Important business logic understandings -->
+
+---
+
+### Naming Conventions Evolution
+<!-- How naming conventions have evolved and why -->
+
+---
+
+### Communication Patterns
+<!-- What works for team communication -->
+
+---
+
+## Technical Debt and Workarounds
+
+### Known Technical Debt
+<!-- Areas that need refactoring -->
+
+1. **[Area]**: [Description of debt and impact]
+   - Workaround: [Current workaround]
+   - Proper fix: [What should be done eventually]
+
+---
+
+### Temporary Solutions
+<!-- Document temporary fixes that need proper solutions later -->
+
+---
+
+## Upgrade Notes
+
+### Framework Upgrades
+<!-- Lessons from upgrading frameworks -->
+
+---
+
+### Dependency Management
+<!-- Which dependencies cause issues, which are stable -->
+
+---
+
+## Quick Wins
+
+### Performance Improvements
+<!-- Easy performance wins -->
+
+---
+
+### Developer Experience
+<!-- Small changes that greatly improve DX -->
+
+---
+
+### Code Quality
+<!-- Simple practices that improve code quality -->
+
+---
+
+## External Resources
+
+### Useful Documentation
+- [Resource 1]: [Why it's useful]
+- [Resource 2]: [Why it's useful]
+
+### Tools That Help
+- [Tool 1]: [What it's good for]
+- [Tool 2]: [What it's good for]
+
+---
+
+## Anti-Patterns to Avoid
+
+### Code Anti-Patterns
+<!-- Patterns that should be avoided -->
+
+---
+
+### Process Anti-Patterns
+<!-- Process mistakes to avoid -->
+
+---
+
+## Migration and Refactoring Lessons
+
+### Successful Refactors
+<!-- What worked when refactoring -->
+
+---
+
+### Failed Attempts
+<!-- Refactoring attempts that didn't work and why -->
+
+---
+
+## Monitoring and Debugging
+
+### Useful Log Patterns
+<!-- What to log and how -->
+
+---
+
+### Debugging Strategies
+<!-- Effective debugging approaches -->
+
+---
+
+## Template Usage
+
+When adding new lessons:
+1. Add date if the lesson is time-sensitive
+2. Include context about why the lesson was learned
+3. Provide concrete examples
+4. Link to relevant PRs or issues if applicable
+
+Example entry:
+```markdown
+### 2024-01-15: Database Connection Pool Issues
+**Context**: Production app was running out of connections
+**Problem**: Default pool size of 10 was too small for our load
+**Solution**: Increased pool size to 50, added monitoring
+**PR**: #123
+**Lesson**: Always monitor connection pool usage in production
+```
+
+---
+
+Remember: This document should grow organically. Add lessons as you learn them!

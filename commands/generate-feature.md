@@ -20,10 +20,22 @@ Pad the feature number with 0 to be 4 digits.
 </feature_number>
 
 <feature_storage_location>
-./docs/features/feature-[feature-number]-[feature-name].md
+./docs/features/feature-[feature-number]-[feature-name]/
+
+The folder will contain:
+- feature-[feature-number]-[feature-name].md  # The feature document
+- session.md                                   # Session state tracking
+- decisions.md                                 # Key decisions log
+- notes.md                                    # Working notes
+- agents/                                     # Folder for multi-agent sessions
 
 Example:
-./docs/features/feature-0003-dark-mode-toggle.md
+./docs/features/feature-0003-dark-mode-toggle/
+├── feature-0003-dark-mode-toggle.md
+├── session.md
+├── decisions.md
+├── notes.md
+└── agents/
 </feature_storage_location>
 
 <process>
@@ -50,11 +62,35 @@ Ask 2-3 essential questions to understand the feature better. Keep questions foc
 ## Step 4: Branch Strategy
 Ask the user: "Would you like to implement this feature on the current branch or create a new feature branch?"
 
-## Step 5: Generate Feature Document
-Based on the user's input, create a concise feature document using the structure below.
+## Step 5: Create Feature Structure
+1. Create the feature folder structure as defined in <feature_storage_location>
+2. Initialize session.md with:
+   ```markdown
+   ## Feature: [Feature Name] (feature-[number])
+   - Branch: [branch-name or current]
+   - Created: [timestamp]
+   - Last Updated: [timestamp]
+   - Status: Planning
+   
+   ## Current Focus
+   Creating feature document and planning implementation
+   
+   ## Completed Tasks
+   - [ ] Feature document creation
+   - [ ] Implementation tasks
+   
+   ## Key Decisions
+   [To be filled as decisions are made]
+   
+   ## Next Steps
+   - Generate feature document
+   - Create implementation tasks
+   ```
+3. Create empty decisions.md and notes.md files
+4. Create agents/ subdirectory
 
-## Step 6: Create Markdown File
-Create the feature document as a markdown file and save it to <feature_storage_location>.
+## Step 6: Generate Feature Document
+Based on the user's input, create a concise feature document using the structure below and save it in the feature folder.
 
 ## Step 7: Generate Tasks
 Automatically generate a task list based on the feature requirements. Keep tasks actionable and specific.
@@ -125,17 +161,27 @@ If creating a new branch, offer to commit the feature document to track it prope
 ## Implementation Notes for Claude
 
 1. Parse the feature description from the command parameter
-2. Ask 2-3 focused clarifying questions
-3. Ask about branch strategy (current vs new)
-4. Generate the feature document
-5. Create the markdown file in ./docs/features/
-6. If new branch requested:
-   - Include branch creation as first task
-   - Offer to commit the feature document
-7. Keep the entire process quick and focused
-8. During implementation, update task checkboxes in the markdown
+2. Check for existing features to determine the next feature number
+3. Create the feature folder structure immediately
+4. Initialize session.md to track progress
+5. Ask 2-3 focused clarifying questions
+6. Ask about branch strategy (current vs new)
+7. Update session.md with branch decision
+8. Generate the feature document in the folder
+9. Update session.md status to "Document Created"
+10. Generate tasks and update the feature document
+11. If new branch requested:
+    - Include branch creation as first task
+    - Update session.md with new branch name
+    - Offer to commit the feature document
+12. Keep the entire process quick and focused
+13. During implementation:
+    - Update task checkboxes in the feature markdown
+    - Keep session.md current with progress
+    - Log decisions in decisions.md
+    - Use notes.md for temporary working notes
 
-The goal is rapid feature documentation that's actionable, not comprehensive PRD-level detail.
+The goal is rapid feature documentation that's actionable, not comprehensive PRD-level detail, while maintaining good session tracking.
 
 </implementation_notes>
 

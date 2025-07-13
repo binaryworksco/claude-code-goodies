@@ -1,0 +1,32 @@
+# Session Template
+
+## Feature/PRD/Bug: [Name] ([ID])
+- Branch: [branch-name]
+- Created: [timestamp]
+- Last Updated: [timestamp]
+- Status: [Planning|In Progress|Blocked|Testing|Completed]
+
+## Current Focus
+[What you're currently working on - one line summary]
+
+## Completed Tasks
+- [ ] Task 1
+- [ ] Task 2
+- [ ] Task 3
+
+## Key Decisions
+- [Record important decisions as they're made]
+
+## Blockers/Questions
+- [Any blockers or questions that need resolution]
+
+## Next Steps
+- [What needs to be done next]
+
+## Notes
+[Any additional context or temporary notes]
+
+## Agent Activity (if using multi-agent)
+<!-- Track any subagent activities here -->
+- [timestamp] agent-name: Started task X
+- [timestamp] agent-name: Completed task X with result Y

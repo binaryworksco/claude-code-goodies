@@ -20,10 +20,22 @@ Pad the PRD number with 0 to be 4 digits.
 </prd_number>
 
 <prd_storage_location>
-./docs/prd/prd-[prd-number]-[feature name].md
+./docs/prd/prd-[prd-number]-[feature-name]/
+
+The folder will contain:
+- prd-[prd-number]-[feature-name].md  # The PRD document
+- session.md                           # Session state tracking
+- decisions.md                         # Key decisions log
+- notes.md                            # Working notes
+- agents/                             # Folder for multi-agent sessions
 
 Example:
-./docs/prd/prd-0005-authentication.md
+./docs/prd/prd-0005-authentication/
+├── prd-0005-authentication.md
+├── session.md
+├── decisions.md
+├── notes.md
+└── agents/
 </prd_storage_location>
 
 <process>
@@ -55,8 +67,34 @@ The AI should adapt its questions based on the prompt, but here are some common 
 ## Step 4: Generate PRD
 Based on the initial prompt, your understanding of the context of the project and the user's answers to the clarifying questions, generate a PRD using the structure below.
 
-## Step 5: Create Markdown File
-Create the PRD as a markdown and save it to <prd_storage_location>.
+## Step 5: Create PRD Structure
+1. Create the PRD folder structure as defined in <prd_storage_location>
+2. Create the PRD document in the folder
+3. Initialize session.md with:
+   ```markdown
+   ## PRD: [Feature Name] (prd-[number])
+   - Branch: feature/[feature-name]
+   - Created: [timestamp]
+   - Last Updated: [timestamp]
+   - Status: Planning
+   
+   ## Current Focus
+   Gathering requirements and creating PRD
+   
+   ## Completed Tasks
+   - [ ] PRD creation
+   - [ ] Task generation
+   - [ ] Implementation
+   
+   ## Key Decisions
+   [To be filled as decisions are made]
+   
+   ## Next Steps
+   - Complete PRD review
+   - Generate implementation tasks
+   ```
+4. Create empty decisions.md and notes.md files
+5. Create agents/ subdirectory for potential multi-agent work
 
 ## Step 6: Generate Tasks (After PRD Review)
 Once the user has reviewed and approved the PRD, proceed with task generation:
@@ -130,15 +168,26 @@ Assume the primary reader of the PRD is a **junior developer**. Therefore:
 ## Implementation Notes for Claude
 
 1. Parse the feature description from the command parameter
-2. Ask clarifying questions based on the feature description
-3. Wait for user responses before generating the PRD
-4. Do NOT start implementing the PRD
-5. Create the PRD as a markdown file
-6. After creating the PRD, ask: "Would you like me to generate the implementation tasks for this PRD?"
-7. If user confirms, follow the two-phase task generation process:
-   - Phase 1: Generate and show parent tasks, wait for "Go"
-   - Phase 2: Generate sub-tasks and update the PRD issue with the complete task checklist
-8. During implementation, always update task checkboxes as work progresses in the markdown
+2. Check for existing PRDs to determine the next PRD number
+3. Create the PRD folder structure before asking questions
+4. Initialize session.md to track progress
+5. Ask clarifying questions based on the feature description
+6. Wait for user responses before generating the PRD
+7. Do NOT start implementing the PRD
+8. Create the PRD document in the designated folder
+9. Update session.md after PRD creation:
+   - Change status to "PRD Created"
+   - Add any key decisions made
+10. After creating the PRD, ask: "Would you like me to generate the implementation tasks for this PRD?"
+11. If user confirms, follow the two-phase task generation process:
+    - Phase 1: Generate and show parent tasks, wait for "Go"
+    - Phase 2: Generate sub-tasks and update the PRD with the complete task checklist
+12. Update session.md with task generation status
+13. During implementation:
+    - Always update task checkboxes as work progresses in the PRD markdown
+    - Keep session.md current with latest status
+    - Log key decisions in decisions.md
+    - Use notes.md for working notes and temporary information
 
 </implementation_notes>
 

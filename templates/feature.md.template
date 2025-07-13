@@ -1,0 +1,85 @@
+# Feature: [Feature Name]
+
+**Feature ID:** feature-[XXXX]  
+**Created:** [Date]  
+**Branch:** [branch-name]  
+**Status:** [Planning|In Progress|Testing|Completed]
+
+## Overview
+[1-2 paragraph description of what this feature does and why it's needed. Keep it concise but clear enough for anyone to understand the purpose.]
+
+## Goals
+- [Primary goal - what problem does this solve?]
+- [Secondary goal - what additional value does it provide?]
+- [Any other goals - keep to 3-4 maximum]
+
+## Key Requirements
+1. **[Requirement Category]**
+   - [Specific requirement 1]
+   - [Specific requirement 2]
+
+2. **[Another Category]**
+   - [Specific requirement 3]
+   - [Specific requirement 4]
+
+## Non-Goals (Out of Scope)
+- [What this feature will NOT do]
+- [Limitations to keep scope manageable]
+
+## Technical Approach
+[Brief description of the technical approach, key components, or architectural decisions]
+
+## Implementation Tasks
+
+### 1.0 Setup and Planning
+- [ ] Create feature branch
+- [ ] Set up necessary project structure
+- [ ] Review existing code patterns
+
+### 2.0 Core Implementation
+- [ ] [Main implementation task 1]
+- [ ] [Main implementation task 2]
+- [ ] [Main implementation task 3]
+
+### 3.0 UI/Frontend (if applicable)
+- [ ] [UI task 1]
+- [ ] [UI task 2]
+
+### 4.0 API/Backend (if applicable)
+- [ ] [API task 1]
+- [ ] [API task 2]
+
+### 5.0 Testing
+- [ ] Write unit tests
+- [ ] Write integration tests
+- [ ] Manual testing checklist
+- [ ] Edge case testing
+
+### 6.0 Documentation
+- [ ] Update API documentation
+- [ ] Update user guide
+- [ ] Add inline code comments
+- [ ] Update README if needed
+
+### 7.0 Deployment
+- [ ] Update configuration
+- [ ] Database migrations (if needed)
+- [ ] Feature flag setup (if applicable)
+- [ ] Deployment checklist
+
+## Success Criteria
+- [ ] [How do we know this feature is working correctly?]
+- [ ] [What metrics or behaviors indicate success?]
+- [ ] [User acceptance criteria]
+
+## Dependencies
+- [External dependencies or other features this relies on]
+- [Team dependencies or approvals needed]
+
+## Risks and Mitigation
+| Risk | Impact | Mitigation |
+|------|---------|------------|
+| [Potential risk] | [High/Med/Low] | [How to address] |
+
+## Notes
+[Any additional context, constraints, or considerations]

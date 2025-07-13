@@ -1,0 +1,35 @@
+# Decision Log
+
+This file tracks key decisions made during the development of this feature/PRD/bug fix.
+
+## Decision Template
+
+### [Date] - [Decision Title]
+**Context**: [Why this decision needed to be made]
+**Options Considered**:
+1. Option A - [Pros/Cons]
+2. Option B - [Pros/Cons]
+3. Option C - [Pros/Cons]
+
+**Decision**: [What was decided]
+**Rationale**: [Why this option was chosen]
+**Impact**: [How this affects the implementation]
+
+---
+
+## Decisions
+
+### Example: 2024-01-15 - Authentication Method
+**Context**: Need to decide between JWT tokens and session-based auth
+**Options Considered**:
+1. JWT tokens - Stateless, scalable, but requires token refresh logic
+2. Server sessions - Simpler, but requires session storage
+3. OAuth only - Delegates auth but limits control
+
+**Decision**: Use JWT tokens with refresh token rotation
+**Rationale**: Better fits our microservices architecture and mobile app needs
+**Impact**: Need to implement token refresh endpoint and secure storage
+
+---
+
+<!-- Add new decisions below this line -->

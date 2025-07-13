@@ -1,0 +1,154 @@
+# Project Quickstart Guide
+
+This document provides essential information for Claude Code to quickly understand the project context. Keep this under 500 lines for efficient loading.
+
+## Project Overview
+**Name**: [Project Name]
+**Type**: [Web App|API|Library|Mobile App|CLI Tool]
+**Purpose**: [One sentence describing what this project does]
+**Tech Stack**: [Primary languages and frameworks]
+
+## Key Architecture Points
+- **Pattern**: [Monolith|Microservices|Serverless|etc.]
+- **Database**: [PostgreSQL|MongoDB|etc.]
+- **Frontend**: [React|Vue|Angular|etc.]
+- **Backend**: [Node.js|Python|.NET|etc.]
+- **Infrastructure**: [AWS|Azure|GCP|On-prem]
+
+## Project Structure
+```
+/
+├── src/           # [Main source code]
+├── tests/         # [Test files]
+├── docs/          # [Documentation]
+├── scripts/       # [Build and utility scripts]
+└── ...
+```
+
+## Key Commands
+```bash
+# Development
+npm run dev        # Start development server
+
+# Testing
+npm test          # Run tests
+npm run test:e2e  # Run end-to-end tests
+
+# Building
+npm run build     # Build for production
+
+# Linting/Formatting
+npm run lint      # Run linter
+npm run format    # Format code
+
+# Database
+npm run db:migrate   # Run migrations
+npm run db:seed      # Seed database
+```
+
+## Development Workflow
+1. Create feature branch: `git checkout -b feature/name`
+2. Make changes
+3. Run tests: `npm test`
+4. Lint code: `npm run lint`
+5. Commit with conventional commits: `feat: add new feature`
+6. Push and create PR
+
+## Key Patterns and Conventions
+### File Naming
+- Components: `PascalCase.tsx`
+- Utilities: `camelCase.ts`
+- Tests: `*.test.ts` or `*.spec.ts`
+
+### Code Style
+- [Key style points specific to this project]
+- [Import order convention]
+- [Comment style]
+
+### Git Conventions
+- Branch naming: `feature/`, `bugfix/`, `hotfix/`
+- Commit format: `type: description`
+- PR process: [Brief description]
+
+## Environment Setup
+### Required Tools
+- Node.js: [version]
+- Package manager: [npm|yarn|pnpm]
+- Database: [if applicable]
+- Other tools: [list any other requirements]
+
+### Environment Variables
+```bash
+# .env.example
+API_URL=http://localhost:3000
+DATABASE_URL=postgresql://...
+AUTH_SECRET=...
+```
+
+## Common Tasks
+### Adding a New Feature
+1. Check `/docs/features/` for existing patterns
+2. Use `/generate-feature` command
+3. Follow the generated structure
+
+### Fixing a Bug
+1. Create bug report in `/docs/bugs/`
+2. Create bugfix branch
+3. Add tests that reproduce the bug
+4. Fix and verify tests pass
+
+### Working with the Database
+- Migrations: [How to create/run]
+- Schema changes: [Process]
+- Seeding: [When and how]
+
+## Testing Strategy
+- **Unit Tests**: [Tool and location]
+- **Integration Tests**: [Tool and location]
+- **E2E Tests**: [Tool and location]
+- **Coverage Target**: [e.g., 80%]
+
+## API Endpoints (if applicable)
+### Main Endpoints
+- `GET /api/users` - List users
+- `POST /api/users` - Create user
+- `GET /api/users/:id` - Get user
+- [Other key endpoints]
+
+### Authentication
+- Method: [JWT|Session|OAuth]
+- Header: `Authorization: Bearer <token>`
+
+## Deployment
+- **Staging**: [URL and deploy process]
+- **Production**: [URL and deploy process]
+- **CI/CD**: [Platform and triggers]
+
+## Troubleshooting
+### Common Issues
+1. **Build fails**: Check Node version, clear cache
+2. **Tests fail**: Ensure test DB is running
+3. **Can't connect to DB**: Check DATABASE_URL
+
+## Team Conventions
+- **Code Review**: Required before merge
+- **Testing**: All features need tests
+- **Documentation**: Update docs with code
+- **Communication**: [Slack channel, etc.]
+
+## Important Links
+- **Repository**: [GitHub/GitLab URL]
+- **Documentation**: [Detailed docs URL]
+- **Issue Tracker**: [JIRA/GitHub Issues URL]
+- **CI/CD**: [Pipeline URL]
+- **Monitoring**: [Dashboards URL]
+
+## Recent Important Decisions
+[List 3-5 recent architectural or process decisions that affect development]
+
+## Known Gotchas
+[List any non-obvious things that trip up new developers]
+
+---
+
+Remember: For detailed information, check the full documentation in `/docs/`. This quickstart is just to get you oriented quickly.
