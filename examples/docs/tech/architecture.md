@@ -182,7 +182,7 @@ Keystone is a multi-tenant SaaS application built as a modular monolith using .N
 
 ### Module Communication
 ```
-┌──────────────┐     Integration      ┌──────────────┐
+┌──────────────┐     Integration       ┌──────────────┐
 │   Module A   │───────Event──────────►│   Module B   │
 │              │                       │              │
 │  Domain Event│                       │   Inbox      │
@@ -468,7 +468,7 @@ Request ──► JWT Validation ──► Extract Permissions ──► Check E
    │                                                    │      │
    │                                                   Yes     No
    │                                                    │      │
-   └────────────────────────► Process ◄────────────────┘      │
+   └────────────────────────► Process ◄─────────────────┘      │
                                                                │
                                                           403 Forbidden
 ```
@@ -674,7 +674,7 @@ public class CachedUserRepository : IUserRepository
 #### Core Services
 ```
 ┌────────────────────────────────────────────────────┐
-│                 Infrastructure Services             │
+│                 Infrastructure Services            │
 ├─────────────────┬────────────────┬─────────────────┤
 │  Authentication │     Caching    │     Events      │
 │    - JWT        │   - Redis      │  - MassTransit  │

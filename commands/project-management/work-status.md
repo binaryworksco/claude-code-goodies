@@ -1,19 +1,19 @@
-# /status - Show Overview of All Active Work
+# Show overview of all active work
 
 <command_overview>
 This command provides a comprehensive overview of all active features, PRDs, and bugs. It helps you understand what's in progress, what's blocked, and what needs attention across the entire project.
 </command_overview>
 
 <usage>
-/status [filter]
+/work-status [filter]
 
 Options:
-- /status          - Show all active work
-- /status features - Show only active features  
-- /status prd      - Show only active PRDs
-- /status bugs     - Show only active bugs
-- /status blocked  - Show only blocked items
-- /status stale    - Show items not updated in 7+ days
+- /work-status          - Show all active work
+- /work-status features - Show only active features  
+- /work-status prd      - Show only active PRDs
+- /work-status bugs     - Show only active bugs
+- /work-status blocked  - Show only blocked items
+- /work-status stale    - Show items not updated in 7+ days
 </usage>
 
 <arguments>$ARGUMENTS</arguments>

@@ -1,4 +1,4 @@
-# /generate-prd <Feature> - Create Product Requirements Document in Markdown
+# Create Product Requirements Document in markdown
 
 <command_overview>
 Creates a Product Requirements Document (PRD) as a new markdown file based on a feature idea stated in <feature_description/> and store it in <prd_storage_location/>. The PRD will be clear, actionable, and suitable for a junior developer to understand and implement.

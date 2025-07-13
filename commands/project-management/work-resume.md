@@ -1,11 +1,11 @@
-# /resume - Continue Working on Active Sessions
+# Continue working on active sessions
 
 <command_overview>
 This command helps you resume work on active features, PRDs, or bugs by loading the appropriate session context. It scans for active session.md files and provides a summary of work in progress.
 </command_overview>
 
 <usage>
-/resume
+/work-resume
 
 The command will:
 1. Scan for active sessions in /docs/features/, /docs/prd/, and /docs/bugs/

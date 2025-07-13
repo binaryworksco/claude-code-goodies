@@ -1,4 +1,4 @@
-# /switch-feature <name> - Switch Between Active Features
+# Switch between active features
 
 <command_overview>
 This command allows you to switch context between different active features, PRDs, or bugs. It saves the current session state and loads the target session, handling git branch switches as needed.

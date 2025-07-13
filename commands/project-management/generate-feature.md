@@ -1,4 +1,4 @@
-# /generate-feature <Feature> - Create Feature Document in Markdown
+# Create Feature Document in markdown
 
 <command_overview>
 Creates a concise feature document as a markdown file based on a feature idea. The document includes a brief overview, goals, and implementation tasks. This is a lightweight alternative to full PRDs for smaller features or quick implementations.
