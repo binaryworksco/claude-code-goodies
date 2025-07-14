@@ -2,6 +2,10 @@
 
 You are about to work on a project. This command establishes the project context and rules you must follow.
 
+## Workflow Structure
+
+Ensure that the .working folder is present and PROJECT.md and STANDARDS.md are available,
+
 ## Project Rules
 
 These rules are critical and must be followed at all times when working on this project:
@@ -37,7 +41,7 @@ These rules are critical and must be followed at all times when working on this 
 The project should maintain this structure:
 
 ```
-/working/
+.working/
 │
 ├── PROJECT.md        # Core project info, tech stack, features list
 ├── STANDARDS.md      # Development standards and git discipline
@@ -45,12 +49,10 @@ The project should maintain this structure:
 ├── ISSUES.md         # Known issues, bugs, and regressions
 ├── TASKS.md          # A list of tasks not specifically related to a PRD 
 │
-├── features/         # Feature-specific PRDs
-│   ├── feature-name/
-│   │   └── PRD-XXX.md
-│   └── ...
-│
-└── prime.md          # This priming document
+└── features/         # Feature-specific PRDs
+    ├── feature-name/
+    │   └── PRD-XXX.md
+    └── ...
 ```
 
 ## Actions to take now:
