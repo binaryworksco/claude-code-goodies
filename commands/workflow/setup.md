@@ -50,7 +50,9 @@ Using the templates as guides:
 Verify successful setup:
 - Confirm all 5 files exist in `.working` folder
 - Ensure PROJECT.md contains at least: overview, tech stack, and PRD section
+- Ensure that the contents of the PROJECT.md file are accurate by validating them against the code base
 - Ensure STANDARDS.md reflects actual project conventions found during analysis
+- Ensure that the contents of the STANDARDS.md file are accurate by validating them against the code base
 - Check that no files are empty or contain only template placeholders
 
 ### 7. Final Summary
