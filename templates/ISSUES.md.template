@@ -1,0 +1,29 @@
+# Known Issues
+
+This document tracks bugs, regressions, and technical problems discovered in the project.
+
+## Active Issues
+
+### Critical
+- [ ] Issue description - Brief explanation of the problem and impact
+- [ ] Another issue - What's broken and how it affects users
+
+### High Priority
+- [ ] Issue name - Description of the bug
+- [ ] Issue name - What's not working correctly
+
+### Medium Priority
+- [ ] Issue name - Description of the problem
+- [ ] Issue name - Brief explanation
+
+### Low Priority
+- [ ] Issue name - Minor issue description
+- [ ] Issue name - Cosmetic or edge case issue
+
+## Resolved Issues
+<!-- Move resolved issues here with strikethrough -->
+- [x] ~~Resolved issue - What was fixed and when~~
+- [x] ~~Another resolved issue - How it was resolved~~
+
+## Notes
+<!-- Additional context, workarounds, or related information -->

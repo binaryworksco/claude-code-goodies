@@ -1,0 +1,25 @@
+# Project Tasks
+
+This document tracks tasks that fall outside the scope of specific Product Requirements Documents (PRDs).
+
+## Active Tasks
+
+### High Priority
+- [ ] Task name - Brief description of what needs to be done
+- [ ] Another task - Description here
+
+### Medium Priority
+- [ ] Task name - Brief description
+- [ ] Task name - Brief description
+
+### Low Priority
+- [ ] Task name - Brief description
+- [ ] Task name - Brief description
+
+## Completed Tasks
+<!-- Move completed tasks here with strikethrough -->
+- [x] ~~Completed task - What was done~~
+- [x] ~~Another completed task - Description~~
+
+## Notes
+<!-- Any additional context or notes about tasks -->
