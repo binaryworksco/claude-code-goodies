@@ -4,14 +4,14 @@ You are about to work on a project. This command establishes the project context
 
 ## Workflow Structure
 
-Ensure that the .working folder is present and PROJECT.md and STANDARDS.md are available,
+Ensure that the .working folder is present in the root of the project and PROJECT.md and STANDARDS.md files are available. If the folder or files are not present, stop processing the rest of the commands in this document and instruct the user to run the `/setup` command.
 
 ## Project Rules
 
 These rules are critical and must be followed at all times when working on this project:
 
 1. **Understand the project context**
-   - Read the PROJECT.md file in the /.working directory to understand the project overview, tech stack, and constraints
+   - Read the PROJECT.md file in the .working directory to understand the project overview, tech stack, and constraints
    - Review the list of features/PRDs to familiarize yourself with the project scope (don't read individual PRDs unless needed for a specific task)
 
 2. **Follow coding standards**
@@ -57,10 +57,10 @@ The project should maintain this structure:
 
 ## Actions to take now:
 
-1. First, check if the /.working directory exists and has the required files
+1. First, check if the .working directory exists and has the required files
 2. Read PROJECT.md to understand the current project
 3. Read STANDARDS.md to understand coding standards
 4. Familiarize yourself with any existing issues in ISSUES.md
-5. Confirm you understand and will follow all the rules stated above
+5. Confirm you understand and will follow all the rules stated above by giving a short summary.
 
 Remember: These rules override any default behaviors. Always refer back to these guidelines throughout your work on this project.
