@@ -1,0 +1,36 @@
+# Development Standards
+
+## Code Style
+- **Formatting**: Use consistent indentation (2 or 4 spaces, no tabs)
+- **Line Length**: Max 80-120 characters per line
+- **Comments**: Write clear, concise comments for complex logic only
+- **Linting**: All code must pass linting before commit
+
+## Naming Conventions
+- **Variables**: camelCase for JS/TS, snake_case for Python
+- **Constants**: UPPER_SNAKE_CASE
+- **Classes**: PascalCase
+- **Files**: kebab-case for files, PascalCase for components
+- **Functions**: Descriptive verb-noun format (e.g., `getUserData`, `calculate_total`)
+
+## Architecture Standards
+- **Structure**: Follow established project folder structure
+- **Separation**: Keep business logic separate from UI
+- **Dependencies**: Minimize external dependencies
+- **Patterns**: Use existing patterns, don't introduce new ones without approval
+
+## Git Discipline
+- **Commits**: Small, atomic commits with clear messages
+- **Branches**: feature/*, fix/*, chore/* naming
+- **PR Size**: Keep PRs under 400 lines when possible
+- **Reviews**: All code requires review before merge
+
+## Testing
+- **Coverage**: Write tests for new features
+- **Types**: Unit tests required, integration tests for critical paths
+- **Running**: All tests must pass before commit
+
+## Documentation
+- **Code**: Self-documenting code preferred over extensive comments
+- **APIs**: Document all public APIs
+- **README**: Keep README up-to-date with setup instructions

@@ -1,0 +1,33 @@
+# Project Documentation
+
+## Project Overview
+<!-- Provide a 2-3 sentence description of the project. Include the main purpose, target users, and key value proposition -->
+
+## Tech Stack
+<!-- List the technologies, frameworks, and tools used in this project. Include:
+- Programming languages
+- Frameworks and libraries
+- Databases
+- Build tools
+- Testing frameworks
+- Deployment platforms -->
+
+## Special Considerations & Constraints
+<!-- Document any unique requirements, limitations, or considerations for this project:
+- Performance requirements
+- Security constraints
+- Browser/platform compatibility
+- Third-party dependencies
+- Regulatory compliance
+- Technical debt or legacy system integration -->
+
+## Product Requirements Documents (PRDs)
+<!-- Maintain a central list of features with their current status and links to detailed PRD documentation
+Status options: Planning | In Progress | Completed | On Hold
+
+Example format:
+| Feature | Status | PRD Link | Description |
+|---------|--------|----------|-------------|
+| User Authentication | Completed | [PRD-001](./prd/001-user-auth.md) | OAuth2 integration |
+| Dashboard Analytics | In Progress | [PRD-002](./prd/002-dashboard.md) | Real-time metrics |
+-->

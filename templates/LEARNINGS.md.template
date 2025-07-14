@@ -1,0 +1,36 @@
+# Project Learnings
+
+This document captures important lessons learned during development. Record mistakes, insights, and technical discoveries to help avoid repeating issues and share knowledge with the team.
+
+## Format
+**Date**: YYYY-MM-DD  
+**Issue**: What went wrong or what was discovered  
+**Resolution**: How it was fixed or what was learned  
+**Prevention**: How to avoid this in the future  
+
+---
+
+## Learnings
+
+### 2024-01-15
+**Issue**: API calls were timing out in production but not in development  
+**Resolution**: Discovered production API had stricter rate limits. Added retry logic with exponential backoff  
+**Prevention**: Always check production API documentation for rate limits and implement proper error handling  
+
+### 2024-01-10
+**Issue**: State updates weren't triggering re-renders in React component  
+**Resolution**: Was mutating state directly instead of creating new object. Fixed by using spread operator  
+**Prevention**: Always create new objects/arrays when updating state. Consider using Immer for complex state  
+
+### 2024-01-05
+**Issue**: Database migrations failed when deployed  
+**Resolution**: Migration scripts had hardcoded local paths. Updated to use relative paths  
+**Prevention**: Always use environment variables and relative paths in migration scripts  
+
+---
+
+## Technical Insights
+
+- **Performance**: Discovered that batch processing API requests reduced load time by 60%
+- **Security**: Learned that storing API keys in frontend code exposes them in browser dev tools
+- **Testing**: Found that mocking external services in tests prevents flaky test failures

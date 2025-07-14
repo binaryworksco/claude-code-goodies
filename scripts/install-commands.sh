@@ -40,48 +40,54 @@ fi
 echo ""
 echo "Copying command files..."
 
-# Count files to copy
-FILE_COUNT=0
-for file in "$COMMANDS_SOURCE"/*.md; do
-    if [ -f "$file" ]; then
-        ((FILE_COUNT++))
-    fi
-done
+# Count files to copy (including subdirectories)
+FILE_COUNT=$(find "$COMMANDS_SOURCE" -name "*.md" -type f | wc -l)
 
 if [ $FILE_COUNT -eq 0 ]; then
     echo -e "${YELLOW}! No command files found to copy${NC}"
     exit 0
 fi
 
-# Copy markdown command files
-for file in "$COMMANDS_SOURCE"/*.md; do
-    if [ -f "$file" ]; then
-        filename=$(basename "$file")
-        cp "$file" "$COMMANDS_DEST/"
-        if [ $? -eq 0 ]; then
-            echo -e "${GREEN}✓ Copied $filename${NC}"
-        else
-            echo -e "${RED}✗ Failed to copy $filename${NC}"
-        fi
+echo "Found $FILE_COUNT command file(s) to copy..."
+
+# Copy markdown command files while preserving directory structure
+cd "$COMMANDS_SOURCE"
+find . -name "*.md" -type f | while read -r file; do
+    # Get the directory path and create it in destination
+    dir=$(dirname "$file")
+    if [ "$dir" != "." ]; then
+        mkdir -p "$COMMANDS_DEST/$dir"
+    fi
+    
+    # Copy the file
+    cp "$file" "$COMMANDS_DEST/$file"
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✓ Copied $file${NC}"
+    else
+        echo -e "${RED}✗ Failed to copy $file${NC}"
     fi
 done
+cd - > /dev/null
 
 # Verify installation
 echo ""
 echo "Verifying installation..."
-INSTALLED_COUNT=$(ls -1 "$COMMANDS_DEST"/*.md 2>/dev/null | wc -l)
+INSTALLED_COUNT=$(find "$COMMANDS_DEST" -name "*.md" -type f | wc -l)
 if [ $INSTALLED_COUNT -gt 0 ]; then
     echo -e "${GREEN}✓ Successfully installed $INSTALLED_COUNT command(s)${NC}"
     echo ""
     echo "Installation complete! Your commands are now available."
     echo ""
     echo "Available commands:"
-    for file in "$COMMANDS_DEST"/*.md; do
-        if [ -f "$file" ]; then
-            command_name=$(basename "$file" .md)
-            echo "  - /$command_name"
-        fi
+    cd "$COMMANDS_DEST"
+    find . -name "*.md" -type f | sort | while read -r file; do
+        # Remove leading ./ and .md extension
+        command_path=${file#./}
+        command_path=${command_path%.md}
+        # Replace directory separators with /
+        echo "  - /$command_path"
     done
+    cd - > /dev/null
     echo ""
     echo "Usage:"
     echo "  Type /<command_name> in Claude Code to use a command"

@@ -1,29 +1,29 @@
-# /generate-prd <Feature> - Create Product Requirements Document in Markdown
+# Create Product Requirements Document in Markdown
 
 <command_overview>
 Creates a Product Requirements Document (PRD) as a new markdown file based on a feature idea stated in <feature_description/> and store it in <prd_storage_location/>. The PRD will be clear, actionable, and suitable for a junior developer to understand and implement.
 </command_overview>
 
 <usage>
-/generate-prd <feature_description/>
+/create-prd <feature_description/>
 
 Example:
-/generate-prd Add ability to export contacts to CSV
+/create-prd Add ability to export contacts to CSV
 </usage>
 
 <feature_description>$ARGUMENTS</feature_description>
 
 <prd_number>
-Every PRD is given a number, if there are no files in the ./docs/prd folder, the first PRD number is 0001. For every new PRD generated, increment the prd-number by 1.
+Every PRD is given a number, if there are no files in the .working/features folder, the first PRD number is 0001. For every new PRD created, increment the prd-number by 1.
 
 Pad the PRD number with 0 to be 4 digits.
 </prd_number>
 
 <prd_storage_location>
-./docs/prd/prd-[prd-number]-[feature name].md
+.working/features/prd-[prd-number]/prd-[prd-number]-[feature name].md
 
 Example:
-./docs/prd/prd-0005-authentication.md
+.working/features/prd-0005/prd-0005-authentication.md
 </prd_storage_location>
 
 <process>
@@ -146,7 +146,7 @@ Assume the primary reader of the PRD is a **junior developer**. Therefore:
 
 ## Example Workflow
 
-User: `/prd Add customer email notification preferences`
+User: `/create-prd Add customer email notification preferences`
 
 Claude:
 01. Acknowledges the feature request
@@ -163,6 +163,7 @@ If user says yes:
 10. Updates the PRD issue to include the complete task checklist
 11. Asks the user if they are happy with this PRD and want to commit it for safe keeping
 12. During implementation, Claude updates checkboxes as tasks are completed
+13. Save the PRD markdown file to the <prd_storage_location/>
 
 </example_workflow>
 
@@ -207,5 +208,4 @@ When generating tasks, follow this structure:
 ```
 
 All tasks are tracked as checkboxes within the PRD markdown. Claude will update the markdown checkboxes during implementation.
-
 </task_structure>

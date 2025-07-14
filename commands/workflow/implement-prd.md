@@ -1,7 +1,7 @@
-# /implement-prd <PRD No.> - Implement Product Requirements Document
+# Implement Product Requirements Document
 
 <command_overview>
-Implements a Product Requirements Document (PRD) from the ./docs/prd directory following enterprise development practices. The command takes a PRD number, confirms the correct PRD with the user, then guides development through the task checklist while maintaining review checkpoints and updating progress.
+Implements a Product Requirements Document (PRD) from the .working/features directory following enterprise development practices. The command takes a PRD number, confirms the correct PRD with the user, then guides development through the task checklist while maintaining review checkpoints and updating progress.
 </command_overview>
 
 <usage>
@@ -18,8 +18,8 @@ Example:
 <process>
 
 ## Step 1: Locate and Confirm PRD
-1. Search ./docs/prd/ directory for file matching pattern: prd-[prd_number]-*.md
-2. Read the PRD's Introduction/Overview section
+1. Search .working/features/ directory for folder matching pattern: prd-[prd_number]
+2. Read the PRD's Introduction/Overview section from the markdown file in the folder
 3. Extract the feature name from the filename
 4. Present confirmation to user:
     - **PRD Number:** [prd_number]
@@ -29,7 +29,7 @@ Example:
 6. Wait for user confirmation before proceeding
 
 ## Step 2: Setup Development Environment
-1. Read CLAUDE.md for architecture patterns and conventions
+1. Ensure that the prime.md command has been run and you fully understand the project and standards.
 2. Create feature branch: `feature/prd-[prd_number]-[feature-name]`
 3. Display the Implementation Tasks checklist from the PRD
 
@@ -45,6 +45,7 @@ Example:
     - SOLID principles
     - XML documentation comments
     - Unit tests for critical functionality
+4. As you complete each sub-task, update the sub-task markdown from [ ] to [x]
 
 ## Step 4: Review Checkpoints
 After completing each parent task (e.g., all sub-tasks under 1.0):
@@ -132,7 +133,7 @@ If CLAUDE.md is not found:
 User: `/implement-prd 5`
 
 Claude:
-1. Searches ./docs/prd/ and finds prd-005-payroll-module.md
+1. Searches .working/features/ and finds prd-005/prd-005-payroll-module.md
 2. Reads the PRD and presents:
    ```
    Found PRD #5
@@ -165,7 +166,7 @@ Completed sub-tasks:
 - [Sub-task 2 description]
 - [Sub-task 3 description]
 
-PRD: ./docs/prd/prd-[number]-[feature-name].md
+PRD: .working/features/prd-[number]/prd-[number]-[feature-name].md
 ```
 
 Example:
@@ -178,7 +179,7 @@ Completed sub-tasks:
 - Generate database migrations
 - Add repository interfaces and implementations
 
-PRD: ./docs/prd/prd-109-payroll-module.md
+PRD: .working/features/prd-109/prd-109-payroll-module.md
 ```
 
 </commit_message_format>
