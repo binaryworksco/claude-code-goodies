@@ -11,9 +11,26 @@ Your reference image(s) are $ARGUMENTS.
 </input>
 
 <output>
-You will produce a markdown called ui-guide.md in the /docs/style folder of the project. The markdown will follow the template shown in <ui_guide_template/> section, but with values extracted from your analysis rather than the example values shown.
+You will produce a design guide in the /designs folder of the project. 
 
-**Important**: When implementing components from this style guide, use Tailwind CSS utility classes for styling.
+**File Organization**:
+1. Create a unique folder name using the format: `/designs/design-[timestamp]-[descriptor]/`
+   - timestamp: Current date in YYYYMMDD format
+   - descriptor: A brief 2-3 word description based on the design (e.g., "modern-dashboard", "minimal-blog", "corporate-site")
+   - Example: `/designs/design-20240115-modern-dashboard/`
+
+2. Inside this folder, create:
+   - `style-guide.md` - The main style guide following the template shown in <ui_guide_template/> section
+   - `README.md` - A brief description of the design project including:
+     - Design name/description
+     - Date created
+     - Source screenshots used
+     - Any special notes about the design
+
+**Important**: 
+- Extract values from your analysis rather than using the example values shown in the template
+- When implementing components from this style guide, use Tailwind CSS utility classes for styling
+- Remember the folder path as it will be needed for generating the HTML component showcase
 </output>
 
 <analysis_instructions>
@@ -711,20 +728,108 @@ When generating UI components:
 </ui_guide_template>
 
 <verification>
-Once the UI guide has been created, review your work and grade it from a scale of 1 (worst) to 10 (best). Grade each major section of the UI guide you have produced against the original input image. 
+Once the UI guide has been created, perform a comprehensive review and grading process:
 
-**Critical Verification Points**:
-1. Did you extract actual colors from the screenshots rather than using the template examples?
-2. Did you identify the real typography choices visible in the design?
-3. Did you measure or estimate actual spacing values from the screenshots?
-4. Did you describe components as they actually appear, not from the template?
-5. Did you note where you had to make assumptions due to limited screenshot coverage?
+## Grading Process
 
-If any of the sections score less than 8, review the input images and redo the UI guide for that section. Remember: This guide should reflect the actual design in the screenshots, not generic values.
+Review each section of your style guide against the original screenshots and grade them on a scale of 1-10. **All sections must achieve a grade of 9 or 10** to be considered complete.
 
-Before finalizing, also ensure:
-- All Tailwind CSS implementation notes are included where relevant
-- The brand personality section prompts for stakeholder input
-- Motion design philosophy aligns with the observed UI behavior
-- Any design patterns you couldn't observe are clearly marked as recommendations
+### Section-by-Section Grading Rubric
+
+Grade each of the following sections individually:
+
+1. **Color System (9-10 required)**
+   - Brand Colors: Are the exact hex values extracted from the design?
+   - Neutral Palette: Do the grays match the actual design?
+   - Semantic Colors: Are success/error/warning colors accurately captured?
+   - Color Usage: Are background and text color combinations correct?
+
+2. **Typography (9-10 required)**
+   - Font Family: Is the actual font family identified (not just generic)?
+   - Type Scale: Are heading and body text sizes accurately measured?
+   - Font Weights: Are the correct weights identified from the design?
+   - Line Heights: Do they match the visual spacing in the screenshots?
+
+3. **Spacing System (9-10 required)**
+   - Base Unit: Is the correct base unit (4px, 8px, etc.) identified?
+   - Spacing Scale: Does it match the actual padding/margins used?
+   - Layout Patterns: Are component and section spacings accurate?
+
+4. **Button Components (9-10 required)**
+   - Primary Button: Exact colors, padding, border-radius, typography?
+   - Secondary Button: Border style and thickness correct?
+   - Button States: Hover/active/disabled states if visible?
+   - Button Sizes: All size variations captured?
+
+5. **Form Elements (9-10 required)**
+   - Input Fields: Height, padding, border styles accurate?
+   - Labels: Font size, weight, color, spacing correct?
+   - States: Focus, error, success states properly defined?
+   - Other Inputs: Dropdowns, checkboxes, radios if visible?
+
+6. **Cards & Containers (9-10 required)**
+   - Card Styles: Border, shadow, padding, radius accurate?
+   - Elevation Levels: Shadow depths correctly identified?
+   - Interactive States: Hover effects if present?
+
+7. **Icons (9-10 required)**
+   - Icon Style: Outlined vs filled, stroke weight?
+   - Icon Sizes: Standard sizes used in the design?
+   - Icon Colors: Usage patterns identified?
+
+8. **Other Elements (9-10 required)**
+   - Navigation: Menu styles, active states?
+   - Shadows & Elevation: Correct shadow values?
+   - Border Styles: Radius and border specifications?
+   - Animation: Any visible transition patterns?
+
+### Grading Criteria for 9-10 Score:
+- **10**: Perfect match - exact values extracted from screenshots
+- **9**: Near perfect - minor estimations but visually identical
+- **8 or below**: Needs improvement - generic values or mismatched specifications
+
+### Iterative Improvement Process
+
+After grading each section:
+
+1. **List all sections with grades below 9**
+2. **For each low-scoring section**:
+   - Re-examine the screenshots closely
+   - Use zoom/magnification if needed
+   - Extract more precise values
+   - Update the style guide section
+   - Re-grade the section
+
+3. **Repeat this process** until all sections score 9 or 10
+
+### Final Verification Report
+
+Include a summary at the end of your style guide:
+
+```markdown
+## Style Guide Accuracy Report
+
+### Section Grades:
+- Color System: [X/10]
+- Typography: [X/10]
+- Spacing System: [X/10]
+- Button Components: [X/10]
+- Form Elements: [X/10]
+- Cards & Containers: [X/10]
+- Icons: [X/10]
+- Other Elements: [X/10]
+
+### Overall Accuracy: [Average]/10
+
+### Notes:
+- [List any assumptions made due to limited screenshots]
+- [Note any sections that required multiple iterations]
+- [Highlight any extrapolated design decisions]
+```
+
+**Remember**: 
+- Do not proceed with sections scoring below 9
+- Generic template values are never acceptable
+- When in doubt, zoom in on the screenshot for more detail
+- Mark clearly when you're making educated assumptions vs direct observations
 </verification>

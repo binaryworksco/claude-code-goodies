@@ -40,11 +40,22 @@ fi
 echo ""
 echo "Copying command files..."
 
-# Count files to copy
+# Count files to copy (including subdirectories)
 FILE_COUNT=0
+# Count root level .md files
 for file in "$COMMANDS_SOURCE"/*.md; do
     if [ -f "$file" ]; then
         ((FILE_COUNT++))
+    fi
+done
+# Count .md files in subdirectories
+for dir in "$COMMANDS_SOURCE"/*/; do
+    if [ -d "$dir" ]; then
+        for file in "$dir"*.md; do
+            if [ -f "$file" ]; then
+                ((FILE_COUNT++))
+            fi
+        done
     fi
 done
 
@@ -53,7 +64,7 @@ if [ $FILE_COUNT -eq 0 ]; then
     exit 0
 fi
 
-# Copy markdown command files
+# Copy markdown command files from root
 for file in "$COMMANDS_SOURCE"/*.md; do
     if [ -f "$file" ]; then
         filename=$(basename "$file")
@@ -66,26 +77,84 @@ for file in "$COMMANDS_SOURCE"/*.md; do
     fi
 done
 
+# Copy subdirectories and their command files
+for dir in "$COMMANDS_SOURCE"/*/; do
+    if [ -d "$dir" ]; then
+        dirname=$(basename "$dir")
+        echo ""
+        echo "Copying $dirname commands..."
+        
+        # Create subdirectory in destination
+        mkdir -p "$COMMANDS_DEST/$dirname"
+        
+        # Copy all .md files from subdirectory
+        for file in "$dir"*.md; do
+            if [ -f "$file" ]; then
+                filename=$(basename "$file")
+                cp "$file" "$COMMANDS_DEST/$dirname/"
+                if [ $? -eq 0 ]; then
+                    echo -e "${GREEN}✓ Copied $dirname/$filename${NC}"
+                else
+                    echo -e "${RED}✗ Failed to copy $dirname/$filename${NC}"
+                fi
+            fi
+        done
+    fi
+done
+
 # Verify installation
 echo ""
 echo "Verifying installation..."
-INSTALLED_COUNT=$(ls -1 "$COMMANDS_DEST"/*.md 2>/dev/null | wc -l)
+
+# Count installed commands (including subdirectories)
+INSTALLED_COUNT=0
+# Count root level
+ROOT_COUNT=$(ls -1 "$COMMANDS_DEST"/*.md 2>/dev/null | wc -l)
+INSTALLED_COUNT=$((INSTALLED_COUNT + ROOT_COUNT))
+
+# Count in subdirectories
+for dir in "$COMMANDS_DEST"/*/; do
+    if [ -d "$dir" ]; then
+        SUB_COUNT=$(ls -1 "$dir"*.md 2>/dev/null | wc -l)
+        INSTALLED_COUNT=$((INSTALLED_COUNT + SUB_COUNT))
+    fi
+done
+
 if [ $INSTALLED_COUNT -gt 0 ]; then
     echo -e "${GREEN}✓ Successfully installed $INSTALLED_COUNT command(s)${NC}"
     echo ""
     echo "Installation complete! Your commands are now available."
     echo ""
     echo "Available commands:"
+    
+    # List root level commands
     for file in "$COMMANDS_DEST"/*.md; do
         if [ -f "$file" ]; then
             command_name=$(basename "$file" .md)
             echo "  - /$command_name"
         fi
     done
+    
+    # List commands in subdirectories
+    for dir in "$COMMANDS_DEST"/*/; do
+        if [ -d "$dir" ]; then
+            dirname=$(basename "$dir")
+            echo ""
+            echo "  $dirname commands:"
+            for file in "$dir"*.md; do
+                if [ -f "$file" ]; then
+                    command_name=$(basename "$file" .md)
+                    echo "    - /$dirname/$command_name"
+                fi
+            done
+        fi
+    done
+    
     echo ""
     echo "Usage:"
     echo "  Type /<command_name> in Claude Code to use a command"
     echo "  Example: /cpr - Commit, push and create PR"
+    echo "  Example: /design/generate-design-guide - Generate UI style guide"
     echo ""
     echo "Note: Commands are custom prompts that help automate common workflows"
 else

@@ -7,7 +7,12 @@ You are an expert frontend developer specializing in creating comprehensive UI c
 <input>
 The style guide to follow is: $ARGUMENTS
 
-**Important**: You must follow the provided style guide meticulously. Extract all colors, typography, spacing, and component specifications from the guide and implement them exactly as specified.
+**Important**: 
+- You must follow the provided style guide meticulously
+- Extract all colors, typography, spacing, and component specifications from the guide and implement them exactly as specified
+- The style guide should be located in a `/designs/design-*/` folder
+- If a folder path is provided (e.g., `/designs/design-20240115-modern-dashboard/`), look for `style-guide.md` inside that folder
+- If only a style guide file is provided, use its location to determine where to save the HTML output
 </input>
 
 <style_guide_analysis>
@@ -23,13 +28,32 @@ Before generating the HTML, carefully analyze the provided style guide and extra
 </style_guide_analysis>
 
 <output>
-Generate a single HTML file named `component-showcase.html` that includes:
+Generate HTML files in the same folder as the style guide:
+
+**File Organization**:
+1. Determine the output location:
+   - If given a folder path (e.g., `/designs/design-20240115-modern-dashboard/`), save files there
+   - If given a style guide file path, save in the same directory
+
+2. Create the following files:
+   - `component-showcase.html` - The main component showcase with all examples
+   - `index.html` - A simple landing page that links to the component showcase and style guide
+   - `components/` folder (optional) - Individual component HTML files for easy copying
+
+**File Contents**:
+The main `component-showcase.html` should include:
 1. All CSS (using Tailwind CSS utilities as specified in the style guide)
 2. All JavaScript for interactive functionality
 3. A comprehensive showcase of every component
 4. Dark mode toggle functionality
 5. Responsive design demonstrations
 6. Code examples for each component
+
+The `index.html` should provide:
+- Project name and description
+- Links to the style guide and component showcase
+- Quick preview of primary colors and typography
+- Creation date and any notes
 </output>
 
 <html_template>
