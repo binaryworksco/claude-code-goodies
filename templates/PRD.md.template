@@ -1,0 +1,60 @@
+# PRD-[NUMBER]: [Feature Name]
+
+## Introduction/Overview
+[Brief description of the feature and the problem it solves. State the goal in 2-3 sentences.]
+
+## Goals
+- [Specific, measurable objective 1]
+- [Specific, measurable objective 2]
+- [Specific, measurable objective 3]
+
+## User Stories
+- As a [type of user], I want to [perform an action] so that [benefit]
+- As a [type of user], I want to [perform an action] so that [benefit]
+- As a [type of user], I want to [perform an action] so that [benefit]
+
+## Functional Requirements
+1. The system must [specific functionality]
+2. The system must [specific functionality]
+3. The system must [specific functionality]
+4. The system must [specific functionality]
+5. The system must [specific functionality]
+
+## Non-Goals (Out of Scope)
+- This feature will NOT [specific exclusion]
+- This feature will NOT [specific exclusion]
+- This feature will NOT [specific exclusion]
+
+## Dependencies
+**[NEW SECTION - Track feature dependencies]**
+- Depends on: [List PRDs or features this depends on]
+- Blocked by: [List any blocking items]
+- Related to: [List related features or PRDs]
+
+## Design Considerations
+[Optional - Link to mockups, describe UI/UX requirements, or mention relevant components/styles]
+
+## Technical Considerations
+[Optional - Mention any known technical constraints, dependencies, or implementation suggestions]
+- Architecture: [Relevant patterns or structures]
+- Performance: [Any performance requirements]
+- Security: [Security considerations]
+
+## Success Metrics
+- [How will success be measured? e.g., "Increase user engagement by 10%"]
+- [Metric 2]
+- [Metric 3]
+
+## Open Questions
+- [ ] [Remaining question or area needing clarification]
+- [ ] [Remaining question or area needing clarification]
+
+## Implementation Tasks
+[Tasks will be added here after PRD approval - tracked as checkboxes within this PRD]
+
+---
+
+## Document Guidelines
+**File Size**: Keep PRDs under 500 lines for maintainability
+**Archival**: Move to .working/archive/ when feature is complete and deployed
+**Updates**: Track significant changes with timestamps in comments

@@ -1,5 +1,7 @@
 # Project Documentation
 
+**Last Updated:** [Date]
+
 ## Project Overview
 <!-- Provide a 2-3 sentence description of the project. Include the main purpose, target users, and key value proposition -->
 
@@ -23,11 +25,19 @@
 
 ## Product Requirements Documents (PRDs)
 <!-- Maintain a central list of features with their current status and links to detailed PRD documentation
-Status options: Planning | In Progress | Completed | On Hold
+Status options: Planning | In Progress | Completed | On Hold | Archived
 
 Example format:
-| Feature | Status | PRD Link | Description |
-|---------|--------|----------|-------------|
-| User Authentication | Completed | [PRD-001](./prd/001-user-auth.md) | OAuth2 integration |
-| Dashboard Analytics | In Progress | [PRD-002](./prd/002-dashboard.md) | Real-time metrics |
+| Feature | Status | PRD Link | Description | Dependencies | 
+|---------|--------|----------|-------------|--------------|
+| User Authentication | Completed | [PRD-0001](./features/prd-0001/prd-0001-user-auth.md) | OAuth2 integration | None |
+| Dashboard Analytics | In Progress | [PRD-0002](./features/prd-0002/prd-0002-dashboard.md) | Real-time metrics | PRD-0001 |
+| Export Reports | Planning | [PRD-0003](./features/prd-0003/prd-0003-export.md) | CSV/PDF export | PRD-0002 |
+-->
+
+### PRD Dependency Graph
+<!-- Visual representation of feature dependencies
+Example:
+PRD-0001 (Auth) → PRD-0002 (Dashboard) → PRD-0003 (Export)
+                ↘ PRD-0004 (Profile)
 -->

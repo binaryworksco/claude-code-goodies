@@ -1,0 +1,55 @@
+# Project Index
+
+**Auto-generated index of key terms and their locations**
+*Last Updated: [Date]*
+
+## Quick Links
+- [Features](#features)
+- [Technical Terms](#technical-terms)
+- [Components](#components)
+- [APIs](#apis)
+- [Issues](#known-issues)
+- [Decisions](#key-decisions)
+
+## Features
+<!-- Index of features with their locations -->
+| Feature | Location | Status |
+|---------|----------|--------|
+| [Feature Name] | [File Path] | [Status] |
+
+## Technical Terms
+<!-- Glossary of project-specific technical terms -->
+| Term | Definition | References |
+|------|------------|------------|
+| [Term] | [Brief definition] | [Files where used] |
+
+## Components
+<!-- Major components and their locations -->
+| Component | Purpose | Location |
+|-----------|---------|----------|
+| [Component Name] | [Brief purpose] | [File path] |
+
+## APIs
+<!-- API endpoints and their documentation -->
+| Endpoint | Method | Purpose | Documentation |
+|----------|--------|---------|---------------|
+| [/api/path] | [GET/POST] | [Purpose] | [Link to docs] |
+
+## Known Issues
+<!-- Quick reference to critical issues -->
+| Issue | Severity | Location | Status |
+|-------|----------|----------|--------|
+| [Issue summary] | [High/Med/Low] | ISSUES.md#L[line] | [Open/Fixed] |
+
+## Key Decisions
+<!-- Important architectural and technical decisions -->
+| Decision | Date | Rationale | Impact |
+|----------|------|-----------|--------|
+| [Decision] | [Date] | [Why] | [What changed] |
+
+---
+
+## Maintenance Notes
+- This index should be updated when adding new features or making significant changes
+- Use `/context` command to search for terms not in this index
+- Consider automating index generation for large projects

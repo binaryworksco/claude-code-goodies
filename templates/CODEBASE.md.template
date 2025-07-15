@@ -1,0 +1,99 @@
+# Codebase Map
+
+**Purpose**: Quick reference for key implementation locations and patterns in the codebase.
+**Last Updated**: [Date]
+
+## Core Architecture
+<!-- Map out the main architectural components and their locations -->
+
+### Directory Structure
+```
+src/
+├── api/          # API endpoints and routes
+├── services/     # Business logic layer
+├── models/       # Data models and database schemas
+├── utils/        # Shared utilities and helpers
+├── config/       # Configuration files
+└── tests/        # Test suites
+```
+
+### Key Components
+| Component | Purpose | Location | Notes |
+|-----------|---------|----------|-------|
+| Authentication | JWT-based auth system | `[path]` | [Special considerations] |
+| Database Layer | [ORM/Query builder] | `[path]` | [Connection patterns] |
+| API Gateway | Request routing | `[path]` | [Middleware chain] |
+| State Management | [Redux/Context/etc] | `[path]` | [Store structure] |
+
+## Key Patterns
+<!-- Document established patterns that should be followed -->
+
+### Design Patterns
+- **Pattern Name**: [Description] - See example in `[file path]`
+- **Error Handling**: [Approach] - Global handler in `[path]`
+- **Validation**: [Method] - Schema definitions in `[path]`
+- **Caching Strategy**: [Approach] - Implementation in `[path]`
+
+### Code Conventions
+- **Service Layer**: All business logic in `services/` - Example: `[path]`
+- **API Routes**: RESTful conventions - Pattern in `[path]`
+- **Database Access**: Repository pattern - Base class in `[path]`
+
+## Common Operations
+<!-- How-to guide for frequent development tasks -->
+
+### Adding Features
+- **New API Endpoint**: Copy pattern from `[example file]`
+- **New Database Model**: Use generator: `[command]`
+- **New Service**: Extend base class in `[path]`
+
+### Testing
+- **Unit Tests**: Located in `[path]`, run with `[command]`
+- **Integration Tests**: Located in `[path]`, run with `[command]`
+- **E2E Tests**: Located in `[path]`, run with `[command]`
+
+### Build & Deploy
+- **Local Development**: `[command]` - Config in `[path]`
+- **Build Process**: `[command]` - Scripts in `[path]`
+- **Deployment**: [Method] - Config in `[path]`
+
+## Integration Points
+<!-- Where major systems connect -->
+
+| System | Integration Point | Config Location | Notes |
+|--------|------------------|-----------------|-------|
+| [External API] | `[path]` | `[config path]` | [Auth method, rate limits] |
+| [Database] | `[path]` | `[config path]` | [Connection pooling] |
+| [Cache] | `[path]` | `[config path]` | [TTL strategies] |
+| [Queue] | `[path]` | `[config path]` | [Worker patterns] |
+
+## Performance Hotspots
+<!-- Areas requiring special attention for performance -->
+
+- **[Feature]**: [Concern] - Optimization in `[path]`
+- **[Operation]**: [Bottleneck] - Caching strategy in `[path]`
+- **[Query]**: [Issue] - Indexed properly in `[path]`
+
+## Security Considerations
+<!-- Security-critical implementations -->
+
+- **Authentication**: Implementation in `[path]`
+- **Authorization**: Middleware in `[path]`
+- **Input Validation**: Schemas in `[path]`
+- **Secrets Management**: Handled by `[method]` in `[path]`
+
+## Debugging Entry Points
+<!-- Where to start when debugging common issues -->
+
+| Issue Type | Start Here | Logs Location | Common Causes |
+|------------|------------|---------------|---------------|
+| [Auth failures] | `[path]` | `[log path]` | [Common issues] |
+| [API errors] | `[path]` | `[log path]` | [Common issues] |
+| [Performance] | `[path]` | `[log path]` | [Common issues] |
+
+---
+
+## Maintenance Notes
+- Update this file when: Adding major features, changing patterns, refactoring architecture
+- Use `/context` command for: Specific implementations not listed here
+- Review quarterly to ensure accuracy

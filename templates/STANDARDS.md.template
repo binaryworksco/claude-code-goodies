@@ -34,3 +34,16 @@
 - **Code**: Self-documenting code preferred over extensive comments
 - **APIs**: Document all public APIs
 - **README**: Keep README up-to-date with setup instructions
+- **File Size**: Keep documentation files under 500 lines for maintainability
+- **Session Notes**: Update SESSION-NOTES.md proactively during significant work
+- **Codebase Map**: Update CODEBASE.md when adding major features or changing patterns
+
+## Archival Process
+- **Completed PRDs**: Move to `.working/archive/` after deployment
+- **Archive Structure**: `.working/archive/YYYY/prd-XXXX/`
+- **Retention**: Keep archived PRDs for historical reference
+- **Cleanup**: Archive completed tasks from TASKS.md monthly
+- **Timing**: Archive when:
+  - Feature is deployed to production
+  - PRD is cancelled or superseded
+  - Sprint/milestone is complete

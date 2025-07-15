@@ -14,6 +14,7 @@ First, check if the `.working` folder already exists:
 Create the `.working` folder in the project root, then create these documentation files:
 - **PROJECT.md** - Core project info, tech stack, and high-level features list
 - **STANDARDS.md** - Development rules, coding standards, and git discipline
+- **CODEBASE.md** - Map of key implementation locations and patterns
 - **LEARNINGS.md** - Technical insights, patterns discovered, and missteps to avoid
 - **ISSUES.md** - Known bugs, regressions, and technical debt
 - **TASKS.md** - Standalone tasks not tied to specific features/PRDs
@@ -33,6 +34,7 @@ Retrieve the template files from the remote repository:
 - Fetch these templates:
   - PROJECT.md.template
   - STANDARDS.md.template
+  - CODEBASE.md.template
   - LEARNINGS.md.template (for reference)
   - ISSUES.md.template (for reference)
   - TASKS.md.template (for reference)
@@ -42,17 +44,19 @@ Retrieve the template files from the remote repository:
 Using the templates as guides:
 - **PROJECT.md**: Fill in project overview, tech stack details, special considerations, and PRD table structure
 - **STANDARDS.md**: Customize based on detected code style, architecture patterns, and git practices
+- **CODEBASE.md**: Map key directories, patterns, and integration points based on project analysis
 - **LEARNINGS.md**: Initialize with header structure from template
 - **ISSUES.md**: Initialize with header structure from template
 - **TASKS.md**: Initialize with header structure from template
 
 ### 6. Validation
 Verify successful setup:
-- Confirm all 5 files exist in `.working` folder
+- Confirm all 6 files exist in `.working` folder
 - Ensure PROJECT.md contains at least: overview, tech stack, and PRD section
 - Ensure that the contents of the PROJECT.md file are accurate by validating them against the code base
 - Ensure STANDARDS.md reflects actual project conventions found during analysis
 - Ensure that the contents of the STANDARDS.md file are accurate by validating them against the code base
+- Ensure CODEBASE.md accurately maps the project structure and key implementations
 - Check that no files are empty or contain only template placeholders
 
 ### 7. Final Summary
