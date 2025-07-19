@@ -128,11 +128,38 @@ The project should maintain this structure:
 3. Read STANDARDS.md to understand coding standards
 4. Check CODEBASE.md for key implementation locations (if it exists)
 5. Check SESSION-NOTES.md for recent work context (last 3-5 entries if it exists)
-6. Scan TASKS.md for any [HIGH PRIORITY] items without reading all details
-7. Note the number of open issues in ISSUES.md without reading all details
-8. Provide the standardized response below confirming understanding
+6. DO NOT read TASKS.md or ISSUES.md during initialization
+7. Provide the standardized response below confirming understanding
 
 Remember: These rules override any default behaviors. Always refer back to these guidelines throughout your work on this project.
+
+## Important Guidelines for Task and Issue Management:
+
+### Tasks (TASKS.md)
+- ONLY read TASKS.md when:
+  - User explicitly asks to review tasks
+  - User asks you to work on a specific task
+  - Before adding a new task (to check for duplicates)
+- ALL tasks you work on MUST be logged in TASKS.md
+- Update task checkboxes in REAL-TIME as you complete them
+- Use the TodoWrite tool to track your work, then update TASKS.md accordingly
+
+### Issues (ISSUES.md)
+- ONLY read ISSUES.md when:
+  - User explicitly asks to review issues
+  - Before adding a new issue (to check for duplicates)
+  - User asks about a specific bug or problem
+
+### Real-time Task Tracking Requirements
+When implementing any feature or working on any task:
+1. First check if the task exists in TASKS.md
+2. If not, create it with proper subtasks
+3. Update checkboxes IMMEDIATELY as you complete each subtask
+4. Never leave TASKS.md out of sync with your actual progress
+5. Example workflow:
+   - Start task → Update to "[ ] Task - In Progress"
+   - Complete subtask → Update to "[x] Subtask"
+   - Finish task → Update to "[x] Task - Completed"
 
 ## Response Format
 
@@ -156,8 +183,6 @@ After completing all actions above, provide this standardized response:
 8. ✓ Codebase map consulted
 
 **Recent Context**: [Brief summary from SESSION-NOTES.md or "No recent sessions found"]
-**Priority Items**: [Number of HIGH PRIORITY tasks or "None identified"]
-**Open Issues**: [Count from ISSUES.md, e.g., "3 open issues noted"]
 
 Ready to proceed with development following the established workflow.
 ```
